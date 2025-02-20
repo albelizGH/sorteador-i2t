@@ -1,3 +1,10 @@
+-- ============================================================
+-- Inserts de datos de ejemplo para la base de datos "sorteador"
+-- ============================================================
+
+-- ------------------------------------------------------------
+-- 1) Inserción en AUT_CATEGORIA (4 registros)
+-- ------------------------------------------------------------
 INSERT INTO aut_categoria (nombre, ultima_asignacion_semana, semanas_a_planificar)
 VALUES
   ('Categoria A', 0, 4),
@@ -5,6 +12,10 @@ VALUES
   ('Categoria C', 0, 6),
   ('Categoria D', 0, 6);
 
+-- ------------------------------------------------------------
+-- 2) Inserción en AUT_REL_PRODUCTO (10 productos)
+--    Se distribuyen entre las categorías (IDs 1 a 4)
+-- ------------------------------------------------------------
 INSERT INTO aut_rel_producto (nombre, orden, aut_categoria_id) VALUES
   ('Producto 1', 1, 1),
   ('Producto 2', 2, 2),
@@ -17,16 +28,24 @@ INSERT INTO aut_rel_producto (nombre, orden, aut_categoria_id) VALUES
   ('Producto 9', 9, 1),
   ('Producto 10', 10, 2);
 
+-- ------------------------------------------------------------
+-- 3) Inserción en AUT_CATEGORIA_TOPE (8 registros: 2 por cada categoría)
+--    Un registro para auxiliar (es_autoridad=0) y otro para autoridad (es_autoridad=1)
+-- ------------------------------------------------------------
 INSERT INTO aut_categoria_tope (cantidad_min, cantidad_max, es_autoridad, aut_categoria_id) VALUES
-  (1, 2, 0, 1),
-  (1, 1, 1, 1),
-  (1, 3, 0, 2),
-  (1, 1, 1, 2),
-  (1, 2, 0, 3),
-  (1, 1, 1, 3),
-  (1, 3, 0, 4),
-  (1, 1, 1, 4);
+  (1, 2, 0, 1),  -- Categoria A - Auxiliar
+  (1, 1, 1, 1),   -- Categoria A - Autoridad
+  (1, 3, 0, 2),  -- Categoria B - Auxiliar
+  (1, 1, 1, 2),   -- Categoria B - Autoridad
+  (1, 2, 0, 3),  -- Categoria C - Auxiliar
+  (1, 1, 1, 3),   -- Categoria C - Autoridad
+  (1, 3, 0, 4),  -- Categoria D - Auxiliar
+  (1, 1, 1, 4);   -- Categoria D - Autoridad
 
+-- ------------------------------------------------------------
+-- 4) Inserción en AUT_GRUPO (6 grupos)
+--    Se asigna cada grupo a alguna categoría (para efecto de ejemplo)
+-- ------------------------------------------------------------
 INSERT INTO aut_grupo (nombre, orden_grupo, aut_categoria_id) VALUES
   ('Grupo 1', 1, 1),
   ('Grupo 2', 2, 2),
@@ -35,6 +54,14 @@ INSERT INTO aut_grupo (nombre, orden_grupo, aut_categoria_id) VALUES
   ('Grupo 5', 5, 1),
   ('Grupo 6', 6, 2);
 
+-- ------------------------------------------------------------
+-- 5) Inserción en AUT_INTEGRANTE (19 registros)
+--    - 6 autoridades
+--    - 12 auxiliares
+--    - 1 coordinador
+--    Se asignan a distintos grupos
+-- ------------------------------------------------------------
+-- Autoridades (6)
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id) VALUES
   ('Autoridad 1', 1001, 'autoridad', 1),
   ('Autoridad 2', 1002, 'autoridad', 2),
@@ -43,6 +70,7 @@ INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id) VALUES
   ('Autoridad 5', 1005, 'autoridad', 5),
   ('Autoridad 6', 1006, 'autoridad', 6);
 
+-- Auxiliares (12)
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id) VALUES
   ('Auxiliar 1', 2001, 'auxiliar', 1),
   ('Auxiliar 2', 2002, 'auxiliar', 1),
@@ -57,9 +85,16 @@ INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id) VALUES
   ('Auxiliar 11', 2011, 'auxiliar', 6),
   ('Auxiliar 12', 2012, 'auxiliar', 6);
 
+-- Coordinador (1)
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id) VALUES
   ('Coordinador', 3001, 'coordinador', 1);
 
+-- ------------------------------------------------------------
+-- 6) Inserción en AUT_SORTEO (60 registros)
+--    Se generan 60 sorteos distribuidos en los próximos 45 días.
+--    Se asigna de forma cíclica un producto (IDs 1 a 10).
+--    Para variar se alterna el campo "confirmado" y se indica un día descriptivo.
+-- ------------------------------------------------------------
 INSERT INTO aut_sorteo (fecha, confirmado, dia_descriptivo, aut_rel_producto_id) VALUES
   ('2025-03-01', 0, 'Sábado', 1),
   ('2025-03-01', 1, 'Sábado', 2),
@@ -122,12 +157,20 @@ INSERT INTO aut_sorteo (fecha, confirmado, dia_descriptivo, aut_rel_producto_id)
   ('2025-04-27', 0, 'Domingo', 9),
   ('2025-04-28', 1, 'Lunes', 10);
 
+-- ------------------------------------------------------------
+-- 7) Inserción en AUT_ASIGNACION (4 registros)
+--    Estos registros permitirán que las solicitudes de reemplazo referencien asignaciones existentes.
+-- ------------------------------------------------------------
 INSERT INTO aut_asignacion (estado, aut_grupo_id, aut_sorteo_id) VALUES
   ('planificado', 1, 1),
   ('planificado', 2, 2),
   ('planificado', 3, 3),
   ('planificado', 4, 4);
 
+-- ------------------------------------------------------------
+-- 8) Inserción en AUT_SOLICITUD_REEMPLAZO (2 registros)
+--    Se relacionan con integrantes y asignaciones existentes.
+-- ------------------------------------------------------------
 INSERT INTO aut_solicitud_reemplazo (nombre, descripcion, fecha_solicitud, sol_estado, aut_empleado_solicitante, aut_empleado_reemplazo, aut_asignacion_solicitante, aut_asignacion_reemplazo)
 VALUES
   ('Solicitud 1', 'Reemplazo por turno medico', CURRENT_DATE(), 'pendiente', 1, 7, 1, 2),
