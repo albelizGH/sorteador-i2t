@@ -14,7 +14,8 @@ public class AutCategoriaTope {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "aut_categoria_id")
+    @ManyToOne
+    @JoinColumn(name = "aut_categoria_id")
     AutCategoria autCategoria;
 
     @Column(name = "cantidad_min")
