@@ -22,16 +22,18 @@ public class AutIntegrante {
 
     private Integer legajo;
 
+    @Enumerated(EnumType.STRING)
     private Rol rol;
-
-    @OneToMany(mappedBy = "autEmpleadoReemplazo")
-    private List<AutSolicitudReemplazo> autEmpleadoReemplazoList;
-
-    @OneToMany(mappedBy = "autEmpleadoSolicitante")
-    private List<AutSolicitudReemplazo> autEmpleadoSolicitanteList;
 
     @ManyToOne
     @JoinColumn(name = "aut_grupo_id")
-    private AutGrupo autGrupoId;
+    private AutGrupo grupo;
+
+    @OneToMany(mappedBy = "empleadoReemplazo")
+    private List<AutSolicitudReemplazo> empleadoReemplazoList;
+
+    @OneToMany(mappedBy = "empleadoSolicitante")
+    private List<AutSolicitudReemplazo> empleadoSolicitanteList;
+
 
 }

@@ -16,19 +16,16 @@ public class AutRelProducto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="aut_categoria_id")
-    private AutCategoria autCategoria;
-
     private String nombre;
 
     private Integer orden;
 
-    @OneToMany(mappedBy = "autRelProducto")
-    private List<AutSorteo> autSorteoList;
+    @ManyToOne
+    @JoinColumn(name = "aut_categoria_id")
+    private AutCategoria categoria;
 
-
-
+    @OneToMany(mappedBy = "relProducto")
+    private List<AutSorteo> sorteoList;
 
 
 }
