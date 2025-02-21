@@ -6,13 +6,12 @@ import com.pentabyte.projects.sorteador.dto.response.AutCategoriaTopeResponseDTO
 import com.pentabyte.projects.sorteador.service.ICrudService;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AutCategoriaTopeServiceImpl implements ICrudService<AutCategoriaTopeResponseDTO, Long, AutCategoriaTopeCreateDTO, AutCategoriaTopeUpdateDTO> {
 
     @Override
     public AutCategoriaTopeResponseDTO create(AutCategoriaTopeCreateDTO autCategoriaTopeCreateDTO) {
-        return null;
+        return AutCategoriaTopeResponseDTO.builder().cantidadMaxima(2).cantidadMinima(1).build();
     }
 
     @Override
@@ -26,9 +25,10 @@ public class AutCategoriaTopeServiceImpl implements ICrudService<AutCategoriaTop
     }
 
     @Override
-    public Optional<AutCategoriaTopeResponseDTO> findById(Long id) {
-        return Optional.empty();
+    public AutCategoriaTopeResponseDTO findById(Long aLong) {
+        return null;
     }
+
 
     @Override
     public List<AutCategoriaTopeResponseDTO> findAll() {
