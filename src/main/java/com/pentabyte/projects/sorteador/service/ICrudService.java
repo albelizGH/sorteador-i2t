@@ -1,7 +1,6 @@
 package com.pentabyte.projects.sorteador.service;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ICrudService<T, ID, Dc, Du> {
     /*
@@ -9,7 +8,6 @@ public interface ICrudService<T, ID, Dc, Du> {
      * Usamos T como un DTO de salida creado con un patron builder para poder tener solo un DTO de salida por cada entidad
      * Usamos Dc como un DTO de entrada para creación
      * Usamos Du como un DTO de entrada para actualización
-     *
      * */
 
     T create(Dc dto);
@@ -18,7 +16,7 @@ public interface ICrudService<T, ID, Dc, Du> {
 
     void delete(ID id);
 
-    Optional<T> findById(ID id);
+    T findById(ID id);
 
     List<T> findAll();
 
