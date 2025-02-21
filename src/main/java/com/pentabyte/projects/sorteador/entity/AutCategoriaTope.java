@@ -15,7 +15,7 @@ public class AutCategoriaTope {
     Long id;
 
     @Column(name = "aut_categoria_id")
-    AutCategoria autCategoria;
+    AutCategoria autCateogira;
 
     @Column(name = "cantidad_min")
     Integer cantidadMinima;
