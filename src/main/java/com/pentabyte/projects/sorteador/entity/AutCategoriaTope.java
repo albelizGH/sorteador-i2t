@@ -16,7 +16,7 @@ public class AutCategoriaTope {
 
     @ManyToOne
     @JoinColumn(name = "aut_categoria_id")
-    AutCategoria autCategoria;
+    AutCategoria categoria;
 
     @Column(name = "cantidad_min")
     Integer cantidadMinima;

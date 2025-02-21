@@ -15,18 +15,22 @@ public class AutAsignacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private Estado estado;
 
     @ManyToOne
-    @JoinColumn(name="aut_grupo_id")
-    private AutGrupo autGrupoId;
+    @JoinColumn(name = "aut_grupo_id")
+    private AutGrupo grupo;
 
-    @OneToMany(mappedBy = "autAsignacionReemplazo")
-    private List<AutSolicitudReemplazo> autAsignacionReemplazoList;
+    @ManyToOne
+    @JoinColumn(name = "aut_sorteo_id")
+    private AutSorteo sorteo;
 
-    @OneToMany(mappedBy = "autAsignacionSolicitante")
-    private List<AutSolicitudReemplazo> autAsignacionSolicitanteList;
+    @OneToMany(mappedBy = "asignacionDeSolicitante")
+    private List<AutSolicitudReemplazo> asignacionDeReemplazoList;
 
+    @OneToMany(mappedBy = "asignacionDeSolicitante")
+    private List<AutSolicitudReemplazo> asignacionDeSolicitanteList;
 
 
 }

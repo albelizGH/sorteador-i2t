@@ -13,13 +13,8 @@ public enum DiaDescriptivo {
 
     private final String displayDia;
 
-    private DiaDescriptivo (String displayDia){
-        this.displayDia=displayDia;
-    }
-
-    @JsonValue
-    public String getDisplayDia(){
-        return this.displayDia;
+    private DiaDescriptivo(String displayDia) {
+        this.displayDia = displayDia;
     }
 
     public static DiaDescriptivo fromString(String dia) {
@@ -31,5 +26,9 @@ public enum DiaDescriptivo {
         throw new IllegalArgumentException("Valor no encontrado: " + dia);
     }
 
-
+    @JsonValue
+    public String getDisplayDia() {
+        return this.displayDia;
     }
+
+}

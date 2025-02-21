@@ -28,13 +28,13 @@ public class AutCategoria {
     @Column(name = "semanas_a_planificar")
     private Integer semanasAPlanificar;
 
-    @OneToMany(mappedBy = "autCategoria")
-    private List<AutCategoriaTope> autCategoriaTopeList;
+    @OneToMany(mappedBy = "categoria")
+    private List<AutCategoriaTope> categoriaTopeList;
 
-    @OneToMany(mappedBy = "autCategoria")
+    @OneToMany(mappedBy = "categoria")
     private List<AutGrupo> autGrupoList;
 
-    @OneToMany(mappedBy = "autCategoria")
-    private List<AutRelProducto> autRelProductoList;
+    @OneToMany(mappedBy = "categoria")
+    private List<AutRelProducto> relProductoList;
 
 }
