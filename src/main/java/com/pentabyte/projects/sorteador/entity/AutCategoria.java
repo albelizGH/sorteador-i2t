@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "aut_categoria_tope")
+@Table(name = "aut_categoria")
 public class AutCategoria {
 
     @Id
@@ -29,5 +29,8 @@ public class AutCategoria {
 
     @OneToMany(mappedBy = "autCategoria")
     private List<AutCategoriaTope> autCategoriasTopes;
+
+    @OneToMany(mappedBy = "autCategoria")
+    private List<AutGrupo> autGrupos;
 
 }
