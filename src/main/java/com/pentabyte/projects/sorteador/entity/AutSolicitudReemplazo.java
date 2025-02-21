@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
+
 
 @Data
 @NoArgsConstructor
@@ -17,7 +17,6 @@ public class AutSolicitudReemplazo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     private String nombre;
@@ -30,6 +29,21 @@ public class AutSolicitudReemplazo {
     @Column(name="sol_estado")
     private SolEstado solEstado;
 
+    @ManyToOne
+    @JoinColumn(name = "aut_empleado_solicitante")
+    private AutIntegrante autEmpleadoSolicitante;
+
+    @ManyToOne
+    @JoinColumn(name = "aut_empleado_reemplazo")
+    private AutIntegrante autEmpleadoReemplazo;
+
+    @ManyToOne
+    @JoinColumn(name = "aut_asignacion_solicitante")
+    private AutAsignacion autAsignacionSolicitante;
+
+    @ManyToOne
+    @JoinColumn(name = "aut_asignacion_reemplazo")
+    private AutAsignacion autAsignacionReemplazo;
 
 
 
