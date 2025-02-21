@@ -1,7 +1,6 @@
 package com.pentabyte.projects.sorteador.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.MemoryAddress;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,22 +8,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "aut_categoria_tope")
-public class AutCategoriaTope  {
+public class AutCategoriaTope {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_categoria_id")
-    private AutCategoria autCategoria;
+    @Column(name = "aut_categoria_id")
+    AutCategoria autCategoria;
 
     @Column(name = "cantidad_min")
-    private Integer cantidadMinima;
+    Integer cantidadMinima;
 
     @Column(name = "cantidad_max")
-    private Integer cantidadMaxima;
+    Integer cantidadMaxima;
 
     @Column(name = "es_autoridad")
-    private Boolean esAutoridad;
+    Boolean esAutoridad;
 }

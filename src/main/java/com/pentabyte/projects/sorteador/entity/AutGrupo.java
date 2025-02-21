@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @Entity
@@ -24,13 +22,6 @@ public class AutGrupo {
 
     @Column(name="orden_grupo")
     private Integer ordenGrupo;
-
-    private LocalDateTime fecha;
-
-    private Boolean confirmado;
-
-    @Column(name = "dia_descriptivo")
-    DiaDescriptivo diaDescriptivo;
 
 
 }

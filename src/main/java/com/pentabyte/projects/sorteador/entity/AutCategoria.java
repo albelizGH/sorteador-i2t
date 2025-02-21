@@ -28,12 +28,9 @@ public class AutCategoria {
     private Integer semanasAPlanificar;
 
     @OneToMany(mappedBy = "autCategoria")
-    private List<AutCategoriaTope> autCategoriaTopeList;
+    private List<AutCategoriaTope> autCategoriasTopes;
 
     @OneToMany(mappedBy = "autCategoria")
-    private List<AutGrupo> autGrupoList;
-
-    @OneToMany(mappedBy = "autCategoria")
-    private List<AutRelProducto> autRelProductoList;
+    private List<AutGrupo> autGrupos;
 
 }
