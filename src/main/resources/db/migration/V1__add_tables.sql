@@ -22,13 +22,13 @@ CREATE TABLE AUT_SORTEO (
     fecha DATETIME NOT NULL,
     confirmado BOOLEAN NOT NULL,
     dia_descriptivo ENUM(
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Viernes',
-        'Sábado',
-        'Domingo'
+        'LUNES',
+        'MARTES',
+        'MIERCOLES',
+        'JUEVES',
+        'VIERNES',
+        'SABADO',
+        'DOMINGO'
     ) NOT NULL,
     CONSTRAINT pk_aut_sorteo PRIMARY KEY (id),
     CONSTRAINT fk_aut_sorteo_aut_rel_producto FOREIGN KEY (aut_rel_producto_id) REFERENCES AUT_REL_PRODUCTO (id)
@@ -47,7 +47,7 @@ CREATE TABLE AUT_ASIGNACION (
     id BIGINT NOT NULL AUTO_INCREMENT,
     aut_grupo_id BIGINT NOT NULL,
     aut_sorteo_id BIGINT NOT NULL,
-    estado ENUM('planificado','borrador') NOT NULL,
+    estado ENUM('PLANIFICADO','BORRADOR') NOT NULL,
     CONSTRAINT pk_aut_asignacion PRIMARY KEY (id),
     CONSTRAINT fk_aut_asignacion_aut_sorteo FOREIGN KEY (aut_sorteo_id) REFERENCES AUT_SORTEO (id),
     CONSTRAINT fk_aut_asignacion_aut_grupo FOREIGN KEY (aut_grupo_id) REFERENCES AUT_GRUPO (id)
@@ -69,9 +69,9 @@ CREATE TABLE AUT_INTEGRANTE (
     nombre VARCHAR(20) NOT NULL,
     legajo INT NOT NULL,
     rol ENUM(
-        'autoridad',
-        'auxiliar',
-        'coordinador'
+        'AUTORIDAD',
+        'AUXILIAR',
+        'COORDINADOR'
     ) NOT NULl,
     CONSTRAINT pk_aut_integrante PRIMARY KEY (id),
     CONSTRAINT fk_aut_integrante_aut_grupo Foreign Key (aut_grupo_id) REFERENCES AUT_GRUPO (id)
@@ -85,15 +85,15 @@ CREATE TABLE AUT_SOLICITUD_REEMPLAZO (
     aut_empleado_solicitante BIGINT NOT NULL,
     aut_empleado_reemplazo BIGINT NOT NULL,
     sol_estado ENUM(
-        'pendiente',
-        'aprobada',
-        'cancelada'
+        'PENDIENTE',
+        'APROBADA',
+        'CANCELADA'
     ),
     aut_asignacion_solicitante BIGINT NOT NULL,
     aut_asignacion_reemplazo BIGINT NOT NULL,
     CONSTRAINT pk_aut_solicitud_reemplazo PRIMARY KEY (id),
-    CONSTRAINT fk_aut_solicitud_reemplazo_aut_empleado_solicitante Foreign Key (aut_empleado_solicitante) REFERENCES AUT_INTEGRANTE (id),
-    CONSTRAINT fk_aut_solicitud_reemplazo_aut_empleado_reemplazo Foreign Key (aut_empleado_solicitante) REFERENCES AUT_INTEGRANTE (id),
-    CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_solicitante Foreign Key (aut_empleado_solicitante) REFERENCES AUT_ASIGNACION (id),
-    CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_reemplazo Foreign Key (aut_asignacion_reemplazo) REFERENCES AUT_ASIGNACION (id)
+    CONSTRAINT fk_aut_solicitud_reemplazo_aut_empleado_solicitante FOREIGN KEY (aut_empleado_solicitante) REFERENCES AUT_INTEGRANTE (id),
+    CONSTRAINT fk_aut_solicitud_reemplazo_aut_empleado_reemplazo FOREIGN KEY (aut_empleado_reemplazo) REFERENCES AUT_INTEGRANTE (id),
+    CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_solicitante FOREIGN KEY (aut_asignacion_solicitante) REFERENCES AUT_ASIGNACION (id),
+    CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_reemplazo FOREIGN KEY (aut_asignacion_reemplazo) REFERENCES AUT_ASIGNACION (id)
 );
