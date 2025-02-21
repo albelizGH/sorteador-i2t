@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,13 +17,13 @@ public class AutCategoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String nombre;
 
     @Column(name = "ultima_asignacion_semana")
     private Integer ultimaSemanaDeAsignacion;
 
     @Column(name = "ultima_asignacion_fecha")
-    private String ultimaFechaDeAsignacion;
+    private LocalDate ultimaFechaDeAsignacion;
 
     @Column(name = "semanas_a_planificar")
     private Integer semanasAPlanificar;
