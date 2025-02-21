@@ -26,7 +26,7 @@ public enum SolEstado {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Unexpected value: " + text);
+        throw new IllegalArgumentException("Valor no encontrado: " + text);
     }
 }
 

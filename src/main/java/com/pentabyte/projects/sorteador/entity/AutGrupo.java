@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -22,6 +24,12 @@ public class AutGrupo {
 
     @Column(name="orden_grupo")
     private Integer ordenGrupo;
+
+    @OneToMany(mappedBy = "autGrupoId")
+    private List<AutIntegrante> autIntegranteList;
+
+    @OneToMany(mappedBy = "autGrupoId")
+    private List<AutAsignacion> autAsignacionList;
 
 
 }
