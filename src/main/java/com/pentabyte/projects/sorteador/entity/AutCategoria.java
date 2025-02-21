@@ -32,7 +32,7 @@ public class AutCategoria {
     private List<AutCategoriaTope> categoriaTopeList;
 
     @OneToMany(mappedBy = "categoria")
-    private List<AutGrupo> autGrupoList;
+    private List<AutGrupo> grupoList;
 
     @OneToMany(mappedBy = "categoria")
     private List<AutRelProducto> relProductoList;
