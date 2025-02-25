@@ -1,4 +1,4 @@
-package com.pentabyte.projects.sorteador.entity;
+package com.pentabyte.projects.sorteador.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "aut_categoria_tope")
-public class AutCategoriaTope {
+public class CategoriaTope {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class AutCategoriaTope {
 
     @ManyToOne
     @JoinColumn(name = "aut_categoria_id")
-    AutCategoria categoria;
+    Categoria categoria;
 
     @Column(name = "cantidad_min")
     Integer cantidadMinima;
