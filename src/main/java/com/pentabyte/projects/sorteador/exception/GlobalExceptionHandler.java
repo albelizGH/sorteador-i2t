@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     }
 
     private void crearLog(String mensaje, HttpServletRequest request, Exception exception) {
-        log.error("Error no controlado en {}. Exception: {}", request.getRequestURL(), exception.getLocalizedMessage(), exception);
+        log.error(mensaje + " en {}. Exception: {}", request.getRequestURL(), exception.getLocalizedMessage(), exception);
     }
 
     private APIErrorDTO crearAPIErrorDTO(String mensaje) {
