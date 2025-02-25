@@ -1,4 +1,4 @@
-package com.pentabyte.projects.sorteador.entity;
+package com.pentabyte.projects.sorteador.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

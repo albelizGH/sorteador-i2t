@@ -1,4 +1,4 @@
-package com.pentabyte.projects.sorteador.entity;
+package com.pentabyte.projects.sorteador.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "aut_solitud_reemplazo")
-public class AutSolicitudReemplazo {
+public class SolicitudReemplazo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,19 +32,19 @@ public class AutSolicitudReemplazo {
 
     @ManyToOne
     @JoinColumn(name = "aut_empleado_solicitante")
-    private AutIntegrante empleadoSolicitante;
+    private Integrante empleadoSolicitante;
 
     @ManyToOne
     @JoinColumn(name = "aut_empleado_reemplazo")
-    private AutIntegrante empleadoReemplazo;
+    private Integrante empleadoReemplazo;
 
     @ManyToOne
     @JoinColumn(name = "aut_asignacion_solicitante")
-    private AutAsignacion asignacionDeSolicitante;
+    private Asignacion asignacionDeSolicitante;
 
     @ManyToOne
     @JoinColumn(name = "aut_asignacion_reemplazo")
-    private AutAsignacion AsignacionDeReemplazo;
+    private Asignacion AsignacionDeReemplazo;
 
 
 }

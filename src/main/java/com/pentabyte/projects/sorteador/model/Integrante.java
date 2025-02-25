@@ -1,4 +1,4 @@
-package com.pentabyte.projects.sorteador.entity;
+package com.pentabyte.projects.sorteador.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "aut_integrante")
-public class AutIntegrante {
+public class Integrante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,13 @@ public class AutIntegrante {
 
     @ManyToOne
     @JoinColumn(name = "aut_grupo_id")
-    private AutGrupo grupo;
+    private Grupo grupo;
 
     @OneToMany(mappedBy = "empleadoReemplazo")
-    private List<AutSolicitudReemplazo> empleadoReemplazoList;
+    private List<SolicitudReemplazo> empleadoReemplazoList;
 
     @OneToMany(mappedBy = "empleadoSolicitante")
-    private List<AutSolicitudReemplazo> empleadoSolicitanteList;
+    private List<SolicitudReemplazo> empleadoSolicitanteList;
 
 
 }

@@ -1,15 +1,9 @@
-package com.pentabyte.projects.sorteador.entity;
+package com.pentabyte.projects.sorteador.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum DiaDescriptivo {
-    LUNES("Lunes"),
-    MARTES("Martes"),
-    MIERCOLES("Miércoles"),
-    JUEVES("Jueves"),
-    VIERNES("Viernes"),
-    SABADO("Sábado"),
-    DOMINGO("Domingo");
+    LUNES("Lunes"), MARTES("Martes"), MIERCOLES("Miércoles"), JUEVES("Jueves"), VIERNES("Viernes"), SABADO("Sábado"), DOMINGO("Domingo");
 
     private final String displayDia;
 
