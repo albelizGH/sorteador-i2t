@@ -10,34 +10,34 @@ solicitudes y notificaciones en tiempo real.
 
 ## Funcionalidades Principales📒
 
-* **Gestión de Asignaciones**:*
+* **Gestión de Asignaciones**:
     * Automatización de asignaciones basadas en grupos.
     * Configuración de sorteos categorizados (Quiniela Mañana, Tarde, Quini6, Brinco).
     * División de sorteos por semana y rotación de grupos.
     * Creación, modificación y eliminación de asignaciones.
     * Confirmación del estado de asignación por coordinador.
     * Notificaciones automáticas a empleados sobre sus asignaciones.
-* **Gestión de Solicitudes de Reemplazo**:*
+* **Gestión de Solicitudes de Reemplazo**:
     * Visualización de asignaciones y solicitud de reemplazo por empleado.
     * Selección de fecha y empleado sustituto (mismo grupo, mismo rol).
     * Validación de reemplazos por coordinador.
     * Registro de ID de asignación, empleados y asignación de devolución.
     * Filtro para visualizar asignaciones y reemplazos actualizados.
-* **Configuración de Sorteos y Categorías**:*
+* **Configuración de Sorteos y Categorías**:
     * Información de sorteos: fecha, estado, día y hora.
     * Definición de categorías tope (límite de autoridades y auxiliares).
     * Creación automática de grupos si se alcanza el límite.
     * Rotación semanal de grupos.
     * Asignación basada en la última asignación registrada.
     * Cálculo del período de asignación.
-* **Validaciones Lógicas**:*
+* **Validaciones Lógicas**:
     * Evitar múltiples reemplazos en la misma fecha.
     * Crear nuevo grupo si la categoría tope se alcanza.
     * Evitar solapamiento de reemplazos con otras asignaciones.
     * Restringir la cantidad máxima de reemplazos por autoridad.
     * Verificar reemplazos dentro de sorteos predefinidos.
     * Reemplazo solo si el empleado reemplazante tiene disponibilidad.
-* **Notificaciones**:*
+* **Notificaciones**:
     * Notificar asignaciones a integrantes del grupo.
     * Alertas cuando se aprueba un reemplazo.
     * Comunicación automática de cambios en asignaciones.
