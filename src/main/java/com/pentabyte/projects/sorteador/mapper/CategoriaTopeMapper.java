@@ -1,5 +1,6 @@
 package com.pentabyte.projects.sorteador.mapper;
 
+import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaTopeResponseDTO;
 import com.pentabyte.projects.sorteador.model.CategoriaTope;
 import org.mapstruct.Mapper;
@@ -9,7 +10,9 @@ import org.mapstruct.factory.Mappers;
 public interface CategoriaTopeMapper {
     CategoriaTopeMapper INSTANCE = Mappers.getMapper(CategoriaTopeMapper.class);
 
-    CategoriaTopeResponseDTO categoriaTopeToCategoriaTopeResponseDTO(CategoriaTope categoriaTope);
+    CategoriaTopeResponseDTO toResponseDTO(CategoriaTope categoriaTope);
 
-    CategoriaTope categoriaTopeResponseDTOToCategoriaTope(CategoriaTopeResponseDTO categoriaTopeResponseDTO);
+    CategoriaTope fromResponseDTO(CategoriaTopeResponseDTO categoriaTopeResponseDTO);
+
+    CategoriaTope fromCreateDTO(CategoriaTopeCreateDTO categoriaTopeCreateDTO);
 }
