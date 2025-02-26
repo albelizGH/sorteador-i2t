@@ -35,6 +35,6 @@ public class Categoria {
     private List<Grupo> grupoList;
 
     @OneToMany(mappedBy = "categoria")
-    private List<RelProducto> relProductoList;
+    private List<Producto> productoList;
 
 }

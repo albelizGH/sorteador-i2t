@@ -27,7 +27,7 @@ public class Sorteo {
 
     @ManyToOne
     @JoinColumn(name = "aut_rel_producto_id")
-    private RelProducto relProducto;
+    private Producto producto;
 
     @OneToMany(mappedBy = "sorteo")
     private List<Asignacion> asignacionList;

@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "aut_rel_producto")
-public class RelProducto {
+public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class RelProducto {
     @JoinColumn(name = "aut_categoria_id")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "relProducto")
+    @OneToMany(mappedBy = "producto")
     private List<Sorteo> sorteoList;
 
 
