@@ -15,6 +15,13 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<?> handlerRecursoNoEncontradoException(Exception exception, HttpServletRequest request) {
+        crearLog("Recurso no encontrado", request, exception);
+        APIErrorDTO error = crearAPIErrorDTO(exception.getMessage());
+        return ResponseEntity.status(404).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handlerGenericException(Exception exception, HttpServletRequest request) {
 
