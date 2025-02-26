@@ -2,6 +2,7 @@ package com.pentabyte.projects.sorteador.interfaces;
 
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Interfaz genérica CRUD para los servicios.
@@ -44,12 +45,12 @@ public interface CrudServiceInterface<T extends Record, ID, Dc, Du> {
      * @param id Identificador de la entidad a buscar.
      * @return ResponseDTO con la entidad encontrada.
      */
-    ResponseDTO<T> encontrarPorId(ID id);
+    ResponseDTO<T> obtenerPorId(ID id);
 
     /**
      * Obtiene todas las entidades disponibles.
      *
      * @return ResponseDTO con una lista de entidades.
      */
-    ResponseDTO<Page<T>> obtenerTodos();
+    ResponseDTO<Page<T>> obtenerTodos(Pageable paginacion);
 }
