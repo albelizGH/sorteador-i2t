@@ -1,5 +1,7 @@
 package com.pentabyte.projects.sorteador.dto;
 
+import org.springframework.http.HttpStatusCode;
+
 /**
  * Record genérico para responder peticiones HTTP.
  *
@@ -16,6 +18,6 @@ public record ResponseDTO<T>(T data, EstadoDTO estado) {
      * @param mensaje Descripción del estado de la respuesta.
      * @param codigo  Código asociado al estado de la respuesta.
      */
-    public record EstadoDTO(String mensaje, String codigo) {
+    public record EstadoDTO(String mensaje, HttpStatusCode codigo) {
     }
 }
