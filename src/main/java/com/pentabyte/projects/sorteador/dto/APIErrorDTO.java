@@ -8,11 +8,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record APIErrorDTO(String error, List<String> errores, LocalDateTime timestamp) {
 
-    public APIErrorDTO(String error, LocalDateTime timestamp) {
+    public APIErrorDTO(String error) {
         this(error, null, LocalDateTime.now());
     }
 
-    public APIErrorDTO(List<String> errores, LocalDateTime timestamp) {
+    public APIErrorDTO(List<String> errores) {
         this(null, errores, LocalDateTime.now());
     }
 }
