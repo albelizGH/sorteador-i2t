@@ -1,6 +1,6 @@
 package com.pentabyte.projects.sorteador.dto;
 
-import org.springframework.http.HttpStatusCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Record genérico para responder peticiones HTTP.
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatusCode;
  * @param data   Contenido de la respuesta, limitado a tipos que sean records.
  * @param estado Estado de la respuesta, que incluye un mensaje y un código.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ResponseDTO<T>(T data, EstadoDTO estado) {
 
     /**
@@ -18,6 +19,6 @@ public record ResponseDTO<T>(T data, EstadoDTO estado) {
      * @param mensaje Descripción del estado de la respuesta.
      * @param codigo  Código asociado al estado de la respuesta.
      */
-    public record EstadoDTO(String mensaje, HttpStatusCode codigo) {
+    public record EstadoDTO(String mensaje, String codigo) {
     }
 }
