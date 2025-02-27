@@ -50,8 +50,12 @@ solicitudes y notificaciones en tiempo real.
 
 ## Endpoints 📎
 
-* La ruta con la documentación de la api debería quedarte asi: http://{host}:{port}/documentacion
-* En la mayoría de los casos: http://localhost:8080/api/v1/documentacion
+Una vez que el proyecto esté en ejecución, puedes acceder a la documentación generada por Springdoc OpenAPI en la siguiente ruta:
+
+* Formato general: http://{host}:{port}/documentacion
+* Ejemplo común: http://localhost:8080/api/v1/documentacion
+
+Esta interfaz te permitirá explorar y probar los endpoints de la API de manera interactiva. 🚀
 
 ## Cómo ejecutar⚙️
 
