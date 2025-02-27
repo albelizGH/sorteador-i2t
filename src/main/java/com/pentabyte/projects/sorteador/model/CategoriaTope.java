@@ -28,4 +28,5 @@ public class CategoriaTope {
 
     @Column(name = "es_autoridad")
     Boolean esAutoridad;
+
 }
