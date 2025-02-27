@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 public interface CategoriaMapper {
     CategoriaMapper INSTANCE = Mappers.getMapper(CategoriaMapper.class);
 
-    Categoria categoriaTopeResponseDTOtoCategoria(CategoriaResponseDTO categoriaResponseDTO);
+    Categoria fromResponseDTO(CategoriaResponseDTO categoriaResponseDTO);
 
-    CategoriaResponseDTO categoriaToCategoriaResponseDto(Categoria categoria);
+    CategoriaResponseDTO toResponseDTO(Categoria categoria);
 }
