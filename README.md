@@ -50,7 +50,8 @@ solicitudes y notificaciones en tiempo real.
 
 ## Endpoints 📎
 
-[Todavía a definir]
+* La ruta con la documentación de la api debería quedarte asi: http://{host}:{port}/documentacion
+* En la mayoría de los casos: http://localhost:8080/api/v1/documentacion
 
 ## Cómo ejecutar⚙️
 
