@@ -11,7 +11,7 @@ public record GrupoCreateDTO(
 
         @Min(value = 1, message = "La cantidad mínima tiene que ser mayor a 0")
         @NotNull(message = "El orden de grupo no puede ser nula")
-        Integer ordenGrupo,
+        Integer ordenDeGrupo,
 
         @NotNull(message = "El id de categoria no puede ser nulo")
         Long categoriaId

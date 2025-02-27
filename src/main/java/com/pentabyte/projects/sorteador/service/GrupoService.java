@@ -51,7 +51,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
         Grupo grupoDb = grupoRepository.save(new Grupo(
                 null,
                 dto.nombre(),
-                dto.ordenGrupo(),
+                dto.ordenDeGrupo(),
                 categoria,
                 null,
                 null
