@@ -9,6 +9,7 @@ import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.ProductoMapper;
 import com.pentabyte.projects.sorteador.model.Categoria;
+import com.pentabyte.projects.sorteador.model.CategoriaTope;
 import com.pentabyte.projects.sorteador.model.Producto;
 import com.pentabyte.projects.sorteador.repository.CategoriaRepository;
 import com.pentabyte.projects.sorteador.repository.ProductoRepository;
@@ -17,6 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servicio que gestiona la lógica de negocio de los productos.
+ * Proporciona operaciones CRUD para la entidad {@link Producto}.
+ */
 @Service
 public class ProductoService implements CrudServiceInterface<ProductoResponseDTO, Long, ProductoCreateDTO, ProductoUpdateDTO> {
     private final ProductoRepository productoRepository;
@@ -30,6 +35,13 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         this.productoRepository = productoRepository;
     }
 
+    /**
+     * Crea un nuevo producto en la base de datos.
+     *
+     * @param dto DTO con los datos necesarios para crear el producto.
+     * @return {@link ResponseDTO} con la información del producto creado.
+     * @throws RecursoNoEncontradoException si la categoría asociada no existe.
+     */
     @Override
     public ResponseDTO<ProductoResponseDTO> crear(ProductoCreateDTO dto) {
         Categoria categoria = categoriaRepository.findById(dto.categoriaId())
@@ -52,16 +64,36 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                         "201")
         );    }
 
+    /**
+     * Actualiza unproducto existente.
+     *
+     * @param id  Identificador del producto a actualizar.
+     * @param dto DTO con los datos actualizados.
+     * @return {@link ResponseDTO} con el producto actualizado.
+     */
     @Override
-    public ResponseDTO<ProductoResponseDTO> actualizar(Long aLong, ProductoUpdateDTO dto) {
+    public ResponseDTO<ProductoResponseDTO> actualizar(Long id, ProductoUpdateDTO dto) {
         return null;
     }
 
+    /**
+     * Hace un borrado lógico de un producto de la base de datos.
+     *
+     * @param id Identificador del producto a eliminar.
+     * @return {@link ResponseDTO} indicando el estado de la operación.
+     */
     @Override
-    public ResponseDTO<ProductoResponseDTO> eliminar(Long aLong) {
+    public ResponseDTO<ProductoResponseDTO> eliminar(Long id) {
         return null;
     }
 
+    /**
+     * Obtiene un producto por su ID.
+     *
+     * @param id Identificador único del producto.
+     * @return {@link ResponseDTO} con la información del producto encontrada.
+     * @throws RecursoNoEncontradoException si el producto no existe.
+     */
     @Override
     public ResponseDTO<ProductoResponseDTO> obtenerPorId(Long id) {
         Producto producto = productoRepository.findById(id)
@@ -72,6 +104,12 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 new ResponseDTO.EstadoDTO("Producto encontrado exitosamente", "200")
         );    }
 
+    /**
+     * Obtiene una lista paginada de todos los productos.
+     *
+     * @param paginacion Objeto de paginación proporcionado por Spring.
+     * @return {@link ResponseDTO} con la lista paginada de productos.
+     */
     @Override
     public ResponseDTO<PaginaDTO<ProductoResponseDTO>> obtenerTodos(Pageable paginacion) {
         Page<ProductoResponseDTO> productoPage = productoRepository.findAll(paginacion)
