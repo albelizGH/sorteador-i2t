@@ -27,7 +27,7 @@ public class GrupoController {
 
     @Operation(
             summary = "Obtener todos los grupos",
-            description = "Devuelve una lista paginada de todas lgrupos existentes en el sistema."
+            description = "Devuelve una lista paginada de todos los grupos existentes en el sistema."
     )
     @GetMapping
     public ResponseEntity<ResponseDTO<PaginaDTO<GrupoResponseDTO>>> obtenerTodos(
@@ -38,7 +38,7 @@ public class GrupoController {
 
     @Operation(
             summary = "Obtener un grupo por ID",
-            description = "Devuelve la información detallada de un grupo específica según su ID."
+            description = "Devuelve la información detallada de un grupo específico según su ID."
     )
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<GrupoResponseDTO>> obtenerPorId(@PathVariable Long id) {
