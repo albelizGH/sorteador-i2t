@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/sorteo")
+@RequestMapping("/sorteos")
 @Tag(name = "Sorteo", description = "Endpoints para la gestión de sorteo")
 public class SorteoController {
 

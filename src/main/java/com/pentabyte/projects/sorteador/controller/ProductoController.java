@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/producto")
+@RequestMapping("/productos")
 @Tag(name = "Producto", description = "Endpoints para la gestión de productos")
 public class ProductoController {
     private final ProductoService productoService;
