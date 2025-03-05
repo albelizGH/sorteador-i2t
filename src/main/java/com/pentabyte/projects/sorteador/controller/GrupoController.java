@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/grupos")
 @Tag(name = "Grupo", description = "Endpoints para la gestión de grupos")
 public class GrupoController {
 

@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/categoria")
+@RequestMapping("/categorias")
 @Tag(name = "Categoría", description = "Endpoints para la gestión de categorías")
 public class CategoriaController {
 
