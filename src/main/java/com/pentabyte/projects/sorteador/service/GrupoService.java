@@ -53,10 +53,11 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                 dto.nombre(),
                 dto.ordenDeGrupo(),
                 categoria,
-                null,
-                null
+                new ArrayList<>(),
+                new ArrayList<>()
 
         ));
+        
         GrupoResponseDTO grupoResponseDTO = grupoMapper.toResponseDTO(grupoDb);
 
         return new ResponseDTO<GrupoResponseDTO>(
