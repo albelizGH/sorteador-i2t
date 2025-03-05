@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 /**
  * Servicio que gestiona la lógica de negocio de las categorías.
  * Proporciona operaciones CRUD para la entidad {@link Categoria}.
@@ -47,9 +49,9 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
                 dto.ultimaSemanaDeAsignacion(),
                 dto.ultimaFechaDeAsignacion(),
                 dto.semanasAPlanificar(),
-                null,
-                null,
-                null
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>()
         ));
 
         CategoriaResponseDTO categoriaResponseDTO = categoriaMapper.toResponseDTO(categoriaDb);
