@@ -10,8 +10,10 @@ import org.mapstruct.factory.Mappers;
 public interface GrupoMapper {
     GrupoMapper INSTANCE = Mappers.getMapper(GrupoMapper.class);
 
+    GrupoResponseDTO toResponseDTO(Grupo grupo);
+    
     Grupo fromResponseDTO(GrupoResponseDTO grupoResponseDTO);
 
-    @Mapping(source = "ordenDeGrupo", target = "ordenDeGrupo")
-    GrupoResponseDTO toResponseDTO(Grupo grupo);
+    Grupo fromCreateDTO(GrupoCreateDTO grupoCreateDTO);
+
 }
