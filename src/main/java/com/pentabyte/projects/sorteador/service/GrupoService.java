@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 /**
  * Servicio que gestiona la lógica de negocio de los grupos.
  * Proporciona operaciones CRUD para la entidad {@link Grupo}.
@@ -57,7 +59,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                 new ArrayList<>()
 
         ));
-        
+
         GrupoResponseDTO grupoResponseDTO = grupoMapper.toResponseDTO(grupoDb);
 
         return new ResponseDTO<GrupoResponseDTO>(
