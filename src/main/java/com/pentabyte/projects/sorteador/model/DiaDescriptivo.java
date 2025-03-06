@@ -4,7 +4,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum DiaDescriptivo {
-    LUNES("Lunes"), MARTES("Martes"), MIERCOLES("Miércoles"), JUEVES("Jueves"), VIERNES("Viernes"), SABADO("Sábado"), DOMINGO("Domingo");
+    LUNES("Lunes"),
+    MARTES("Martes"),
+    MIERCOLES("Miércoles"),
+    JUEVES("Jueves"),
+    VIERNES("Viernes"),
+    SABADO("Sábado"),
+    DOMINGO("Domingo");
 
     private final String displayDia;
 

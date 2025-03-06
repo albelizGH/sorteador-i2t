@@ -8,7 +8,6 @@ import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.SorteoMapper;
-import com.pentabyte.projects.sorteador.model.DiaDescriptivo;
 import com.pentabyte.projects.sorteador.model.Producto;
 import com.pentabyte.projects.sorteador.model.Sorteo;
 import com.pentabyte.projects.sorteador.repository.ProductoRepository;
@@ -55,7 +54,7 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
                 null,
                 dto.fecha(),
                 dto.confirmado(),
-                DiaDescriptivo.fromString(dto.diaDescriptivo()),
+                dto.diaDescriptivo(),
                 productoDb,
                 new ArrayList<>()
         ));

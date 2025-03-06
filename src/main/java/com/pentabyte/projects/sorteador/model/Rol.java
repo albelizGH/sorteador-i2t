@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum Rol {
-    AUTORIDAD("Autoridad"), AUXILIAR("Auxiliar"), CORDINADOR("Coordinador");
+    AUTORIDAD("Autoridad"),
+    AUXILIAR("Auxiliar"),
+    COORDINADOR("Coordinador");
+
     private final String displayRol;
 
     private Rol(String displayRol) {

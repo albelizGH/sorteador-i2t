@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum Estado {
-    PLANIFICADO("Planificado"), BORRADOR("Borrador");
+    PLANIFICADO("Planificado"),
+    BORRADOR("Borrador");
 
     private final String displayEstado;
 

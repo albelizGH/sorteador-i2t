@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum SolEstado {
-    PENDIENTE("Pendiente"), APROBADA("Aprobada"), CANCELADA("Cancelada");
+    PENDIENTE("Pendiente"),
+    APROBADA("Aprobada"),
+    CANCELADA("Cancelada");
 
     private final String displaySolEstado;
 

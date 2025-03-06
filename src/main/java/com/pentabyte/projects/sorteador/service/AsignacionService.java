@@ -9,7 +9,6 @@ import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.AsignacionMapper;
 import com.pentabyte.projects.sorteador.model.Asignacion;
-import com.pentabyte.projects.sorteador.model.Estado;
 import com.pentabyte.projects.sorteador.model.Grupo;
 import com.pentabyte.projects.sorteador.model.Sorteo;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
@@ -53,7 +52,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
 
         Asignacion asignacionDb = asignacionRepository.save(new Asignacion(
                 null,
-                Estado.fromString(dto.estado()),
+                dto.estado(),
                 grupo,
                 sorteo,
                 new ArrayList<>(),
