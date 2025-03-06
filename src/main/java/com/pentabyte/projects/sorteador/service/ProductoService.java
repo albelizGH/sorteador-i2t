@@ -9,7 +9,6 @@ import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.ProductoMapper;
 import com.pentabyte.projects.sorteador.model.Categoria;
-import com.pentabyte.projects.sorteador.model.CategoriaTope;
 import com.pentabyte.projects.sorteador.model.Producto;
 import com.pentabyte.projects.sorteador.repository.CategoriaRepository;
 import com.pentabyte.projects.sorteador.repository.ProductoRepository;
@@ -65,7 +64,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         );    }
 
     /**
-     * Actualiza unproducto existente.
+     * Actualiza un producto existente.
      *
      * @param id  Identificador del producto a actualizar.
      * @param dto DTO con los datos actualizados.
@@ -97,7 +96,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
     @Override
     public ResponseDTO<ProductoResponseDTO> obtenerPorId(Long id) {
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Categoría tope no encontrada con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado con ID: " + id));
 
         return new ResponseDTO<ProductoResponseDTO>(
                 productoMapper.toResponseDTO(producto),
@@ -118,5 +117,6 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         return new ResponseDTO<PaginaDTO<ProductoResponseDTO>>(
                 new PaginaDTO<>(productoPage),
                 new ResponseDTO.EstadoDTO("Lista de productos obtenida exitosamente", "200")
-        );    }
+        );
+    }
 }
