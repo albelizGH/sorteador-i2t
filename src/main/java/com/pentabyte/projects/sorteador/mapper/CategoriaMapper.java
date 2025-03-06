@@ -12,4 +12,6 @@ public interface CategoriaMapper {
     Categoria fromResponseDTO(CategoriaResponseDTO categoriaResponseDTO);
 
     CategoriaResponseDTO toResponseDTO(Categoria categoria);
+
+    Categoria fromCreateDTO(CategoriaResponseDTO grupoCreateDTO);
 }
