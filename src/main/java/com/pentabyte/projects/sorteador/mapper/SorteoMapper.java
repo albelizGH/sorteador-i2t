@@ -1,5 +1,6 @@
 package com.pentabyte.projects.sorteador.mapper;
 
+import com.pentabyte.projects.sorteador.dto.request.creacion.SorteoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
 import com.pentabyte.projects.sorteador.model.Sorteo;
 import org.mapstruct.Mapper;
@@ -13,5 +14,5 @@ public interface SorteoMapper {
 
     Sorteo fromResponseDTO(SorteoResponseDTO sorteoResponseDTO);
 
-    Sorteo fromCreateDTO(SorteoResponseDTO sorteoResponseDTO);
+    Sorteo fromCreateDTO(SorteoCreateDTO sorteoCreateDTO);
 }

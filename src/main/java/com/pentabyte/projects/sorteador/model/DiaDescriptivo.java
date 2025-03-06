@@ -1,9 +1,16 @@
 package com.pentabyte.projects.sorteador.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum DiaDescriptivo {
-    LUNES("Lunes"), MARTES("Martes"), MIERCOLES("Miércoles"), JUEVES("Jueves"), VIERNES("Viernes"), SABADO("Sábado"), DOMINGO("Domingo");
+    LUNES("Lunes"),
+    MARTES("Martes"),
+    MIERCOLES("Miércoles"),
+    JUEVES("Jueves"),
+    VIERNES("Viernes"),
+    SABADO("Sábado"),
+    DOMINGO("Domingo");
 
     private final String displayDia;
 
@@ -17,7 +24,7 @@ public enum DiaDescriptivo {
                 return item;
             }
         }
-        throw new IllegalArgumentException("Valor no encontrado: " + dia);
+        throw new RecursoNoEncontradoException("Valor no encontrado: " + dia);
     }
 
     @JsonValue

@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/categorias-topes")
+@RequestMapping("/categorias-tope")
 @Tag(name = "Categoría tope", description = "Endpoints para la gestión de categorías topes")
 public class CategoriaTopeController {
 

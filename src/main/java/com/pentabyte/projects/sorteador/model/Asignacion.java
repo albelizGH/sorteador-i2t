@@ -29,10 +29,10 @@ public class Asignacion {
     private Sorteo sorteo;
 
     @OneToMany(mappedBy = "asignacionDeSolicitante")
-    private List<SolicitudReemplazo> asignacionDeReemplazoList;
+    private List<SolicitudDeReemplazo> asignacionDeReemplazoList;
 
     @OneToMany(mappedBy = "asignacionDeSolicitante")
-    private List<SolicitudReemplazo> asignacionDeSolicitanteList;
+    private List<SolicitudDeReemplazo> asignacionDeSolicitanteList;
 
 
 }

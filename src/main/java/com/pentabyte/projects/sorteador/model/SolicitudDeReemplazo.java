@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "aut_solitud_reemplazo")
-public class SolicitudReemplazo {
+@Table(name = "aut_solicitud_reemplazo")
+public class SolicitudDeReemplazo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

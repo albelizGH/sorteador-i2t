@@ -1,9 +1,12 @@
 package com.pentabyte.projects.sorteador.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum SolEstado {
-    PENDIENTE("Pendiente"), APROBADA("Aprobada"), CANCELADA("Cancelada");
+    PENDIENTE("Pendiente"),
+    APROBADA("Aprobada"),
+    CANCELADA("Cancelada");
 
     private final String displaySolEstado;
 
@@ -17,7 +20,7 @@ public enum SolEstado {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Valor no encontrado: " + text);
+        throw new RecursoNoEncontradoException("Valor no encontrado: " + text);
     }
 
     @JsonValue

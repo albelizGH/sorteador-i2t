@@ -30,10 +30,10 @@ public class Integrante {
     private Grupo grupo;
 
     @OneToMany(mappedBy = "empleadoReemplazo")
-    private List<SolicitudReemplazo> empleadoReemplazoList;
+    private List<SolicitudDeReemplazo> empleadoReemplazoList;
 
     @OneToMany(mappedBy = "empleadoSolicitante")
-    private List<SolicitudReemplazo> empleadoSolicitanteList;
+    private List<SolicitudDeReemplazo> empleadoSolicitanteList;
 
 
 }

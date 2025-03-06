@@ -1,9 +1,13 @@
 package com.pentabyte.projects.sorteador.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 
 public enum Rol {
-    AUTORIDAD("Autoridad"), AUXILIAR("Auxiliar"), CORDINADOR("Coordinador");
+    AUTORIDAD("Autoridad"),
+    AUXILIAR("Auxiliar"),
+    COORDINADOR("Coordinador");
+
     private final String displayRol;
 
     private Rol(String displayRol) {
@@ -16,7 +20,7 @@ public enum Rol {
                 return b;
             }
         }
-        throw new IllegalArgumentException("Valor no encontrado: " + text);
+        throw new RecursoNoEncontradoException("Valor no encontrado: " + text);
     }
 
     @JsonValue
