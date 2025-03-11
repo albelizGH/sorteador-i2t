@@ -41,6 +41,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(error);
     }
 
+    @ExceptionHandler(IntegrantePertenecienteAGrupo.class)
+    public ResponseEntity<?> handlerIntegranteYaAsignadoException(Exception exception,HttpServletRequest request){
+        crearLog("Integrante ya asignado a un grupo", request, exception);
+        APIErrorDTO error=new APIErrorDTO(exception.getMessage());
+        return ResponseEntity.status(400).body(error);
+    }
+
+    @ExceptionHandler(CupoExcedidoException.class)
+    public ResponseEntity<?> handlerCupoExcedidooException(Exception exception,HttpServletRequest request){
+        crearLog("Cupo excedido", request, exception);
+        APIErrorDTO error=new APIErrorDTO(exception.getMessage());
+        return ResponseEntity.status(400).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handlerGenericException(Exception exception, HttpServletRequest request) {
 

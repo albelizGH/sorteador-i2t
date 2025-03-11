@@ -62,7 +62,7 @@ public class GrupoController {
             summary ="Asignar integrante a un grupo",
             description = "Se asigna un integrante a un grupo específico segun su ID de integrante y el ID de grupo."
     )
-    @PostMapping("/{grupoId}")
+    @PostMapping("/{Id}")
     public ResponseEntity<ResponseDTO<GrupoResponseDTO>> asignarIntegrante(
             @PathVariable Long grupoId, @RequestParam Long integranteId) {
         ResponseDTO<GrupoResponseDTO> response=grupoService.asignarIntegranteAGrupo(grupoId,integranteId);

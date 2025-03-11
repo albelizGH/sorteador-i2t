@@ -1,0 +1,20 @@
+package com.pentabyte.projects.sorteador.repository;
+
+import com.pentabyte.projects.sorteador.model.Integrante;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface IntegranteRepository extends JpaRepository<Integrante, Long> {
+    @Query(value = "SELECT COUNT(i.id) AS total_integrantes " +
+            "FROM aut_integrante i " +
+            "JOIN aut_grupo g ON i.aut_grupo_id = g.id " +
+            "JOIN aut_categoria c ON g.aut_categoria_id = c.id " +
+            "JOIN aut_categoria_tope cto ON c.id = cto.aut_categoria_id " +
+            "WHERE c.nombre = :categoriaNombre " +
+            "GROUP BY c.nombre " +
+            "ORDER BY c.nombre", nativeQuery = true)
+    Integer obtenerTotalIntegrantesPorCategoria(@Param("categoriaNombre") String categoriaNombre);
+}

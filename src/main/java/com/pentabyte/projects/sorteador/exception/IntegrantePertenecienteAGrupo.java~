@@ -1,0 +1,8 @@
+package com.pentabyte.projects.sorteador.exception;
+
+public class IntegranteYaAsignadoException extends RuntimeException {
+
+    public IntegranteYaAsignadoException(String message) {
+        super(message);
+    }
+}
