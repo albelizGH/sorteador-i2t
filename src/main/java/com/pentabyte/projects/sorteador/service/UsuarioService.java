@@ -40,7 +40,7 @@ public class UsuarioService implements CrudServiceInterface<UsuarioResponseDTO, 
     public ResponseDTO<UsuarioResponseDTO> crear(UsuarioCreateDTO dto) {
         Usuario usuarioDb = usuarioRepository.save(new Usuario(
                 null,
-                dto.username(),
+                dto.usuario(),
                 dto.contrasenia()
         ));
 
