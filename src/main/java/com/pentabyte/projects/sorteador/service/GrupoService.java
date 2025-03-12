@@ -5,13 +5,18 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.GrupoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.GrupoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.GrupoResponseDTO;
+import com.pentabyte.projects.sorteador.exception.CupoExcedidoException;
+import com.pentabyte.projects.sorteador.exception.IntegrantePertenecienteAGrupo;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.GrupoMapper;
 import com.pentabyte.projects.sorteador.model.Categoria;
 import com.pentabyte.projects.sorteador.model.Grupo;
+import com.pentabyte.projects.sorteador.model.Integrante;
 import com.pentabyte.projects.sorteador.repository.CategoriaRepository;
+import com.pentabyte.projects.sorteador.repository.CategoriaTopeRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
+import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,12 +33,20 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
     private final GrupoRepository grupoRepository;
     private final GrupoMapper grupoMapper;
     private final CategoriaRepository categoriaRepository;
-
+     private final IntegranteRepository integranteRepository;
+     private final CategoriaTopeRepository categoriaTopeRepository;
     @Autowired
-    public GrupoService(GrupoRepository grupoRepository, GrupoMapper grupoMapper, CategoriaRepository categoriaRepository) {
+    public GrupoService(
+            GrupoRepository grupoRepository,
+            GrupoMapper grupoMapper,
+            CategoriaRepository categoriaRepository,
+            IntegranteRepository integranteRepository,
+            CategoriaTopeRepository categoriaTopeRepository) {
         this.grupoRepository = grupoRepository;
         this.grupoMapper = grupoMapper;
         this.categoriaRepository = categoriaRepository;
+        this.integranteRepository = integranteRepository;
+        this.categoriaTopeRepository=categoriaTopeRepository;
     }
 
     /**
@@ -129,5 +142,54 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                 new ResponseDTO.EstadoDTO("Lista de grupos obtenida exitosamente", "200")
         );
     }
+
+    /**
+     * Asigna un integrante a un grupo específico.
+     *
+     * @param grupoId Identificador del grupo al que se asignará el integrante.
+     * @param integranteId Identificador del integrante que se asignará al grupo.
+     * @return {@link ResponseDTO} con la información del grupo actualizado.
+     * @throws RecursoNoEncontradoException si grupo  o integrante no existe.
+     * @throws IntegrantePertenecienteAGrupo si el integrante ya está asignado al grupo.
+     * @throws CupoExcedidoException si el grupo ya tiene el cupo máximo de integrantes segun la categoria
+     */
+public ResponseDTO<GrupoResponseDTO> asignarIntegranteAGrupo(Long grupoId,Long integranteId){
+
+    Grupo grupo=grupoRepository.findById(grupoId).orElseThrow(()->new RecursoNoEncontradoException("Grupo no encontrado con ID: "+grupoId));
+
+    Integrante integrante=integranteRepository.findById(integranteId).orElseThrow(()->new RecursoNoEncontradoException("Integrante no encontrado con ID: "+integranteId));
+
+    if (integrante.getGrupo()!=null) throw new IntegrantePertenecienteAGrupo("Integrante con ID: "+integranteId+" ya pertenece a un grupo");
+
+    if (integrante.getRol().equals("Auxiliar")){
+            Integer cantidadIntegrantesAuxiliaresAsignados= categoriaTopeRepository.obtenerCantidadIntegrantesAuxiliaresAsignados(grupo.getCategoria().getId());
+
+            if (cantidadIntegrantesAuxiliaresAsignados>categoriaTopeRepository.obtenerCantidadMaximaAuxiliarPorCategoria(grupo.getCategoria().getId())){
+                throw new CupoExcedidoException("Cupo de integrantes auxiliares excedido");
+
+            }else{
+                integrante.setGrupo(grupo);
+                integranteRepository.save(integrante);
+            }
+    }
+
+    if (integrante.getRol().equals("Autoridad")) {
+        Integer cantidadIntegrantesAutoridadesAsignados = categoriaTopeRepository.obtenerCantidadIntegrantesAutoridadesAsignados(grupo.getCategoria().getId());
+
+        if (cantidadIntegrantesAutoridadesAsignados > categoriaTopeRepository.obtenerCantidadMaximaAutoridadPorCategoria(grupo.getCategoria().getId())) {
+            throw new CupoExcedidoException("Cupo de integrantes autoridades excedido");
+
+        } else {
+            integrante.setGrupo(grupo);
+            integranteRepository.save(integrante);
+        }
+    }
+    return new ResponseDTO<GrupoResponseDTO>(
+            grupoMapper.toResponseDTO(grupo),
+            new ResponseDTO.EstadoDTO("Integrante asignado exitosamente","200")
+
+    );
+
+}
 
 }

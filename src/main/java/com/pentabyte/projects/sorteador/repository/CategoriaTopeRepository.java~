@@ -14,14 +14,14 @@ public interface CategoriaTopeRepository extends JpaRepository<CategoriaTope, Lo
           "FROM categoria_tope cpe " +
           "JOIN categoria c ON cpe.aut_categoria_id = c.id " +
           "WHERE c.id = :categoriaId "+
-          "AND cpe.es_autoridad=0", nativeQuery = true)
+          "AND cpe.es_autoridad='Auxiliar'", nativeQuery = true)
   Integer obtenerCantidadMaximaAuxiliarPorCategoria(@Param("categoriaId") Long categoriaId);
 
   @Query(value = "SELECT cpe.cantidad_maxima " +
           "FROM categoria_tope cpe " +
           "JOIN categoria c ON cpe.aut_categoria_id = c.id " +
           "WHERE c.id = :categoriaId "+
-          "AND cpe.es_autoridad=1", nativeQuery = true)
+          "AND cpe.es_autoridad='Autoridad'", nativeQuery = true)
   Integer obtenerCantidadMaximaAutoridadPorCategoria(@Param("categoriaId") Long categoriaId);
 
   @Query(value = "SELECT COUNT(i.id) " +

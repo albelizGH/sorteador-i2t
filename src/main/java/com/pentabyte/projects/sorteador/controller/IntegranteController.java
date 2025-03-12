@@ -58,4 +58,6 @@ public class IntegranteController {
         ResponseDTO<IntegranteResponseDTO> response = integranteService.crear(integrante);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
 }

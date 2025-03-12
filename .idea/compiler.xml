@@ -18,11 +18,13 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.6.3/mapstruct-1.6.3.jar" />
         </processorPath>
         <module name="sorteador" />
+        <module name="Campus" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Campus" options="-parameters" />
       <module name="sorteador" options="-parameters" />
     </option>
   </component>
