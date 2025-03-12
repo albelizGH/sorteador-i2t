@@ -58,4 +58,34 @@ public class SolicitudDeReemplazoController {
         ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.crear(solicitudDeReemplazo);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @Operation(
+            summary = "Aceptar solicitud de reemplazo",
+            description = "Permite que un usuario reemplazante acepte una solicitud de reemplazo."
+    )
+    @PutMapping("/acpetar/{id}")
+    public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> aceptarSolicitud(@PathVariable Long id, @RequestParam Long usuarioReemplazanteId) {
+        ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.aceptarSolicitud(id, usuarioReemplazanteId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Rechazar solicitud de reemplazo",
+            description = "Permite que un usuario reemplazante rechaze una solicitud de reemplazo."
+    )
+    @PutMapping("/rechazar/{id}")
+    public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> rechazarSolicitud(@PathVariable Long id) {
+        ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.rechazarSolicitud(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Aprobar solicitud de reemplazo",
+            description = "Permite que un coordinador apruebeuna una solicitud de reemplazo."
+    )
+    @PutMapping("/aprobar/{id}")
+    public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> aprobarSolicitud(@PathVariable Long id) {
+        ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.aprobarSolicitud(id);
+        return ResponseEntity.ok(response);
+    }
 }
