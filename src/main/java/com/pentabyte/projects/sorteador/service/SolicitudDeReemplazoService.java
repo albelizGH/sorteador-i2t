@@ -4,14 +4,12 @@ import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.SolicitudDeReemplazoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplazoCreateDTO;
+import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.SolicitudDeReemplazoMapper;
-import com.pentabyte.projects.sorteador.model.Asignacion;
-import com.pentabyte.projects.sorteador.model.Integrante;
-import com.pentabyte.projects.sorteador.model.SolEstado;
-import com.pentabyte.projects.sorteador.model.SolicitudDeReemplazo;
+import com.pentabyte.projects.sorteador.model.*;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
@@ -134,6 +132,30 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                 new ResponseDTO.EstadoDTO("Lista de solicitudes de reemplazo obtenida exitosamente", "200")
         );
     }
+
+    public ResponseDTO<PaginaDTO<IntegranteResponseDTO>> obtenerMismoRolDistintoGrupo(Long idSolicitante, Pageable paginacion) {
+        Integrante integranteSolicitante = integranteRepository.findById(idSolicitante)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Solicitante no encontrado con ID: " + idSolicitante));
+
+        Rol rol = integranteSolicitante.getRol();
+        String grupo = integranteSolicitante.getGrupo().getNombre();
+
+        Page<Integrante> reemplazantes = integranteRepository.findReemplazantes(rol, grupo, paginacion);
+
+        return new ResponseDTO<>(
+                new PaginaDTO<>(reemplazantes.map(c -> {
+                    return IntegranteResponseDTO.builder()
+                            .id(c.getId())
+                            .nombre(c.getNombre())
+                            .legajo(c.getLegajo())
+                            .rol(c.getRol())
+                            .grupoId(c.getGrupo().getId())
+                            .build();
+                })),
+                new ResponseDTO.EstadoDTO("Lista de reemplazantes obtenida exitosamente", "200")
+        );
+    }
+
 
     public ResponseDTO<SolicitudDeReemplazoResponseDTO> aceptarSolicitud(Long solicitudId, Long usuarioReemplazanteId) {
         SolicitudDeReemplazo solicitud = solicitudDeReemplazoRepository.findById(solicitudId)

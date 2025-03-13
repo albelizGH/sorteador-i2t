@@ -3,6 +3,7 @@ package com.pentabyte.projects.sorteador.controller;
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplazoCreateDTO;
+import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/solicitudes-reemplazo")
@@ -45,6 +47,14 @@ public class SolicitudDeReemplazoController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> obtenerPorId(@PathVariable Long id) {
         ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.obtenerPorId(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/reemplazantes/{idSolicitante}")
+    public ResponseEntity<ResponseDTO<PaginaDTO<IntegranteResponseDTO>>> obtenerMismoRolDistintoGrupo(@PathVariable Long idSolicitante,
+                                                                                      @PageableDefault(size = 10, page = 0) Pageable paginacion) {
+        ResponseDTO<PaginaDTO<IntegranteResponseDTO>> response = solicitudDeReemplazoService.obtenerMismoRolDistintoGrupo(idSolicitante, paginacion);
+
         return ResponseEntity.ok(response);
     }
 

@@ -11,7 +11,4 @@ import java.util.List;
 @Repository
 public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     Asignacion findBySorteoFechaAndSorteoId(LocalDateTime sorteoFecha, Long sorteoId);
-
-    @Query("SELECT a.sorteo.fecha FROM Asignacion a")
-    List<LocalDateTime> findAllFechasAsignadas();
 }
