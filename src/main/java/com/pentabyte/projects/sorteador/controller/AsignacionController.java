@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/asignaciones")
 @Tag(name = "Asignación", description = "Endpoints para la gestión de asignaciones")
@@ -35,6 +37,17 @@ public class AsignacionController {
     public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> obtenerTodos(
             @PageableDefault(size = 10, page = 0) Pageable paginacion) {
         ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.obtenerTodos(paginacion);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Filtrar asignaciones por fechas y sorteos",
+            description = "Devuelve una lista paginada de las asignaciones filtradas."
+    )
+    @GetMapping("/filtrar")
+    public ResponseEntity<ResponseDTO<AsignacionResponseDTO>> filtrarFechaYSorteo(@RequestParam LocalDateTime fecha, @RequestParam Long sorteo) {
+        ResponseDTO<AsignacionResponseDTO> response = asignacionService.filtrarFechaYSorteo(fecha, sorteo);
+
         return ResponseEntity.ok(response);
     }
 

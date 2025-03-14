@@ -19,7 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Servicio que gestiona la lógica de negocio de las asignaciones.
@@ -94,6 +96,14 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         return new ResponseDTO<>(
                 new PaginaDTO<>(asignacionPage),
                 new ResponseDTO.EstadoDTO("Lista de asignaciones obtenida exitosamente", "200")
+        );
+    }
+
+    public ResponseDTO<AsignacionResponseDTO> filtrarFechaYSorteo(LocalDateTime fechaSorteo, Long sorteoId) {
+        Asignacion asignacion = asignacionRepository.findBySorteoFechaAndSorteoId(fechaSorteo, sorteoId);
+        return new ResponseDTO<>(
+                asignacionMapper.toResponseDTO(asignacion),
+                new ResponseDTO.EstadoDTO("Asignación encontrada exitosamente", "200")
         );
     }
 }

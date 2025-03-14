@@ -4,13 +4,12 @@ import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.SolicitudDeReemplazoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplazoCreateDTO;
+import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.SolicitudDeReemplazoMapper;
-import com.pentabyte.projects.sorteador.model.Asignacion;
-import com.pentabyte.projects.sorteador.model.Integrante;
-import com.pentabyte.projects.sorteador.model.SolicitudDeReemplazo;
+import com.pentabyte.projects.sorteador.model.*;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
@@ -131,6 +130,100 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
         return new ResponseDTO<>(
                 new PaginaDTO<>(solicitudDeReemplazoPage),
                 new ResponseDTO.EstadoDTO("Lista de solicitudes de reemplazo obtenida exitosamente", "200")
+        );
+    }
+
+    public ResponseDTO<PaginaDTO<IntegranteResponseDTO>> obtenerMismoRolDistintoGrupo(Long idSolicitante, Pageable paginacion) {
+        Integrante integranteSolicitante = integranteRepository.findById(idSolicitante)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Solicitante no encontrado con ID: " + idSolicitante));
+
+        Rol rol = integranteSolicitante.getRol();
+        String grupo = integranteSolicitante.getGrupo().getNombre();
+
+        Page<Integrante> reemplazantes = integranteRepository.findReemplazantes(rol, grupo, paginacion);
+
+        return new ResponseDTO<>(
+                new PaginaDTO<>(reemplazantes.map(c -> {
+                    return IntegranteResponseDTO.builder()
+                            .id(c.getId())
+                            .nombre(c.getNombre())
+                            .legajo(c.getLegajo())
+                            .rol(c.getRol())
+                            .grupoId(c.getGrupo().getId())
+                            .build();
+                })),
+                new ResponseDTO.EstadoDTO("Lista de reemplazantes obtenida exitosamente", "200")
+        );
+    }
+
+
+    public ResponseDTO<SolicitudDeReemplazoResponseDTO> aceptarSolicitud(Long solicitudId, Long usuarioReemplazanteId) {
+        SolicitudDeReemplazo solicitud = solicitudDeReemplazoRepository.findById(solicitudId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Solicitud de reemplazo no encontrada con ID: " + solicitudId));
+
+        if (!solicitud.getEmpleadoReemplazo().getId().equals(usuarioReemplazanteId)) {
+            throw new IllegalArgumentException("El usuario reemplazante no coincide con el solicitado.");
+        }
+
+        solicitud.setEstadoDeSolicitud(SolEstado.PENDIENTE);
+        solicitudDeReemplazoRepository.save(solicitud);
+
+        return new ResponseDTO<>(
+                new SolicitudDeReemplazoResponseDTO(
+                        solicitud.getId(),
+                        solicitud.getDescripcion(),
+                        solicitud.getFechaDeSolicitud(),
+                        solicitud.getEstadoDeSolicitud(),
+                        solicitud.getEmpleadoSolicitante().getId(),
+                        solicitud.getEmpleadoReemplazo().getId(),
+                        solicitud.getAsignacionDeSolicitante().getId(),
+                        solicitud.getAsignacionDeReemplazo().getId()
+                ),
+                new ResponseDTO.EstadoDTO("Solicitud de reemplazo aceptada exitosamente", "200")
+        );
+    }
+
+    public ResponseDTO<SolicitudDeReemplazoResponseDTO> rechazarSolicitud(Long solicitudId) {
+        SolicitudDeReemplazo solicitud = solicitudDeReemplazoRepository.findById(solicitudId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Solicitud de reemplazo no encontrada con ID: " + solicitudId));
+
+        solicitud.setEstadoDeSolicitud(SolEstado.CANCELADA);
+        solicitudDeReemplazoRepository.save(solicitud);
+
+        return new ResponseDTO<>(
+                new SolicitudDeReemplazoResponseDTO(
+                        solicitud.getId(),
+                        solicitud.getDescripcion(),
+                        solicitud.getFechaDeSolicitud(),
+                        solicitud.getEstadoDeSolicitud(),
+                        solicitud.getEmpleadoSolicitante().getId(),
+                        solicitud.getEmpleadoReemplazo().getId(),
+                        solicitud.getAsignacionDeSolicitante().getId(),
+                        solicitud.getAsignacionDeReemplazo().getId()
+                ),
+                new ResponseDTO.EstadoDTO("Solicitud de reemplazo rechazada", "200")
+        );
+    }
+
+    public ResponseDTO<SolicitudDeReemplazoResponseDTO> aprobarSolicitud(Long solicitudId) {
+        SolicitudDeReemplazo solicitud = solicitudDeReemplazoRepository.findById(solicitudId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Solicitud de reemplazo no encontrada con ID: " + solicitudId));
+
+        solicitud.setEstadoDeSolicitud(SolEstado.APROBADA);
+        solicitudDeReemplazoRepository.save(solicitud);
+
+        return new ResponseDTO<>(
+                new SolicitudDeReemplazoResponseDTO(
+                        solicitud.getId(),
+                        solicitud.getDescripcion(),
+                        solicitud.getFechaDeSolicitud(),
+                        solicitud.getEstadoDeSolicitud(),
+                        solicitud.getEmpleadoSolicitante().getId(),
+                        solicitud.getEmpleadoReemplazo().getId(),
+                        solicitud.getAsignacionDeSolicitante().getId(),
+                        solicitud.getAsignacionDeReemplazo().getId()
+                ),
+                new ResponseDTO.EstadoDTO("Solicitud de reemplazo aprobada exitosamente", "200")
         );
     }
 }
