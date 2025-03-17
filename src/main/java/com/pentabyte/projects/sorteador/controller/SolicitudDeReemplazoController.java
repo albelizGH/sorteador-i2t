@@ -5,6 +5,7 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplazoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
 import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,10 +51,36 @@ public class SolicitudDeReemplazoController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Obtener una lista de integrantes con mismo rol y distinto grupo.",
+            description = "Devuelve una lista con integrantes del mismo rol pero distinto grupo del integrante que solicita."
+    )
     @GetMapping("/reemplazantes/{idSolicitante}")
     public ResponseEntity<ResponseDTO<PaginaDTO<IntegranteResponseDTO>>> obtenerMismoRolDistintoGrupo(@PathVariable Long idSolicitante,
                                                                                       @PageableDefault(size = 10, page = 0) Pageable paginacion) {
         ResponseDTO<PaginaDTO<IntegranteResponseDTO>> response = solicitudDeReemplazoService.obtenerMismoRolDistintoGrupo(idSolicitante, paginacion);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Obtener fechas por solicitante.",
+            description = "Recupera una lista paginada de fechas asociadas a un solicitante específico identificado por su ID."
+    )
+    @GetMapping("/fechasSolicitante/{idSolicitante}")
+    public ResponseEntity<ResponseDTO<PaginaDTO<SorteoResponseDTO>>> buscarFechasPorSolicitante(@PathVariable Long idSolicitante, @PageableDefault(size = 10, page = 0) Pageable paginacion) {
+        ResponseDTO<PaginaDTO<SorteoResponseDTO>> response = solicitudDeReemplazoService.buscarFechasPorSolicitante(idSolicitante, paginacion);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Obtener fechas para devolución",
+            description = "Recupera una lista paginada de fechas asociadas a una devolución específica identificada por su ID, filtrando por el id de un sorteo."
+    )
+    @GetMapping("/fechasDevolucion/{idDevolucion}")
+    public ResponseEntity<ResponseDTO<PaginaDTO<SorteoResponseDTO>>> buscarFechasParaDevolucion(@PathVariable Long idDevolucion, @RequestParam Long SorteoId, @PageableDefault(size = 10, page = 0) Pageable paginacion) {
+        ResponseDTO<PaginaDTO<SorteoResponseDTO>> response = solicitudDeReemplazoService.buscarFechasParaDevolucion(idDevolucion, SorteoId, paginacion);
 
         return ResponseEntity.ok(response);
     }
