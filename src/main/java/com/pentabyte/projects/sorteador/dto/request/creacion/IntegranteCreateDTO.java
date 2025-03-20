@@ -17,7 +17,7 @@ public record IntegranteCreateDTO(
         @NotNull(message = "El rol no puede estar vacío")
         Rol rol,
 
-        @NotNull(message = "El grupoId no puede estar vacío")
+
         Long grupoId
 ) {
 }

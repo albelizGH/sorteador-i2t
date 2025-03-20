@@ -5,9 +5,7 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.GrupoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.GrupoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.GrupoResponseDTO;
-import com.pentabyte.projects.sorteador.exception.CupoExcedidoException;
-import com.pentabyte.projects.sorteador.exception.IntegrantePertenecienteAGrupo;
-import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
+import com.pentabyte.projects.sorteador.exception.*;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.GrupoMapper;
 import com.pentabyte.projects.sorteador.model.Categoria;
@@ -21,8 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Servicio que gestiona la lógica de negocio de los grupos.
@@ -52,36 +51,54 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
     /**
      * Crea un nuevo grupo en la base de datos.
      *
-     * @param dto DTO con los datos necesarios para crear grupo.
+     * @param grupoCreateDTO DTO con los datos necesarios para crear grupo.
      * @return {@link ResponseDTO} con la información de grupo creada.
-     * @throws RecursoNoEncontradoException si el grupo asociado no existe.
+     * @throws MinimoRequeridoException si el grupo no tiene al menos un integrante.
+     * @throws RecursoNoEncontradoException si el grupo, integrante o categoria  no existe.
+     * @throws CupoExcedidoException si el grupo ya tiene el cupo.maximo de integrantes segun la categoria y rol.
      */
-
+    @Transactional
     @Override
-    public ResponseDTO<GrupoResponseDTO> crear(GrupoCreateDTO dto) {
+    public ResponseDTO<GrupoResponseDTO> crear(GrupoCreateDTO grupoCreateDTO) {
 
-        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Categoría no encontrada con ID: " + dto.categoriaId()));
+        if(this.grupoRepository.existsByNombre(grupoCreateDTO.nombre())){
+            throw new YaExisteElRecursoException("El nombre del grupo ya existe");
+        }
 
-        Grupo grupoDb = grupoRepository.save(new Grupo(
-                null,
-                dto.nombre(),
-                dto.ordenDeGrupo(),
-                categoria,
-                new ArrayList<>(),
-                new ArrayList<>()
+        List<Integrante> integranteList = this.integranteRepository.findAllById(grupoCreateDTO.integrantesIds());
 
-        ));
+        Categoria categoria = this.categoriaRepository.findById(grupoCreateDTO.categoriaId()).orElseThrow(() -> new RecursoNoEncontradoException("Categoria no encontrada con ID: " + grupoCreateDTO.categoriaId()));
+
+        if (grupoCreateDTO.integrantesIds().size() != integranteList.size()) {
+            throw new RecursoNoEncontradoException("Uno o mas IDs de integrantes no existen.");
+        }
+
+
+
+        Grupo grupoDb = new Grupo();
+        grupoDb.setId(null);
+        grupoDb.setNombre(grupoCreateDTO.nombre());
+        grupoDb.setOrdenDeGrupo(grupoCreateDTO.ordenDeGrupo());
+        grupoDb.setCategoria(categoria);
+        this.grupoRepository.save(grupoDb);
+
+        for (Integrante integrante : integranteList) {
+
+           if (integrante.getGrupo() != null) throw new IntegrantePertenecienteAGrupoException("Integrante con ID: " + integrante.getId() + " ya pertenece a un grupo");
+
+                 integrante.setGrupo(grupoDb);
+                 this.integranteRepository.save(integrante);
+
+        }
 
         GrupoResponseDTO grupoResponseDTO = grupoMapper.toResponseDTO(grupoDb);
-
         return new ResponseDTO<GrupoResponseDTO>(
                 grupoResponseDTO,
-                new ResponseDTO.EstadoDTO(
-                        "Grupo creado exitosamente",
-                        "201")
+                new ResponseDTO.EstadoDTO("Grupo creado exitosamente", "200")
         );
     }
+
+
 
     /**
      * Actualiza un grupo existente.
@@ -116,8 +133,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
      */
     @Override
     public ResponseDTO<GrupoResponseDTO> obtenerPorId(Long id) {
-        Grupo grupo = grupoRepository.findById(id)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + id));
+        Grupo grupo = grupoRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + id));
 
         return new ResponseDTO<GrupoResponseDTO>(
                 grupoMapper.toResponseDTO(grupo),
@@ -144,49 +160,66 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
     }
 
     /**
-     * Asigna un integrante a un grupo específico.
+     * Agrega un integrante a un grupo específico.
      *
-     * @param grupoId Identificador del grupo al que se asignará el integrante.
-     * @param integranteId Identificador del integrante que se asignará al grupo.
+     * @param grupoId Identificador del grupo al que se agregara el integrante.
+     * @param grupoUpdateDTO con la informacion del grupo.
      * @return {@link ResponseDTO} con la información del grupo actualizado.
      * @throws RecursoNoEncontradoException si grupo  o integrante no existe.
-     * @throws IntegrantePertenecienteAGrupo si el integrante ya está asignado al grupo.
-     * @throws CupoExcedidoException si el grupo ya tiene el cupo máximo de integrantes segun la categoria
+     * @throws IntegrantePertenecienteAGrupoException si el integrante ya está agregado a un grupo.
+     * @throws CupoExcedidoException si el grupo ya tiene el cupo máximo de integrantes (Autoridades o Auxiliares) segun la categoria
      */
-public ResponseDTO<GrupoResponseDTO> asignarIntegranteAGrupo(Long grupoId,Long integranteId){
+    @Transactional
+public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoUpdateDTO grupoUpdateDTO){
 
     Grupo grupo=grupoRepository.findById(grupoId).orElseThrow(()->new RecursoNoEncontradoException("Grupo no encontrado con ID: "+grupoId));
 
-    Integrante integrante=integranteRepository.findById(integranteId).orElseThrow(()->new RecursoNoEncontradoException("Integrante no encontrado con ID: "+integranteId));
+    List<Integrante> integranteList= integranteRepository.findAllById(grupoUpdateDTO.integrantesIds());
 
-    if (integrante.getGrupo()!=null) throw new IntegrantePertenecienteAGrupo("Integrante con ID: "+integranteId+" ya pertenece a un grupo");
-
-    if (integrante.getRol().equals("Auxiliar")){
-            Integer cantidadIntegrantesAuxiliaresAsignados= categoriaTopeRepository.obtenerCantidadIntegrantesAuxiliaresAsignados(grupo.getCategoria().getId());
-
-            if (cantidadIntegrantesAuxiliaresAsignados>categoriaTopeRepository.obtenerCantidadMaximaAuxiliarPorCategoria(grupo.getCategoria().getId())){
-                throw new CupoExcedidoException("Cupo de integrantes auxiliares excedido");
-
-            }else{
-                integrante.setGrupo(grupo);
-                integranteRepository.save(integrante);
-            }
+    if (grupoUpdateDTO.integrantesIds().size() != integranteList.size()) {
+        throw new RecursoNoEncontradoException("Uno o más integrantes no encontrados con los IDs proporcionados: " + grupoUpdateDTO.integrantesIds());
     }
 
-    if (integrante.getRol().equals("Autoridad")) {
-        Integer cantidadIntegrantesAutoridadesAsignados = categoriaTopeRepository.obtenerCantidadIntegrantesAutoridadesAsignados(grupo.getCategoria().getId());
+    Integer cantidadMaximaAuxiliares = categoriaTopeRepository.obtenerCantidadMaximaPorCategoria(grupo.getCategoria().getId(), 0);
+    Integer cantidadMaximaAutoridades = categoriaTopeRepository.obtenerCantidadMaximaPorCategoria(grupo.getCategoria().getId(), 1);
 
-        if (cantidadIntegrantesAutoridadesAsignados > categoriaTopeRepository.obtenerCantidadMaximaAutoridadPorCategoria(grupo.getCategoria().getId())) {
-            throw new CupoExcedidoException("Cupo de integrantes autoridades excedido");
+    Integer cantidadIntegrantesAuxiliares = categoriaTopeRepository.obtenerCantidadIntegrantes(grupo.getCategoria().getId(), "Auxiliar");
+    Integer cantidadIntegrantesAutoridades = categoriaTopeRepository.obtenerCantidadIntegrantes(grupo.getCategoria().getId(), "Autoridad");
 
-        } else {
-            integrante.setGrupo(grupo);
-            integranteRepository.save(integrante);
+    for(Integrante integrante:integranteList){
+
+        if (integrante.getGrupo() != null) throw new IntegrantePertenecienteAGrupoException("El integrante con ID: " + integrante.getId() + " ya pertenece al grupo: "+integrante.getGrupo().getNombre());
+
+        switch (integrante.getRol().getDisplaySolEstado()) {
+
+            case "Auxiliar":
+
+                if (cantidadIntegrantesAuxiliares >= cantidadMaximaAuxiliares) {
+                    throw new CupoExcedidoException("Cupo de integrantes auxiliares excedido");
+                }
+
+                cantidadIntegrantesAuxiliares++;
+
+                break;
+
+            case "Autoridad":
+                if (cantidadIntegrantesAutoridades >= cantidadMaximaAutoridades) {
+                    throw new CupoExcedidoException("Cupo de integrantes autoridades excedido");
+                }
+
+                cantidadIntegrantesAutoridades++;
+
+                break;
+
         }
+        integrante.setGrupo(grupo);
+        integranteRepository.save(integrante);
+
     }
+
     return new ResponseDTO<GrupoResponseDTO>(
             grupoMapper.toResponseDTO(grupo),
-            new ResponseDTO.EstadoDTO("Integrante asignado exitosamente","200")
+            new ResponseDTO.EstadoDTO("Integrante agregado exitosamente","200")
 
     );
 

@@ -10,37 +10,37 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoriaTopeRepository extends JpaRepository<CategoriaTope, Long> {
 
-  @Query(value = "SELECT cpe.cantidad_maxima " +
-          "FROM categoria_tope cpe " +
-          "JOIN categoria c ON cpe.aut_categoria_id = c.id " +
-          "WHERE c.id = :categoriaId "+
-          "AND cpe.es_autoridad=0", nativeQuery = true)
-  Integer obtenerCantidadMaximaAuxiliarPorCategoria(@Param("categoriaId") Long categoriaId);
 
-  @Query(value = "SELECT cpe.cantidad_maxima " +
-          "FROM categoria_tope cpe " +
-          "JOIN categoria c ON cpe.aut_categoria_id = c.id " +
-          "WHERE c.id = :categoriaId "+
-          "AND cpe.es_autoridad=1", nativeQuery = true)
-  Integer obtenerCantidadMaximaAutoridadPorCategoria(@Param("categoriaId") Long categoriaId);
 
-  @Query(value = "SELECT COUNT(i.id) " +
-          "FROM categoria_tope cpe " +
-          "JOIN categoria c ON cpe.aut_categoria_id = c.id " +
-          "JOIN grupo g ON g.aut_categoria_id = c.id " +
-          "JOIN integrante i ON i.aut_grupo_id = g.id " +
+  @Query(value = "SELECT cpe.cantidad_max " +
+          "FROM aut_categoria_tope cpe " +
+          "JOIN aut_categoria c ON cpe.aut_categoria_id = c.id " +
           "WHERE c.id = :categoriaId " +
-          "AND cpe.es_autoridad=0 " +
-          "AND i.rol='Auxiliar' ", nativeQuery = true)
-  Integer obtenerCantidadIntegrantesAuxiliaresAsignados(@Param("categoriaId") Long categoriaId);
+          "AND cpe.es_autoridad = :esAutoridad" , nativeQuery = true)
 
-  @Query(value = "SELECT COUNT(i.id) " +
-          "FROM categoria_tope cpe " +
-          "JOIN categoria c ON cpe.aut_categoria_id = c.id " +
-          "JOIN grupo g ON g.aut_categoria_id = c.id " +
-          "JOIN integrante i ON i.aut_grupo_id = g.id " +
-          "WHERE c.id = :categoriaId " +
-          "AND cpe.es_autoridad=1 " +
-          "AND i.rol='Autoridad'", nativeQuery = true)
-  Integer obtenerCantidadIntegrantesAutoridadesAsignados(@Param("categoriaId") Long categoriaId);
+  Integer obtenerCantidadMaximaPorCategoria(@Param("categoriaId") Long categoriaId,@Param("esAutoridad") Integer esAutoridad);
+
+  @Query(value = "SELECT COUNT(DISTINCT i.id) " +
+          " FROM aut_categoria_tope cpe " +
+          "JOIN aut_categoria c ON cpe.aut_categoria_id = c.id " +
+          "JOIN aut_grupo g ON g.aut_categoria_id = c.id " +
+          "JOIN aut_integrante i ON i.aut_grupo_id = g.id " +
+          "WHERE cpe.aut_categoria_id = :categoriaId " +
+          "AND i.rol = :rol ", nativeQuery = true)
+  Integer obtenerCantidadIntegrantes(@Param("categoriaId") Long categoriaId,@Param("rol") String rol);
+
+  @Query(value = "SELECT cpe.cantidad_max " +
+          "FROM aut_categoria_tope cpe " +
+          "JOIN aut_categoria c ON cpe.aut_categoria_id = c.id " +
+          "WHERE cpe.id = :categoriaTopeId ", nativeQuery = true)
+  Integer obtenerCantidadMaximaPorCategoriaTope(@Param("categoriaTopeId") Long categoriaTopeId);
+
+
+
+
+
+
+
+
+
 }
