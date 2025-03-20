@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record CategoriaTopeCreateDTO(
 
-        @NotNull(message = "El id de categoria no puede ser nulo")
-        Long categoriaId,
+
 
         @Min(value = 1, message = "La cantidad mínima tiene que ser mayor a 0")
         @NotNull(message = "La cantidad mínima no puede ser nula")

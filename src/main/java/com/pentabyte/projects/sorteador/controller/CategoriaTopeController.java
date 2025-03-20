@@ -2,6 +2,7 @@ package com.pentabyte.projects.sorteador.controller;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
+import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaTopeUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaTopeResponseDTO;
 import com.pentabyte.projects.sorteador.service.CategoriaTopeService;
@@ -58,4 +59,17 @@ public class CategoriaTopeController {
         ResponseDTO<CategoriaTopeResponseDTO> response = categoriaTopeService.crear(categoria);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @Operation(
+            summary = "Actualizar una categoría tope",
+            description = "Actualiza una categoría tope existente en el sistema con los datos proporcionados."
+    )
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseDTO<CategoriaTopeResponseDTO>> actualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid CategoriaTopeUpdateDTO categoriaTopeUpdateDTO) {
+        ResponseDTO<CategoriaTopeResponseDTO> response = categoriaTopeService.actualizar(id, categoriaTopeUpdateDTO);
+        return ResponseEntity.ok(response);
+    }
+
 }
