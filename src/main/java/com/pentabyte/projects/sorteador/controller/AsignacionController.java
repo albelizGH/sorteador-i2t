@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/asignaciones")
 @Tag(name = "Asignación", description = "Endpoints para la gestión de asignaciones")
@@ -57,5 +59,10 @@ public class AsignacionController {
             @RequestBody @Valid AsignacionCreateDTO asignacion) {
         ResponseDTO<AsignacionResponseDTO> response = asignacionService.crear(asignacion);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/test")
+    public List<?> test() {
+        return this.asignacionService.ejecutarPlanificacion(4);
     }
 }
