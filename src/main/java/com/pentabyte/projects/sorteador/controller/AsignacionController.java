@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/asignaciones")
@@ -41,17 +41,6 @@ public class AsignacionController {
     }
 
     @Operation(
-            summary = "Filtrar asignaciones por fechas y sorteos",
-            description = "Devuelve una lista paginada de las asignaciones filtradas."
-    )
-    @GetMapping("/filtrar")
-    public ResponseEntity<ResponseDTO<AsignacionResponseDTO>> filtrarFechaYSorteo(@RequestParam LocalDateTime fecha, @RequestParam Long sorteo) {
-        ResponseDTO<AsignacionResponseDTO> response = asignacionService.filtrarFechaYSorteo(fecha, sorteo);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(
             summary = "Obtener una asignación por ID",
             description = "Devuelve la información detallada de una asignación específica según su ID."
     )
@@ -70,5 +59,10 @@ public class AsignacionController {
             @RequestBody @Valid AsignacionCreateDTO asignacion) {
         ResponseDTO<AsignacionResponseDTO> response = asignacionService.crear(asignacion);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/test")
+    public List<?> test() {
+        return this.asignacionService.ejecutarPlanificacion(4);
     }
 }

@@ -8,7 +8,9 @@ import com.pentabyte.projects.sorteador.dto.response.AsignacionResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.AsignacionMapper;
+import com.pentabyte.projects.sorteador.mapper.SorteoMapper;
 import com.pentabyte.projects.sorteador.model.Asignacion;
+import com.pentabyte.projects.sorteador.model.Categoria;
 import com.pentabyte.projects.sorteador.model.Grupo;
 import com.pentabyte.projects.sorteador.model.Sorteo;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Servicio que gestiona la lógica de negocio de las asignaciones.
@@ -33,13 +37,15 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     private final GrupoRepository grupoRepository;
     private final SorteoRepository sorteoRepository;
     private final AsignacionMapper asignacionMapper;
+    private final SorteoMapper sorteoMapper;
 
     @Autowired
-    public AsignacionService(AsignacionRepository asignacionRepository, GrupoRepository grupoRepository, SorteoRepository sorteoRepository, AsignacionMapper asignacionMapper) {
+    public AsignacionService(AsignacionRepository asignacionRepository, GrupoRepository grupoRepository, SorteoRepository sorteoRepository, AsignacionMapper asignacionMapper, SorteoMapper sorteoMapper) {
         this.asignacionRepository = asignacionRepository;
         this.grupoRepository = grupoRepository;
         this.sorteoRepository = sorteoRepository;
         this.asignacionMapper = asignacionMapper;
+        this.sorteoMapper = sorteoMapper;
     }
 
     @Override
@@ -98,11 +104,22 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         );
     }
 
-    public ResponseDTO<AsignacionResponseDTO> filtrarFechaYSorteo(LocalDateTime fechaSorteo, Long sorteoId) {
-        Asignacion asignacion = asignacionRepository.findBySorteoFechaAndSorteoId(fechaSorteo, sorteoId);
-        return new ResponseDTO<>(
-                asignacionMapper.toResponseDTO(asignacion),
-                new ResponseDTO.EstadoDTO("Asignación encontrada exitosamente", "200")
-        );
+    public List<?> ejecutarPlanificacion(Integer semanasAPlanificar) {
+        // >Recibo las semanas a planificar//
+        LocalDateTime fechaActual = LocalDateTime.now();
+        LocalDateTime fechaFin = LocalDateTime.now().plusWeeks(semanasAPlanificar);
+        List<Sorteo> sorteoList = this.asignacionRepository.findSorteosEntreFechas(fechaActual, fechaFin);
+        sorteoList.stream().map(sorteoMapper::toResponseDTO).toList();
+
+        //Buscamos los sorteos que coincidan desde la fecha actual hasta el total de las semanas a planificadas recibidas//
+        List<Categoria> categorias = sorteoList.stream()
+                .map(sorteo -> sorteo.getProducto().getCategoria())
+                .collect(Collectors.toList());
+
+        categorias.stream().map(categoria -> categoria.getId()).collect(Collectors.toList());
+
+        // >Desde la tabla de asignación por cada categoría buscamos  según la ultima fecha de asignación el grupo que fue asignado//
+        return null;
     }
 }
+
