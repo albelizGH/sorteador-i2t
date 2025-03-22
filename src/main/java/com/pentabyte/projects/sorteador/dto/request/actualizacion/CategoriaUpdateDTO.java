@@ -1,4 +1,6 @@
 package com.pentabyte.projects.sorteador.dto.request.actualizacion;
 
 public record CategoriaUpdateDTO() {
+
+
 }

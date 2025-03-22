@@ -5,6 +5,7 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaTopeUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaTopeResponseDTO;
+import com.pentabyte.projects.sorteador.exception.CupoExcedidoException;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.CategoriaTopeMapper;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Servicio que gestiona la lógica de negocio de las categorías tope.
@@ -45,16 +47,15 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
     @Override
     public ResponseDTO<CategoriaTopeResponseDTO> crear(CategoriaTopeCreateDTO dto) {
 
-        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Categoría no encontrada con ID: " + dto.categoriaId()));
-
-        CategoriaTope categoriaTopeDb = categoriaTopeRepository.save(new CategoriaTope(
+        CategoriaTope categoriaTope = new CategoriaTope(
                 null,
-                categoria,
+                null,
                 dto.cantidadMinima(),
                 dto.cantidadMaxima(),
                 dto.esAutoridad()
-        ));
+        );
+
+        CategoriaTope categoriaTopeDb = categoriaTopeRepository.save(categoriaTope);
 
         CategoriaTopeResponseDTO categoriaTopeResponseDTO = categoriaTopeMapper.toResponseDTO(categoriaTopeDb);
 
@@ -63,19 +64,51 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
                 new ResponseDTO.EstadoDTO(
                         "Categoría tope creada exitosamente",
                         "201")
-        );
-    }
+                );
+}
 
     /**
      * Actualiza una categoría tope existente.
      *
      * @param id  Identificador de la categoría tope a actualizar.
-     * @param dto DTO con los datos actualizados.
+     * @param categoriaTopeUpdateDTO DTO con los datos actualizados.
      * @return {@link ResponseDTO} con la categoría tope actualizada.
      */
+    @Transactional
     @Override
-    public ResponseDTO<CategoriaTopeResponseDTO> actualizar(Long id, CategoriaTopeUpdateDTO dto) {
-        return null;
+    public ResponseDTO<CategoriaTopeResponseDTO> actualizar(Long id, CategoriaTopeUpdateDTO categoriaTopeUpdateDTO) {
+
+        CategoriaTope categoriaTope = categoriaTopeRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Categoría tope no encontrada con ID: " + id));
+
+        Integer cantidadMaxima = this.categoriaTopeRepository.obtenerCantidadMaximaPorCategoriaTope(id);
+
+        Integer cantidadIntegrantes=0;
+
+        if (categoriaTopeUpdateDTO.cantidadMaxima() < cantidadMaxima) {
+
+            if (categoriaTope.getEsAutoridad()) {
+                cantidadIntegrantes = this.categoriaTopeRepository.obtenerCantidadIntegrantes(categoriaTope.getCategoria().getId(), "Autoridad");
+            } else {
+                cantidadIntegrantes = this.categoriaTopeRepository.obtenerCantidadIntegrantes(categoriaTope.getCategoria().getId(), "Auxiliar");
+            }
+
+            if (cantidadIntegrantes > categoriaTopeUpdateDTO.cantidadMaxima()) {
+                throw new IllegalArgumentException("La cantidad de integrantes supera el límite ingresado para esta categoría. " +
+                        "La cantidad actual de integrantes es " + cantidadIntegrantes + " y el máximo permitido que acaba de ingresar es " + categoriaTopeUpdateDTO.cantidadMaxima() + "." +
+                        "Modificalo e intentalo con ingresar nuevamente");
+            }
+
+        }else{
+            categoriaTope.setCantidadMaxima(categoriaTopeUpdateDTO.cantidadMaxima());
+            categoriaTopeRepository.save(categoriaTope);
+        }
+
+        return new ResponseDTO<CategoriaTopeResponseDTO>(
+                categoriaTopeMapper.toResponseDTO(categoriaTope),
+                new ResponseDTO.EstadoDTO("Categoría tope encontrada exitosamente", "200")
+        );
+
     }
 
     /**
@@ -88,7 +121,6 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
     public ResponseDTO<CategoriaTopeResponseDTO> eliminar(Long id) {
         return null;
     }
-
 
     /**
      * Obtiene una categoría tope por su ID.
