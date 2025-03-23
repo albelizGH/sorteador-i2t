@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
-    
+
     @Query("""
                 SELECT new com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanificacionDTO(g.id, g.ordenDeGrupo, c.id)
                 FROM Asignacion a
@@ -38,4 +38,14 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
             AND s.fecha BETWEEN :ahora AND :fin
             """)
     List<Long> findAsignacionesBorradorEntreFechas(LocalDateTime ahora, LocalDateTime fin);
+
+
+    @Query(value = """
+            SELECT a.id
+            FROM Asignacion a
+            JOIN a.sorteo s
+            WHERE a.estado = 'BORRADOR'
+            AND s.fecha >= :ahora
+            """)
+    List<Long> findAsignacionesBorradorConFechaMayorA(LocalDateTime ahora);
 }

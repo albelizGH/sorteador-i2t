@@ -157,7 +157,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         Map<Long, Long> ultimosGruposPorCategoriaPlanificados = getUltimosGruposPorCategoriaPlanificados(idsCategorias);
 
         // Elimino las asignaciones de borrador dentro del rango de fechas para poder planificar de nuevo
-        eliminarAsignacionesBorrador(ahora, fin);
+        eliminarAsignacionesBorrador(ahora);
 
         // Lista para almacenar las asignaciones
         List<Asignacion> asignaciones = new ArrayList<>();
@@ -217,7 +217,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
 
 
 
-    
+
 
     /*METODOS AUXILIARES*/
 
@@ -257,13 +257,12 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
     /**
-     * Elimina las asignaciones de tipo borrador que se encuentren dentro de un rango de fechas especificado.
+     * Elimina las asignaciones de tipo borrador que se encuentren dentro de un rango de fechas mayor al dado.
      *
      * @param ahora Fecha y hora de inicio del rango.
-     * @param fin   Fecha y hora de fin del rango.
      */
-    private void eliminarAsignacionesBorrador(LocalDateTime ahora, LocalDateTime fin) {
-        List<Long> asignacionesBorradorids = asignacionRepository.findAsignacionesBorradorEntreFechas(ahora, fin);
+    private void eliminarAsignacionesBorrador(LocalDateTime ahora) {
+        List<Long> asignacionesBorradorids = asignacionRepository.findAsignacionesBorradorConFechaMayorA(ahora);
         if (!asignacionesBorradorids.isEmpty()) {
             asignacionRepository.deleteAllById(asignacionesBorradorids);
         }
