@@ -60,22 +60,14 @@ public class AsignacionController {
     }
 
     @Operation(
-            summary = "Crear una nueva asignación",
-            description = "Registra una nueva asignación en el sistema con los datos proporcionados."
+            summary = "Generar planificación automática",
+            description = "Genera una planificación automática para las semanas requeridas."
     )
     @GetMapping("/planificar")
-    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> ejecutarPlanificaciones(
+    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> ejecutarPlanificacion(
             @RequestParam("cantidadDeSemanas") int cantidadDeSemanas) {
         ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.planificar(cantidadDeSemanas);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Crear una nueva asignación",
-            description = "Registra una nueva asignación en el sistema con los datos proporcionados."
-    )
-    @GetMapping("/planificar-2")
-    public void ejecutarPlanificaciones2(@RequestParam("cantidadDeSemanas") int cantidadDeSemanas) {
-        asignacionService.planificar(cantidadDeSemanas);
-    }
 }

@@ -200,8 +200,6 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
 
             Long finalUltimoGrupoAsignadoId = ultimoGrupoAsignadoId;
 
-            //Categoria 1-> grupo 4 orden 1, grupo 5 orden 2, grupo 6 orden 3
-
             Integer ordenDeUltimoGrupoAsignado = gruposDeLaCategoria.stream()
                     .filter(grupo -> grupo.id().equals(finalUltimoGrupoAsignadoId))
                     .findFirst()
