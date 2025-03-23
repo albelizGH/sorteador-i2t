@@ -1,5 +1,6 @@
 package com.pentabyte.projects.sorteador.repository;
 
+import com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanificacionDTO;
 import com.pentabyte.projects.sorteador.model.Asignacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,22 +12,22 @@ import java.util.List;
 @Repository
 public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     
-    @Query(value = """
-            SELECT g.id, c.id
-            FROM AUT_ASIGNACION a
-            JOIN AUT_GRUPO g ON a.aut_grupo_id = g.id
-            JOIN AUT_CATEGORIA c ON g.aut_categoria_id = c.id
-            WHERE c.id IN :idsCategorias
-              AND a.id = (
-                SELECT MAX(a2.id)
-                FROM AUT_ASIGNACION a2
-                JOIN AUT_GRUPO g2 ON a2.aut_grupo_id = g2.id
-                WHERE g2.aut_categoria_id = c.id
-              )
-              AND a.estado = 'PLANIFICADO'
-            ORDER BY c.id
-            """, nativeQuery = true)
-    List<Object[]> findUltimosGruposPorCategoriaPlanificados(List<Long> idsCategorias);
+    @Query("""
+                SELECT new com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanificacionDTO(g.id, g.ordenDeGrupo, c.id)
+                FROM Asignacion a
+                JOIN a.grupo g
+                JOIN g.categoria c
+                WHERE c.id IN :idsCategorias
+                AND a.id = (
+                    SELECT MAX(a2.id)
+                    FROM Asignacion a2
+                    JOIN a2.grupo g2
+                    WHERE g2.categoria.id = c.id
+                )
+                AND a.estado = 'PLANIFICADO'
+                ORDER BY c.id
+            """)
+    List<GrupoPlanificacionDTO> findUltimosGruposPorCategoriaPlanificados(List<Long> idsCategorias);
 
 
     @Query(value = """
