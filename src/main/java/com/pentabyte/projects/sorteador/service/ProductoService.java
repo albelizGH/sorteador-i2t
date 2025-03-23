@@ -61,7 +61,8 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 new ResponseDTO.EstadoDTO(
                         "Producto creado exitosamente",
                         "201")
-        );    }
+        );
+    }
 
     /**
      * Actualiza un producto existente.
@@ -101,7 +102,8 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         return new ResponseDTO<ProductoResponseDTO>(
                 productoMapper.toResponseDTO(producto),
                 new ResponseDTO.EstadoDTO("Producto encontrado exitosamente", "200")
-        );    }
+        );
+    }
 
     /**
      * Obtiene una lista paginada de todos los productos.

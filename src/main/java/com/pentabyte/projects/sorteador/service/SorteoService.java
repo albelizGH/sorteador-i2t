@@ -127,4 +127,6 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
                 new ResponseDTO.EstadoDTO("Lista de sorteos obtenida exitosamente", "200")
         );
     }
+
+
 }
