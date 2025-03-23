@@ -34,5 +34,11 @@ public class Asignacion {
     @OneToMany(mappedBy = "asignacionDeSolicitante")
     private List<SolicitudDeReemplazo> asignacionDeSolicitanteList;
 
-
+    public Asignacion(Estado estado, Grupo grupo, Sorteo sorteo, List<SolicitudDeReemplazo> asignacionDeReemplazoList, List<SolicitudDeReemplazo> asignacionDeSolicitanteList) {
+        this.estado = estado;
+        this.grupo = grupo;
+        this.sorteo = sorteo;
+        this.asignacionDeReemplazoList = asignacionDeReemplazoList;
+        this.asignacionDeSolicitanteList = asignacionDeSolicitanteList;
+    }
 }

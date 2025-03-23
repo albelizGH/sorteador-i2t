@@ -58,4 +58,24 @@ public class AsignacionController {
         ResponseDTO<AsignacionResponseDTO> response = asignacionService.crear(asignacion);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @Operation(
+            summary = "Crear una nueva asignación",
+            description = "Registra una nueva asignación en el sistema con los datos proporcionados."
+    )
+    @GetMapping("/planificar")
+    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> ejecutarPlanificaciones(
+            @RequestParam("cantidadDeSemanas") int cantidadDeSemanas) {
+        ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.planificar(cantidadDeSemanas);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Crear una nueva asignación",
+            description = "Registra una nueva asignación en el sistema con los datos proporcionados."
+    )
+    @GetMapping("/planificar-2")
+    public void ejecutarPlanificaciones2(@RequestParam("cantidadDeSemanas") int cantidadDeSemanas) {
+        asignacionService.planificar(cantidadDeSemanas);
+    }
 }

@@ -1,6 +1,5 @@
 package com.pentabyte.projects.sorteador.mapper;
 
-import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaResponseDTO;
 import com.pentabyte.projects.sorteador.model.Categoria;
 import org.mapstruct.Mapper;
@@ -14,5 +13,5 @@ public interface CategoriaMapper {
 
     CategoriaResponseDTO toResponseDTO(Categoria categoria);
 
-    Categoria fromCreateDTO(CategoriaCreateDTO categoriaCreateDTO);
+//    Categoria fromCreateDTO(CategoriaCreateDTO categoriaCreateDTO);
 }
