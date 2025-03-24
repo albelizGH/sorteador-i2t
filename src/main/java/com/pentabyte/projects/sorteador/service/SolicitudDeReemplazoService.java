@@ -297,7 +297,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                             solicitud.getAsignacionDeSolicitante().getId(),
                             solicitud.getAsignacionDeReemplazo().getId()
                     ),
-                    new ResponseDTO.EstadoDTO("Solicitud de reemplazo aprobada, no se puede cacnelar", "400")
+                    new ResponseDTO.EstadoDTO("Solicitud de reemplazo aprobada, no se puede cancelar", "400")
             );
         }
 

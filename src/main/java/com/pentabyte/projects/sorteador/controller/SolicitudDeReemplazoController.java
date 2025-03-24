@@ -100,7 +100,7 @@ public class SolicitudDeReemplazoController {
             summary = "Aceptar solicitud de reemplazo",
             description = "Permite que un usuario reemplazante acepte una solicitud de reemplazo."
     )
-    @PutMapping("/acpetar/{id}")
+    @PutMapping("/aceptar/{id}")
     public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> aceptarSolicitud(@PathVariable Long id, @RequestParam Long usuarioReemplazanteId) {
         ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.aceptarSolicitud(id, usuarioReemplazanteId);
         return ResponseEntity.ok(response);
