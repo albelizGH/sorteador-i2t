@@ -7,6 +7,7 @@ import com.pentabyte.projects.sorteador.dto.response.AsignacionResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.AsignacionInitialDTO;
 import com.pentabyte.projects.sorteador.service.AsignacionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/coordinador/asignaciones")
+@Tag(name = "Asignaciones coordinador", description = "Endpoints para la gestión de las asignaciones para el coordinador")
 public class AsignacionCoordinadorController {
 
     private final AsignacionService asignacionService;
@@ -25,17 +27,7 @@ public class AsignacionCoordinadorController {
     public AsignacionCoordinadorController(AsignacionService asignacionService) {
         this.asignacionService = asignacionService;
     }
-
-    @Operation(
-            summary = "Obtener todas las asignaciones",
-            description = "Devuelve una lista paginada de todas las asignaciones existentes en el sistema."
-    )
-    @GetMapping
-    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> obtenerTodos(
-            @PageableDefault(size = 10, page = 0) Pageable paginacion) {
-        ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.obtenerTodos(paginacion);
-        return ResponseEntity.ok(response);
-    }
+    
 
     @Operation(
             summary = "Crear una nueva asignación",

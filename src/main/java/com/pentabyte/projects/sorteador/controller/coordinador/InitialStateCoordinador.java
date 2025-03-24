@@ -7,6 +7,7 @@ import com.pentabyte.projects.sorteador.service.AsignacionService;
 import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
 import com.pentabyte.projects.sorteador.service.SorteoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/coordinador/inicial")
+@Tag(name = "Estado inicial coordinador", description = "Endpoints para la gestión del estado inicial de las asignaciones, sorteos y reemplazos para el coordinador")
 public class InitialStateCoordinador {
 
     private final AsignacionService asignacionService;

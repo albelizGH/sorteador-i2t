@@ -1,11 +1,14 @@
 package com.pentabyte.projects.sorteador.controller;
 
+import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.AsignacionResponseDTO;
 import com.pentabyte.projects.sorteador.service.AsignacionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,17 @@ public class AsignacionController {
     @Autowired
     public AsignacionController(AsignacionService asignacionService) {
         this.asignacionService = asignacionService;
+    }
+
+    @Operation(
+            summary = "Obtener todas las asignaciones",
+            description = "Devuelve una lista paginada de todas las asignaciones existentes en el sistema."
+    )
+    @GetMapping
+    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> obtenerTodos(
+            @PageableDefault(size = 10, page = 0) Pageable paginacion) {
+        ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.obtenerTodos(paginacion);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(

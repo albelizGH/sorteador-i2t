@@ -2,18 +2,18 @@ package com.pentabyte.projects.sorteador.controller;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
-import com.pentabyte.projects.sorteador.dto.request.creacion.SorteoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
 import com.pentabyte.projects.sorteador.service.SorteoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/sorteos")
@@ -47,16 +47,5 @@ public class SorteoController {
     public ResponseEntity<ResponseDTO<SorteoResponseDTO>> obtenerPorId(@PathVariable Long id) {
         ResponseDTO<SorteoResponseDTO> response = sorteoService.obtenerPorId(id);
         return ResponseEntity.ok(response);
-    }
-
-    @Operation(
-            summary = "Crear un nuevo sorteo",
-            description = "Registra un nuevo sorteo en el sistema con los datos proporcionados."
-    )
-    @PostMapping
-    public ResponseEntity<ResponseDTO<SorteoResponseDTO>> crear(
-            @RequestBody @Valid SorteoCreateDTO sorteo) {
-        ResponseDTO<SorteoResponseDTO> response = sorteoService.crear(sorteo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
