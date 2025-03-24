@@ -18,8 +18,6 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
             """)
     List<Object[]> findGruposOrdenPorCategorias(List<Long> idsCategorias);
 
-    boolean existsByNombre(String nombre);
-    
     @Query("""
             SELECT g.categoria.id, COUNT(g)
             FROM Grupo g

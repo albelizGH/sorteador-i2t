@@ -41,7 +41,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(error);
     }
 
-    @ExceptionHandler(IntegrantePertenecienteAGrupo.class)
+    @ExceptionHandler(YaExisteElRecursoException.class)
+    public ResponseEntity<?> handlerYaExisteElRecursoException(Exception exception, HttpServletRequest request) {
+        crearLog("Ya existe el recurso", request, exception);
+        APIErrorDTO error = new APIErrorDTO(exception.getMessage());
+        return ResponseEntity.status(400).body(error);
+    }
+    @ExceptionHandler(MinimoRequeridoException.class)
+    public ResponseEntity<?> handlerMinimoRequeridoException(Exception exception, HttpServletRequest request) {
+        crearLog("Minimo requerido", request, exception);
+        APIErrorDTO error = new APIErrorDTO(exception.getMessage());
+        return ResponseEntity.status(400).body(error);
+    }
+
+    @ExceptionHandler(IntegrantePertenecienteAGrupoException.class)
     public ResponseEntity<?> handlerIntegranteYaAsignadoException(Exception exception,HttpServletRequest request){
         crearLog("Integrante ya asignado a un grupo", request, exception);
         APIErrorDTO error=new APIErrorDTO(exception.getMessage());
