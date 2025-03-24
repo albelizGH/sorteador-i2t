@@ -457,7 +457,11 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         int planificadas = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue();
         int borrador = asignacionBorradorDTO.paginacion().cantidadDeElementos().intValue();
 
-        GlobalDTO global = new GlobalDTO(asignacionesTotales, planificadas, borrador);
+        GlobalDTO global = GlobalDTO.builder()
+                .totales(asignacionesTotales)
+                .planificadas(planificadas)
+                .borrador(borrador)
+                .build();
 
         return new AsignacionInitialResponseDTO(asignacionPlanificadaDTO, asignacionBorradorDTO, global);
     }

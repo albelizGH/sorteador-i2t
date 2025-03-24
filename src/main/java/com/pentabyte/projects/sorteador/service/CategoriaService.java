@@ -4,16 +4,25 @@ import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaCreateDTO;
+import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
+import com.pentabyte.projects.sorteador.exception.YaExisteElRecursoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.CategoriaMapper;
 import com.pentabyte.projects.sorteador.model.Categoria;
+import com.pentabyte.projects.sorteador.model.CategoriaTope;
+import com.pentabyte.projects.sorteador.model.Grupo;
+import com.pentabyte.projects.sorteador.model.Producto;
 import com.pentabyte.projects.sorteador.repository.CategoriaRepository;
+import com.pentabyte.projects.sorteador.repository.CategoriaTopeRepository;
+import com.pentabyte.projects.sorteador.repository.GrupoRepository;
+import com.pentabyte.projects.sorteador.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
@@ -26,11 +35,16 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
 
     private final CategoriaRepository categoriaRepository;
     private final CategoriaMapper categoriaMapper;
-
+    private final CategoriaTopeRepository categoriaTopeRepository;
+    private final GrupoRepository grupoRepository;
+    private final ProductoRepository productoRepository;
     @Autowired
-    public CategoriaService(CategoriaRepository categoriaRepository, CategoriaMapper categoriaMapper) {
+    public CategoriaService(CategoriaMapper categoriaMapper, CategoriaRepository categoriaRepository, CategoriaTopeRepository categoriaTopeRepository, GrupoRepository grupoRepository, ProductoRepository productoRepository) {
         this.categoriaRepository = categoriaRepository;
         this.categoriaMapper = categoriaMapper;
+        this.categoriaTopeRepository = categoriaTopeRepository;
+        this.grupoRepository = grupoRepository;
+        this.productoRepository = productoRepository;
     }
 
     /**
@@ -40,30 +54,79 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
      * @return {@link ResponseDTO} con la información de la categoría creada.
      * @throws RecursoNoEncontradoException si la categoría asociada no existe.
      */
+    @Transactional
     @Override
     public ResponseDTO<CategoriaResponseDTO> crear(CategoriaCreateDTO dto) {
 
-        Categoria categoriaDb = categoriaRepository.save(new Categoria(
-                null,
-                dto.nombre(),
-                dto.ultimaSemanaDeAsignacion(),
-                dto.ultimaFechaDeAsignacion(),
-                dto.semanasAPlanificar(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>()
-        ));
+        // Verificar si el nombre ya existe
+        if (categoriaRepository.buscarNombre(dto.nombre()) > 0) {
+            throw new YaExisteElRecursoException("Ya existe una categoría con el nombre: " + dto.nombre());
+        }
 
+        // Crear la categoría sin los grupos ni productos aún
+        Categoria categoriaDb = this.categoriaRepository.save(
+                new Categoria(
+                        null,
+                        dto.nombre(),
+                        dto.ultimaSemanaDeAsignacion(),
+                        dto.ultimaFechaDeAsignacion(),
+                        dto.semanasAPlanificar(),
+                        new ArrayList<>(),  // Lista de topes
+                        new ArrayList<>(),  // Lista de grupos
+                        new ArrayList<>()   // Lista de productos
+                )
+        );
+
+        // Guardar los topes asociados a la categoría
+        for (CategoriaTopeCreateDTO categoriaTope : dto.categoriaTopeList()) {
+            this.categoriaTopeRepository.save(
+                    new CategoriaTope(
+                            null,
+                            categoriaDb,
+                            categoriaTope.cantidadMinima(),
+                            categoriaTope.cantidadMaxima(),
+                            categoriaTope.esAutoridad()
+                    )
+            );
+        }
+
+        // Guardar los grupos asociados a la categoría
+        for (Long grupoId : dto.grupoList()) {
+            Grupo grupoDb = this.grupoRepository.findById(grupoId)
+                    .orElseThrow(() -> new RecursoNoEncontradoException("No existe el grupo con ID: " + grupoId));
+
+            // Asociar la categoría al grupo
+            grupoDb.setCategoria(categoriaDb);
+            grupoRepository.save(grupoDb);
+
+            // Agregar el grupo a la categoría
+            categoriaDb.getGrupoList().add(grupoDb);
+        }
+        for (Long productoId : dto.productoList()) {
+            Producto productoDb = productoRepository.findById(productoId)
+                    .orElseThrow(() -> new RecursoNoEncontradoException("No existe el producto con ID: " + productoId));
+
+            // Asociar la categoría al producto
+            productoDb.setCategoria(categoriaDb);
+            productoRepository.save(productoDb);
+
+            // Agregar el producto a la categoría
+            categoriaDb.getProductoList().add(productoDb);
+        }
+
+        // Guardar la categoría nuevamente con los grupos y productos agregados
+        categoriaRepository.save(categoriaDb);
+
+        // Mapear la categoría a la respuesta DTO
         CategoriaResponseDTO categoriaResponseDTO = categoriaMapper.toResponseDTO(categoriaDb);
 
-        return new ResponseDTO<CategoriaResponseDTO>(
+        return new ResponseDTO<>(
                 categoriaResponseDTO,
                 new ResponseDTO.EstadoDTO(
                         "Categoría creada exitosamente",
                         "201")
-        );
+                );
     }
-
     /**
      * Actualiza una categoría existente.
      *

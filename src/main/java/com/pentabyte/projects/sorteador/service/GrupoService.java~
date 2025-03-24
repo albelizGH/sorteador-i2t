@@ -61,7 +61,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
     @Override
     public ResponseDTO<GrupoResponseDTO> crear(GrupoCreateDTO grupoCreateDTO) {
 
-        if(this.grupoRepository.existsByNombre(grupoCreateDTO.nombre())){
+        if(this.grupoRepository.existsByNombre(grupoCreateDTO.nombre())>0){
             throw new YaExisteElRecursoException("El nombre del grupo ya existe");
         }
 
