@@ -39,15 +39,15 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                 .orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + dto.grupoId()));
 
         Integrante integrante = integranteRepository.save(new Integrante(
-                        null,
-                        dto.nombre(),
-                        dto.legajo(),
-                        dto.rol(),
-                        grupo,
-                        new ArrayList<>(),
-                        new ArrayList<>()
-                )
-        );
+                null,
+                dto.nombre(),
+                dto.legajo(),
+                dto.rol(),
+                grupo,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        ));
 
         return new ResponseDTO<>(
                 new IntegranteResponseDTO(
