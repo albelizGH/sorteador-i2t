@@ -56,16 +56,22 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     @Query(value = """
             SELECT a
             FROM Asignacion a
-            WHERE a.estado = 'PLANIFICADO'
+            WHERE a.estado = 'PLANIFICADO' 
+            AND CASE 
+                WHEN :grupoId IS NULL THEN TRUE 
+                ELSE a.grupo.id = :grupoId END
             """)
-    Page<Asignacion> findAsinacionesPlanificadas(Pageable pageable);
+    Page<Asignacion> findAsinacionesPlanificadas(Pageable pageable, Long grupoId);
 
     @Query(value = """
-            SELECT a
-            FROM Asignacion a
-            WHERE a.estado = 'BORRADOR'
+             SELECT a
+             FROM Asignacion a
+             WHERE a.estado = 'BORRADOR'
+             AND CASE
+                 WHEN :grupoId IS NULL THEN TRUE
+                 ELSE a.grupo.id = :grupoId END
             """)
-    Page<Asignacion> findAsinacionesBorrador(Pageable pageable);
+    Page<Asignacion> findAsinacionesBorrador(Pageable pageable, Long grupoId);
 
     @Query("SELECT s FROM Sorteo s WHERE s.fecha BETWEEN :fechaInicio AND :fechaFin")
     List<Sorteo> findSorteosEntreFechas(@Param("fechaInicio") LocalDateTime fechaInicio, @Param("fechaFin") LocalDateTime fechaFin);

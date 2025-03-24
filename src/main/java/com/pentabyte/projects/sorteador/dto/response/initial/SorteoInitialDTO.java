@@ -1,12 +1,11 @@
 package com.pentabyte.projects.sorteador.dto.response.initial;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public record SorteoInitialDTO(
         Long id,
         ProductoInitialDTO producto,
-        LocalDate fecha,
+        LocalDateTime fecha,
         Boolean confirmado
 ) {
 }

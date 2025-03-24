@@ -5,6 +5,10 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.SorteoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.SorteoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.ProductoInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.SorteoInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.SorteoInitialResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.SorteoMapper;
@@ -17,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -129,4 +134,37 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
     }
 
 
+    public SorteoInitialResponseDTO getInicialSorteosCoordinador(Pageable pageable, Long categoriaId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        Page<SorteoInitialDTO> sorteosPage = sorteoRepository.findByCategoriaAndFecha(pageable, categoriaId, fechaInicio, fechaFin).map(this::toInitialDTO);
+        PaginaDTO<SorteoInitialDTO> paginaDTO = new PaginaDTO<SorteoInitialDTO>(sorteosPage);
+
+        int confirmados = paginaDTO.contenido().stream().filter(SorteoInitialDTO::confirmado).toList().size();
+        int noConfirmados = paginaDTO.contenido().stream().filter(sorteo -> !sorteo.confirmado()).toList().size();
+        int totales = confirmados + noConfirmados;
+
+        GlobalDTO globalDTO = GlobalDTO.builder()
+                .totales(totales)
+                .noConfirmados(noConfirmados)
+                .confirmados(confirmados)
+                .build();
+
+        return new SorteoInitialResponseDTO(
+                globalDTO,
+                paginaDTO
+        );
+    }
+
+    private SorteoInitialDTO toInitialDTO(Sorteo sorteo) {
+        return new SorteoInitialDTO(
+                sorteo.getId(),
+                new ProductoInitialDTO(
+                        sorteo.getProducto().getId(),
+                        sorteo.getProducto().getNombre(),
+                        sorteo.getProducto().getOrden(),
+                        sorteo.getProducto().getCategoria().getNombre()
+                ),
+                sorteo.getFecha(),
+                sorteo.getConfirmado()
+        );
+    }
 }
