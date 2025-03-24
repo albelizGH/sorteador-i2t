@@ -125,22 +125,22 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         );
     }
 
-    public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable){
+    public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable) {
 
-        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.productoInitialMapper(producto));
+        Page<ProductoInitialDTO> productoPage = productoRepository.findAll(pageable).map(producto -> this.productoInitialMapper(producto));
 
-        PaginaDTO<ProductoInitialDTO> productoDTO=new PaginaDTO<>(productoPage);
+        PaginaDTO<ProductoInitialDTO> productoDTO = new PaginaDTO<>(productoPage);
 
-        int totales=productoDTO.paginacion().totalDeElementos().intValue();
+        int totales = productoDTO.paginacion().totalDeElementos().intValue();
 
-        GlobalDTO global= GlobalDTO.builder()
+        GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)
                 .build();
 
-        return new ProductoInitialResponseDTO(global,productoDTO);
+        return new ProductoInitialResponseDTO(global, productoDTO.contenido(), productoDTO.paginacion());
     }
 
-    private ProductoInitialDTO productoInitialMapper(Producto producto){
+    private ProductoInitialDTO productoInitialMapper(Producto producto) {
 
         return new ProductoInitialDTO(
                 producto.getId(),
@@ -149,7 +149,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 producto.getCategoria().getNombre()
         );
 
-        }
     }
+}
 
 

@@ -150,7 +150,8 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
 
         return new SorteoInitialResponseDTO(
                 globalDTO,
-                paginaDTO
+                paginaDTO.contenido(),
+                paginaDTO.paginacion()
         );
     }
 

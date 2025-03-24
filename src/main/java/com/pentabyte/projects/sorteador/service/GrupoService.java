@@ -37,8 +37,9 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
     private final GrupoRepository grupoRepository;
     private final GrupoMapper grupoMapper;
     private final CategoriaRepository categoriaRepository;
-     private final IntegranteRepository integranteRepository;
-     private final CategoriaTopeRepository categoriaTopeRepository;
+    private final IntegranteRepository integranteRepository;
+    private final CategoriaTopeRepository categoriaTopeRepository;
+
     @Autowired
     public GrupoService(
             GrupoRepository grupoRepository,
@@ -50,7 +51,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
         this.grupoMapper = grupoMapper;
         this.categoriaRepository = categoriaRepository;
         this.integranteRepository = integranteRepository;
-        this.categoriaTopeRepository=categoriaTopeRepository;
+        this.categoriaTopeRepository = categoriaTopeRepository;
     }
 
     /**
@@ -58,15 +59,15 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
      *
      * @param grupoCreateDTO DTO con los datos necesarios para crear grupo.
      * @return {@link ResponseDTO} con la información de grupo creada.
-     * @throws MinimoRequeridoException si el grupo no tiene al menos un integrante.
+     * @throws MinimoRequeridoException     si el grupo no tiene al menos un integrante.
      * @throws RecursoNoEncontradoException si el grupo, integrante o categoria  no existe.
-     * @throws CupoExcedidoException si el grupo ya tiene el cupo.maximo de integrantes segun la categoria y rol.
+     * @throws CupoExcedidoException        si el grupo ya tiene el cupo.maximo de integrantes segun la categoria y rol.
      */
     @Transactional
     @Override
     public ResponseDTO<GrupoResponseDTO> crear(GrupoCreateDTO grupoCreateDTO) {
 
-        if(this.grupoRepository.existsByNombre(grupoCreateDTO.nombre())){
+        if (this.grupoRepository.existsByNombre(grupoCreateDTO.nombre())) {
             throw new YaExisteElRecursoException("El nombre del grupo ya existe");
         }
 
@@ -79,7 +80,6 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
         }
 
 
-
         Grupo grupoDb = new Grupo();
         grupoDb.setId(null);
         grupoDb.setNombre(grupoCreateDTO.nombre());
@@ -89,10 +89,11 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
 
         for (Integrante integrante : integranteList) {
 
-           if (integrante.getGrupo() != null) throw new IntegrantePertenecienteAGrupoException("Integrante con ID: " + integrante.getId() + " ya pertenece a un grupo");
+            if (integrante.getGrupo() != null)
+                throw new IntegrantePertenecienteAGrupoException("Integrante con ID: " + integrante.getId() + " ya pertenece a un grupo");
 
-                 integrante.setGrupo(grupoDb);
-                 this.integranteRepository.save(integrante);
+            integrante.setGrupo(grupoDb);
+            this.integranteRepository.save(integrante);
 
         }
 
@@ -102,7 +103,6 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                 new ResponseDTO.EstadoDTO("Grupo creado exitosamente", "200")
         );
     }
-
 
 
     /**
@@ -167,15 +167,15 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
     /**
      * Agrega un integrante a un grupo específico.
      *
-     * @param grupoId Identificador del grupo al que se agregara el integrante.
+     * @param grupoId        Identificador del grupo al que se agregara el integrante.
      * @param grupoUpdateDTO con la informacion del grupo.
      * @return {@link ResponseDTO} con la información del grupo actualizado.
-     * @throws RecursoNoEncontradoException si grupo  o integrante no existe.
+     * @throws RecursoNoEncontradoException           si grupo  o integrante no existe.
      * @throws IntegrantePertenecienteAGrupoException si el integrante ya está agregado a un grupo.
-     * @throws CupoExcedidoException si el grupo ya tiene el cupo máximo de integrantes (Autoridades o Auxiliares) segun la categoria
+     * @throws CupoExcedidoException                  si el grupo ya tiene el cupo máximo de integrantes (Autoridades o Auxiliares) segun la categoria
      */
     @Transactional
-public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoUpdateDTO grupoUpdateDTO) {
+    public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId, GrupoUpdateDTO grupoUpdateDTO) {
 
         Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + grupoId));
 
@@ -230,22 +230,22 @@ public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoU
         );
     }
 
-    public GrupoInitialResponseDTO getInicialCoordinador(Pageable pageable){
+    public GrupoInitialResponseDTO getInicialCoordinador(Pageable pageable) {
 
         Page<GrupoInitialDTO> grupoPage = grupoRepository.findAll(pageable).map(grupo -> this.grupoInitialMapper(grupo));
 
-        PaginaDTO<GrupoInitialDTO> grupoDTO=new PaginaDTO<>(grupoPage);
+        PaginaDTO<GrupoInitialDTO> grupoDTO = new PaginaDTO<>(grupoPage);
 
-        int totales=grupoDTO.paginacion().totalDeElementos().intValue();
+        int totales = grupoDTO.paginacion().totalDeElementos().intValue();
 
-        GlobalDTO global=GlobalDTO.builder()
+        GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)
                 .build();
 
-        return new GrupoInitialResponseDTO(global,grupoDTO);
+        return new GrupoInitialResponseDTO(global, grupoDTO.paginacion(), grupoDTO.contenido());
     }
 
-    private GrupoInitialDTO grupoInitialMapper(Grupo grupo){
+    private GrupoInitialDTO grupoInitialMapper(Grupo grupo) {
 
         return new GrupoInitialDTO(
                 grupo.getId(),
@@ -261,5 +261,5 @@ public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoU
                         integrante.getUsuario().getId()
                 )).collect(Collectors.toList())
         );
-        }
+    }
 }

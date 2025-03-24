@@ -6,6 +6,7 @@ import java.util.List;
 
 public record ProductoInitialResponseDTO(
         GlobalDTO global,
-        PaginaDTO<ProductoInitialDTO> productos
+        List<ProductoInitialDTO> productos,
+        PaginaDTO.PaginacionDTO paginacion
 ) {
 }
