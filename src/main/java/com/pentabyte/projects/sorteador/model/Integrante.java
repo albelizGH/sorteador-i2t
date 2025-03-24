@@ -35,5 +35,8 @@ public class Integrante {
     @OneToMany(mappedBy = "empleadoSolicitante")
     private List<SolicitudDeReemplazo> empleadoSolicitanteList;
 
+    @OneToMany(mappedBy = "integrante")
+    private List<Notificacion> notificaciones;
+
 
 }

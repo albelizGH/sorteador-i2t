@@ -18,6 +18,7 @@ import com.pentabyte.projects.sorteador.model.*;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.SorteoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
 
+    @Transactional
     @Override
     public ResponseDTO<AsignacionResponseDTO> crear(AsignacionCreateDTO dto) {
 
@@ -118,6 +120,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
      * planificadas y su paginación correspondiente.
      * @throws RecursoNoEncontradoException Si no se encuentran sorteos confirmados o categorías dentro del rango de fechas.
      */
+    @Transactional
     public ResponseDTO<PaginaDTO<AsignacionResponseDTO>> planificar(int semanas) {
         /*
          * Lógica de la planificación automática:
@@ -467,7 +470,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 asignacion.getSorteo().getProducto().getNombre(),
                 asignacion.getSorteo().getProducto().getOrden(),
                 asignacion.getSorteo().getFecha().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                asignacion.getEstado().getDisplayEstado(),
+                asignacion.getEstado(),
                 asignacion.getGrupo().getNombre(),
                 asignacion.getGrupo().getIntegranteList().stream()
                         .filter(integrante -> integrante.getRol().equals(Rol.AUXILIAR))

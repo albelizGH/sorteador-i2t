@@ -110,4 +110,18 @@ CREATE TABLE AUT_SOLICITUD_REEMPLAZO (
     CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_solicitante FOREIGN KEY (aut_asignacion_solicitante) REFERENCES AUT_ASIGNACION (id),
     CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_reemplazo FOREIGN KEY (aut_asignacion_reemplazo) REFERENCES AUT_ASIGNACION (id),
     CONSTRAINT un_aut_solicitud_solicitante UNIQUE (aut_empleado_solicitante, aut_asignacion_solicitante, fecha_solicitud)
+
+    );
+
+CREATE TABLE AUT_NOTIFICACION (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    aut_integrante_id BIGINT NOT NULL,
+    titulo VARCHAR(100) NOT NULL,
+    mensaje VARCHAR(255) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tipo ENUM('Reemplazos', 'Grupos', 'Asignaciones') NOT NULL,
+    CONSTRAINT pk_aut_notificacion PRIMARY KEY (id),
+    CONSTRAINT fk_aut_notificacion_aut_integrante FOREIGN KEY (aut_integrante_id) REFERENCES AUT_INTEGRANTE (id)
 );
+
+
