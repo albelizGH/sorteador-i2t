@@ -2,6 +2,8 @@ package com.pentabyte.projects.sorteador.repository;
 
 import com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanificacionDTO;
 import com.pentabyte.projects.sorteador.model.Asignacion;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -48,4 +50,18 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
             AND s.fecha >= :ahora
             """)
     List<Long> findAsignacionesBorradorConFechaMayorA(LocalDateTime ahora);
+
+    @Query(value = """
+            SELECT a
+            FROM Asignacion a
+            WHERE a.estado = 'PLANIFICADO'
+            """)
+    Page<Asignacion> findAsinacionesPlanificadas(Pageable pageable);
+
+    @Query(value = """
+            SELECT a
+            FROM Asignacion a
+            WHERE a.estado = 'BORRADOR'
+            """)
+    Page<Asignacion> findAsinacionesBorrador(Pageable pageable);
 }

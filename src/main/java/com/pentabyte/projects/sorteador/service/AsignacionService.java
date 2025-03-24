@@ -7,14 +7,14 @@ import com.pentabyte.projects.sorteador.dto.consultas.planificacion.IdSorteoCate
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.AsignacionUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.AsignacionCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.AsignacionResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.AsignacionInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.AsignacionInitialResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.AsignacionMapper;
 import com.pentabyte.projects.sorteador.mapper.SorteoMapper;
-import com.pentabyte.projects.sorteador.model.Asignacion;
-import com.pentabyte.projects.sorteador.model.Estado;
-import com.pentabyte.projects.sorteador.model.Grupo;
-import com.pentabyte.projects.sorteador.model.Sorteo;
+import com.pentabyte.projects.sorteador.model.*;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.SorteoRepository;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -441,5 +442,42 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
 
+    public AsignacionInitialResponseDTO getInicialCoordinador(Pageable pageable) {
+
+        Page<AsignacionInitialDTO> asignacionPlanificadaPage = this.asignacionRepository.findAsinacionesPlanificadas(pageable).map(this::AsignacionInitialMapper);
+        Page<AsignacionInitialDTO> asignacionBorradorPage = this.asignacionRepository.findAsinacionesBorrador(pageable).map(this::AsignacionInitialMapper);
+
+        PaginaDTO<AsignacionInitialDTO> asignacionPlanificadaDTO = new PaginaDTO<>(asignacionPlanificadaPage);
+        PaginaDTO<AsignacionInitialDTO> asignacionBorradorDTO = new PaginaDTO<>(asignacionBorradorPage);
+
+        int asignacionesTotales = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue() + asignacionBorradorDTO.paginacion().cantidadDeElementos().intValue();
+        int planificadas = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue();
+        int borrador = asignacionBorradorDTO.paginacion().cantidadDeElementos().intValue();
+
+        GlobalDTO global = new GlobalDTO(asignacionesTotales, planificadas, borrador);
+
+        return new AsignacionInitialResponseDTO(asignacionPlanificadaDTO, asignacionBorradorDTO, global);
+    }
+
+    private AsignacionInitialDTO AsignacionInitialMapper(Asignacion asignacion) {
+        return new AsignacionInitialDTO(
+                asignacion.getId(),
+                asignacion.getGrupo().getId(),
+                asignacion.getSorteo().getId(),
+                asignacion.getSorteo().getProducto().getNombre(),
+                asignacion.getSorteo().getProducto().getOrden(),
+                asignacion.getSorteo().getFecha().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                asignacion.getEstado().getDisplayEstado(),
+                asignacion.getGrupo().getNombre(),
+                asignacion.getGrupo().getIntegranteList().stream()
+                        .filter(integrante -> integrante.getRol().equals(Rol.AUXILIAR))
+                        .map(integrante -> integrante.getNombre())
+                        .collect(Collectors.toList()),
+                asignacion.getGrupo().getIntegranteList().stream()
+                        .filter(integrante -> integrante.getRol().equals(Rol.AUTORIDAD))
+                        .map(integrante -> integrante.getNombre())
+                        .collect(Collectors.toList())
+        );
+    }
 }
 
