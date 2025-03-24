@@ -25,14 +25,16 @@ public class InitialStateCoordinador {
     private final SorteoService sorteoService;
     private final SolicitudDeReemplazoService solicitudDeReemplazoService;
     private final CategoriaService categoriaService;
+    private final IntegranteService integranteService;
     @Autowired
-    public InitialStateCoordinador(AsignacionService asignacionService, GrupoService grupoService, ProductoService productoService, SorteoService sorteoService, SolicitudDeReemplazoService solicitudDeReemplazoService, CategoriaService categoriaService) {
+    public InitialStateCoordinador(AsignacionService asignacionService, GrupoService grupoService, ProductoService productoService, SorteoService sorteoService, SolicitudDeReemplazoService solicitudDeReemplazoService, CategoriaService categoriaService, IntegranteService integranteService) {
         this.asignacionService = asignacionService;
         this.grupoService = grupoService;
         this.productoService = productoService;
         this.sorteoService = sorteoService;
         this.solicitudDeReemplazoService = solicitudDeReemplazoService;
         this.categoriaService = categoriaService;
+        this.integranteService = integranteService;
     }
 
 
@@ -94,7 +96,6 @@ public class InitialStateCoordinador {
         return ResponseEntity.ok(response);
     }
 
-
     @Operation(
             summary = "Obtener el estado inicial de reemplazos",
             description = "Obtiene el estado inicial de los reemplazos"
@@ -104,4 +105,15 @@ public class InitialStateCoordinador {
         ReemplazoInitialResponseDTO response = this.solicitudDeReemplazoService.getIncialReemplazosCoordinador(pageable);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(
+            summary="Obtener el estado inicial de integrante",
+            description="Obtiene el estado inicial de un integrante por su id"
+    )
+    @GetMapping("/integrante")
+    public ResponseEntity getInicialIntegranteById(@RequestParam Long id){
+        IntegranteInitialDTO response=this.integranteService.getInicialByIntegranteById(id);
+        return ResponseEntity.ok(response);
+    }
+
 }

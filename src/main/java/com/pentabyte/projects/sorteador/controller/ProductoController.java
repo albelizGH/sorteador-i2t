@@ -47,14 +47,5 @@ public class ProductoController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Crear un nuevo producto",
-            description = "Registra un nuevo producto en el sistema con los datos proporcionados."
-    )
-    @PostMapping
-    public ResponseEntity<ResponseDTO<ProductoResponseDTO>> crear(
-            @RequestBody @Valid ProductoCreateDTO producto) {
-        ResponseDTO<ProductoResponseDTO> response = productoService.crear(producto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+
 }

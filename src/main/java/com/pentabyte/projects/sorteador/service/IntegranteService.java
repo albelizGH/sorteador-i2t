@@ -5,6 +5,7 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.IntegranteUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.IntegranteCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.IntegranteInitialDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.IntegranteMapper;
@@ -110,4 +111,27 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                 new ResponseDTO.EstadoDTO("Lista de integrantes obtenida exitosamente", "200")
         );
     }
-}
+
+
+
+    public IntegranteInitialDTO getInicialByIntegranteById(Long id){
+
+        Integrante integrante=integranteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
+
+        return integranteInitialMapper(integrante);
+    }
+
+    private IntegranteInitialDTO integranteInitialMapper(Integrante integrante){
+        return new IntegranteInitialDTO(
+                integrante.getId(),
+                integrante.getGrupo().getId(),
+                integrante.getNombre(),
+                integrante.getLegajo(),
+                integrante.getRol(),
+                integrante.getUsuario().getId()
+        );
+
+    }
+    }
+

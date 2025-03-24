@@ -140,6 +140,13 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         return new ProductoInitialResponseDTO(global,productoDTO);
     }
 
+    public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable){
+
+        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.productoInitialMapper(producto));
+
+        return new PaginaDTO<>(productoPage);
+    }
+
     private ProductoInitialDTO productoInitialMapper(Producto producto){
 
         return new ProductoInitialDTO(
@@ -149,7 +156,11 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 producto.getCategoria().getNombre()
         );
 
-        }
     }
+
+
+
+}
+
 
 

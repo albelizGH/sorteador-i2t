@@ -45,4 +45,6 @@ public class CategoriaTopeCoordinadorController {
         ResponseDTO<CategoriaTopeResponseDTO> response = categoriaTopeService.actualizar(id, categoriaTopeUpdateDTO);
         return ResponseEntity.ok(response);
     }
+
+
 }

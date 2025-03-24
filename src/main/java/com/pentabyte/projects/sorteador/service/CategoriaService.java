@@ -6,10 +6,7 @@ import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaUpdat
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaCreateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaTopeInitialDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.*;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.exception.YaExisteElRecursoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
@@ -207,6 +204,12 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
         return new CategoriaInitialResponseDTO(global,categoriaDTO);
 
     }
+
+    public PaginaDTO<CategoriaInitialDTO> getCategoriasCoordinador(Pageable paginacion){
+        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.categoriaInitialMapper(categoria));
+        return new PaginaDTO<>(categoriaPage);
+    }
+
     private CategoriaInitialDTO categoriaInitialMapper(Categoria categoria){
 
         return new CategoriaInitialDTO(
