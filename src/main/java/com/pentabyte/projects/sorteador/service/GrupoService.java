@@ -5,6 +5,10 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.GrupoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.GrupoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.GrupoResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GrupoInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GrupoInitialResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.IntegranteInitialDTO;
 import com.pentabyte.projects.sorteador.exception.*;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.GrupoMapper;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Servicio que gestiona la lógica de negocio de los grupos.
@@ -170,59 +175,91 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
      * @throws CupoExcedidoException si el grupo ya tiene el cupo máximo de integrantes (Autoridades o Auxiliares) segun la categoria
      */
     @Transactional
-public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoUpdateDTO grupoUpdateDTO){
+public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoUpdateDTO grupoUpdateDTO) {
 
-    Grupo grupo=grupoRepository.findById(grupoId).orElseThrow(()->new RecursoNoEncontradoException("Grupo no encontrado con ID: "+grupoId));
+        Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + grupoId));
 
-    List<Integrante> integranteList= integranteRepository.findAllById(grupoUpdateDTO.integrantesIds());
+        List<Integrante> integranteList = integranteRepository.findAllById(grupoUpdateDTO.integrantesIds());
 
-    if (grupoUpdateDTO.integrantesIds().size() != integranteList.size()) {
-        throw new RecursoNoEncontradoException("Uno o más integrantes no encontrados con los IDs proporcionados: " + grupoUpdateDTO.integrantesIds());
-    }
+        if (grupoUpdateDTO.integrantesIds().size() != integranteList.size()) {
+            throw new RecursoNoEncontradoException("Uno o más integrantes no encontrados con los IDs proporcionados: " + grupoUpdateDTO.integrantesIds());
+        }
 
-    Integer cantidadMaximaAuxiliares = categoriaTopeRepository.obtenerCantidadMaximaPorCategoria(grupo.getCategoria().getId(), 0);
-    Integer cantidadMaximaAutoridades = categoriaTopeRepository.obtenerCantidadMaximaPorCategoria(grupo.getCategoria().getId(), 1);
+        Integer cantidadMaximaAuxiliares = categoriaTopeRepository.obtenerCantidadMaximaPorCategoria(grupo.getCategoria().getId(), 0);
+        Integer cantidadMaximaAutoridades = categoriaTopeRepository.obtenerCantidadMaximaPorCategoria(grupo.getCategoria().getId(), 1);
 
-    Integer cantidadIntegrantesAuxiliares = categoriaTopeRepository.obtenerCantidadIntegrantes(grupo.getCategoria().getId(), "Auxiliar");
-    Integer cantidadIntegrantesAutoridades = categoriaTopeRepository.obtenerCantidadIntegrantes(grupo.getCategoria().getId(), "Autoridad");
+        Integer cantidadIntegrantesAuxiliares = categoriaTopeRepository.obtenerCantidadIntegrantes(grupo.getCategoria().getId(), "Auxiliar");
+        Integer cantidadIntegrantesAutoridades = categoriaTopeRepository.obtenerCantidadIntegrantes(grupo.getCategoria().getId(), "Autoridad");
 
-    for(Integrante integrante:integranteList){
+        for (Integrante integrante : integranteList) {
 
-        if (integrante.getGrupo() != null) throw new IntegrantePertenecienteAGrupoException("El integrante con ID: " + integrante.getId() + " ya pertenece al grupo: "+integrante.getGrupo().getNombre());
+            if (integrante.getGrupo() != null)
+                throw new IntegrantePertenecienteAGrupoException("El integrante con ID: " + integrante.getId() + " ya pertenece al grupo: " + integrante.getGrupo().getNombre());
 
-        switch (integrante.getRol().getDisplaySolEstado()) {
+            switch (integrante.getRol().getDisplaySolEstado()) {
 
-            case "Auxiliar":
+                case "Auxiliar":
 
-                if (cantidadIntegrantesAuxiliares >= cantidadMaximaAuxiliares) {
-                    throw new CupoExcedidoException("Cupo de integrantes auxiliares excedido");
-                }
+                    if (cantidadIntegrantesAuxiliares >= cantidadMaximaAuxiliares) {
+                        throw new CupoExcedidoException("Cupo de integrantes auxiliares excedido");
+                    }
 
-                cantidadIntegrantesAuxiliares++;
+                    cantidadIntegrantesAuxiliares++;
 
-                break;
+                    break;
 
-            case "Autoridad":
-                if (cantidadIntegrantesAutoridades >= cantidadMaximaAutoridades) {
-                    throw new CupoExcedidoException("Cupo de integrantes autoridades excedido");
-                }
+                case "Autoridad":
+                    if (cantidadIntegrantesAutoridades >= cantidadMaximaAutoridades) {
+                        throw new CupoExcedidoException("Cupo de integrantes autoridades excedido");
+                    }
 
-                cantidadIntegrantesAutoridades++;
+                    cantidadIntegrantesAutoridades++;
 
-                break;
+                    break;
+
+            }
+            integrante.setGrupo(grupo);
+            integranteRepository.save(integrante);
 
         }
-        integrante.setGrupo(grupo);
-        integranteRepository.save(integrante);
 
+        return new ResponseDTO<GrupoResponseDTO>(
+                grupoMapper.toResponseDTO(grupo),
+                new ResponseDTO.EstadoDTO("Integrante agregado exitosamente", "200")
+
+        );
     }
 
-    return new ResponseDTO<GrupoResponseDTO>(
-            grupoMapper.toResponseDTO(grupo),
-            new ResponseDTO.EstadoDTO("Integrante agregado exitosamente","200")
+    public GrupoInitialResponseDTO getInicialCoordinador(Pageable pageable){
 
-    );
+        Page<GrupoInitialDTO> grupoPage = grupoRepository.findAll(pageable).map(grupo -> this.grupoInitialMapper(grupo));
 
-}
+        PaginaDTO<GrupoInitialDTO> grupoDTO=new PaginaDTO<>(grupoPage);
 
+        int totales=grupoDTO.paginacion().totalDeElementos().intValue();
+
+        GlobalDTO global=GlobalDTO.builder()
+                .totales(totales)
+                .build();
+
+        return new GrupoInitialResponseDTO(global,grupoDTO);
+    }
+
+    private GrupoInitialDTO grupoInitialMapper(Grupo grupo){
+
+        return new GrupoInitialDTO(
+                grupo.getId(),
+                grupo.getNombre(),
+                grupo.getCategoria().getNombre(),
+                grupo.getOrdenDeGrupo(),
+                grupo.getIntegranteList().stream().map(integrante -> new IntegranteInitialDTO(
+                        integrante.getId(),
+                        integrante.getGrupo().getId(),
+                        integrante.getNombre(),
+                        integrante.getLegajo(),
+                        integrante.getRol(),
+                        integrante.getUsuario().getId()
+                )).collect(Collectors.toList())
+        );
+        }
 }

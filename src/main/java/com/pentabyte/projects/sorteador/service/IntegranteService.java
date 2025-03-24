@@ -10,8 +10,10 @@ import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.IntegranteMapper;
 import com.pentabyte.projects.sorteador.model.Grupo;
 import com.pentabyte.projects.sorteador.model.Integrante;
+import com.pentabyte.projects.sorteador.model.Usuario;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
+import com.pentabyte.projects.sorteador.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,19 +27,21 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     private final IntegranteRepository integranteRepository;
     private final GrupoRepository grupoRepository;
     private final IntegranteMapper integranteMapper;
-
+    private final UsuarioRepository usuarioRepository;
     @Autowired
-    public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper) {
+    public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper, UsuarioRepository usuarioRepository) {
         this.integranteRepository = integranteRepository;
         this.grupoRepository = grupoRepository;
         this.integranteMapper = integranteMapper;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
     public ResponseDTO<IntegranteResponseDTO> crear(IntegranteCreateDTO dto) {
         Grupo grupo = grupoRepository.findById(dto.grupoId())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + dto.grupoId()));
-
+        Usuario usuario=this.usuarioRepository.findById(dto.usuarioId())
+                .orElseThrow(()->new RecursoNoEncontradoException("Usuario no encontrado con ID: "+dto.usuarioId()));
         Integrante integrante = integranteRepository.save(new Integrante(
                 null,
                 dto.nombre(),
@@ -46,7 +50,8 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                 grupo,
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                usuario
         ));
 
         return new ResponseDTO<>(

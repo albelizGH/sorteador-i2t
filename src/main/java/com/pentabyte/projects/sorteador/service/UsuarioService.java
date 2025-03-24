@@ -8,7 +8,9 @@ import com.pentabyte.projects.sorteador.dto.response.UsuarioResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.UsuarioMapper;
+import com.pentabyte.projects.sorteador.model.Integrante;
 import com.pentabyte.projects.sorteador.model.Usuario;
+import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
 import com.pentabyte.projects.sorteador.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,11 +25,12 @@ import org.springframework.stereotype.Service;
 public class UsuarioService implements CrudServiceInterface<UsuarioResponseDTO, Long, UsuarioCreateDTO, UsuarioUpdateDTO> {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
-
+    private final IntegranteRepository integranteRepository;
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, IntegranteRepository integranteRepository) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
+        this.integranteRepository = integranteRepository;
     }
 
     /**
@@ -38,10 +41,14 @@ public class UsuarioService implements CrudServiceInterface<UsuarioResponseDTO, 
      */
     @Override
     public ResponseDTO<UsuarioResponseDTO> crear(UsuarioCreateDTO dto) {
+        Integrante integrante=this.integranteRepository.findById(dto.integranteId()).
+                orElseThrow(()->new RecursoNoEncontradoException("Integrante no encontrado con ID: "+dto.integranteId()));
         Usuario usuarioDb = usuarioRepository.save(new Usuario(
                 null,
                 dto.usuario(),
-                dto.contrasenia()
+                dto.contrasenia(),
+                integrante
+
         ));
 
         UsuarioResponseDTO usuarioResponseDTO = usuarioMapper.toResponseDTO(usuarioDb);
