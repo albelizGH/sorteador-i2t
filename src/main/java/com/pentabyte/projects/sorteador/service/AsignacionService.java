@@ -459,7 +459,13 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 .borrador(borrador)
                 .build();
 
-        return new AsignacionInitialResponseDTO(asignacionPlanificadaDTO, asignacionBorradorDTO, global);
+        return new AsignacionInitialResponseDTO(
+                asignacionPlanificadaDTO.contenido(),
+                asignacionBorradorDTO.contenido(),
+                global,
+                asignacionPlanificadaDTO.paginacion(),
+                asignacionBorradorDTO.paginacion()
+        );
     }
 
     public PaginaDTO<AsignacionInitialDTO> getAsignacionesPlanificadaPage(Pageable pageable, Long grupoId) {
