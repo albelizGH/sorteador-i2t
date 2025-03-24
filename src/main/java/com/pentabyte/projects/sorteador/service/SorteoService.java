@@ -135,8 +135,8 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
 
 
     public SorteoInitialResponseDTO getInicialSorteosCoordinador(Pageable pageable, Long categoriaId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        Page<SorteoInitialDTO> sorteosPage = sorteoRepository.findByCategoriaAndFecha(pageable, categoriaId, fechaInicio, fechaFin).map(this::toInitialDTO);
-        PaginaDTO<SorteoInitialDTO> paginaDTO = new PaginaDTO<SorteoInitialDTO>(sorteosPage);
+
+        PaginaDTO<SorteoInitialDTO> paginaDTO = getSorteosCoordinador(pageable, categoriaId, fechaInicio, fechaFin);
 
         int confirmados = paginaDTO.contenido().stream().filter(SorteoInitialDTO::confirmado).toList().size();
         int noConfirmados = paginaDTO.contenido().stream().filter(sorteo -> !sorteo.confirmado()).toList().size();
@@ -152,6 +152,11 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
                 globalDTO,
                 paginaDTO
         );
+    }
+
+    public PaginaDTO<SorteoInitialDTO> getSorteosCoordinador(Pageable pageable, Long categoriaId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        Page<SorteoInitialDTO> sorteosPage = sorteoRepository.findByCategoriaAndFecha(pageable, categoriaId, fechaInicio, fechaFin).map(this::toInitialDTO);
+        return new PaginaDTO<>(sorteosPage);
     }
 
     private SorteoInitialDTO toInitialDTO(Sorteo sorteo) {
