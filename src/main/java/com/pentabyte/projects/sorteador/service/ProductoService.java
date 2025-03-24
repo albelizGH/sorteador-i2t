@@ -5,6 +5,9 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.ProductoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.ProductoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.ProductoResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.ProductoInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.ProductoInitialResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.ProductoMapper;
@@ -121,4 +124,32 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 new ResponseDTO.EstadoDTO("Lista de productos obtenida exitosamente", "200")
         );
     }
-}
+
+    public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable){
+
+        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.productoInitialMapper(producto));
+
+        PaginaDTO<ProductoInitialDTO> productoDTO=new PaginaDTO<>(productoPage);
+
+        int totales=productoDTO.paginacion().totalDeElementos().intValue();
+
+        GlobalDTO global= GlobalDTO.builder()
+                .totales(totales)
+                .build();
+
+        return new ProductoInitialResponseDTO(global,productoDTO);
+    }
+
+    private ProductoInitialDTO productoInitialMapper(Producto producto){
+
+        return new ProductoInitialDTO(
+                producto.getId(),
+                producto.getNombre(),
+                producto.getOrden(),
+                producto.getCategoria().getNombre()
+        );
+
+        }
+    }
+
+

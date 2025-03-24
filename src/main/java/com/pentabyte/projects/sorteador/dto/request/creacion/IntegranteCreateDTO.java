@@ -18,6 +18,7 @@ public record IntegranteCreateDTO(
         Rol rol,
 
 
-        Long grupoId
+        Long grupoId,
+        Long usuarioId
 ) {
 }

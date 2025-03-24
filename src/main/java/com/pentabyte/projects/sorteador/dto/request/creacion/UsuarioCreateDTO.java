@@ -8,6 +8,8 @@ public record UsuarioCreateDTO(
         String usuario,
 
         @NotBlank(message = "La contraseña no puede estar vacía")
-        String contrasenia
+        String contrasenia,
+
+        Long integranteId
 ) {
 }

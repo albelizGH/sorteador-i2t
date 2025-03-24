@@ -1,13 +1,8 @@
 package com.pentabyte.projects.sorteador.controller.coordinador;
 
-import com.pentabyte.projects.sorteador.dto.response.initial.AsignacionInitialResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.SorteoInitialResponseDTO;
-import com.pentabyte.projects.sorteador.service.AsignacionService;
-import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
-import com.pentabyte.projects.sorteador.service.SorteoService;
+import com.pentabyte.projects.sorteador.dto.response.initial.*;
+import com.pentabyte.projects.sorteador.service.*;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,20 +17,54 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/coordinador/inicial")
-@Tag(name = "Estado inicial coordinador", description = "Endpoints para la gestión del estado inicial de las asignaciones, sorteos y reemplazos para el coordinador")
 public class InitialStateCoordinador {
 
     private final AsignacionService asignacionService;
+    private final GrupoService grupoService;
+    private final ProductoService productoService;
     private final SorteoService sorteoService;
     private final SolicitudDeReemplazoService solicitudDeReemplazoService;
-
+    private final CategoriaService categoriaService;
     @Autowired
-    public InitialStateCoordinador(AsignacionService asignacionService, SorteoService sorteoService, SolicitudDeReemplazoService solicitudDeReemplazoService) {
+    public InitialStateCoordinador(AsignacionService asignacionService, GrupoService grupoService, ProductoService productoService, SorteoService sorteoService, SolicitudDeReemplazoService solicitudDeReemplazoService, CategoriaService categoriaService) {
         this.asignacionService = asignacionService;
+        this.grupoService = grupoService;
+        this.productoService = productoService;
         this.sorteoService = sorteoService;
         this.solicitudDeReemplazoService = solicitudDeReemplazoService;
+        this.categoriaService = categoriaService;
     }
 
+
+    @Operation(
+            summary="Obtener todos los grupos",
+            description="Obtiene una lista paginada de todos los grupos existentes en el sistema."
+    )
+    @GetMapping("/grupos")
+    public ResponseEntity getGrupos(@PageableDefault(size = 5) Pageable pageable){
+        GrupoInitialResponseDTO response=this.grupoService.getInicialCoordinador(pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary="Obtener todos los productos",
+            description = "Obtiene una lista paginada de todos los productos existentes en el sistema."
+    )
+    @GetMapping("/productos")
+    public ResponseEntity getProductos(@PageableDefault(size = 5) Pageable pageable){
+        ProductoInitialResponseDTO response=this.productoService.getInicialCoordinador(pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary="Obtener todas las categorias",
+            description = "Obtiene una lista paginada de todas las categorias existentes en el sistema."
+    )
+    @GetMapping("/categorias")
+    public ResponseEntity getCategorias(@PageableDefault(size = 5) Pageable pageable){
+        CategoriaInitialResponseDTO response=this.categoriaService.getInicialCoordinador(pageable);
+        return ResponseEntity.ok(response);
+    }
 
     @Operation(
             summary = "Obtener el estado inicial de asignaciones",

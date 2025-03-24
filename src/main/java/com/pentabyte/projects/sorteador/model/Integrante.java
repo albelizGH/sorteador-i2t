@@ -38,5 +38,7 @@ public class Integrante {
     @OneToMany(mappedBy = "integrante")
     private List<Notificacion> notificaciones;
 
-
+    @OneToOne
+    @JoinColumn(name = "aut_usuario_id")
+    private Usuario usuario;
 }

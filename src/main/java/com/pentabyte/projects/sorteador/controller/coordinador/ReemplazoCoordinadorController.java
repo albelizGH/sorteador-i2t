@@ -107,7 +107,7 @@ public class ReemplazoCoordinadorController {
             summary = "Obtener reemplazos pendientes",
             description = "Obtiene una lista paginada de reemplazos pendientes."
     )
-    @GetMapping("/reemplazos")
+    @GetMapping("/pendientes")
     public ResponseEntity getReemplazosPendientes(@PageableDefault(size = 5) Pageable pageable) {
         PaginaDTO<ReemplazoInitialDTO> response = this.solicitudDeReemplazoService.getReemplazosPendientesCoordinador(pageable);
         return ResponseEntity.ok(response);
@@ -117,7 +117,7 @@ public class ReemplazoCoordinadorController {
             summary = "Obtener reemplazos no pendientes",
             description = "Obtiene una lista paginada de reemplazos no pendientes."
     )
-    @GetMapping("/reemplazos")
+    @GetMapping("/no-pendientes")
     public ResponseEntity getReemplazosNoPendiente(@PageableDefault(size = 5) Pageable pageable) {
         PaginaDTO<ReemplazoInitialDTO> response = this.solicitudDeReemplazoService.getReemplazosNoPendientesCoordinador(pageable);
         return ResponseEntity.ok(response);

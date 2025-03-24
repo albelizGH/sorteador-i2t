@@ -19,4 +19,7 @@ public class Usuario {
     private String usuario;
 
     private String contrasenia;
+
+    @OneToOne(mappedBy = "usuario")
+    private Integrante integrante;
 }
