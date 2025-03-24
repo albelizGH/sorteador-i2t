@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/asignaciones")
 @Tag(name = "Asignación", description = "Endpoints para la gestión de asignaciones")
@@ -61,8 +59,15 @@ public class AsignacionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/test")
-    public List<?> test() {
-        return this.asignacionService.ejecutarPlanificacion(4);
+    @Operation(
+            summary = "Generar planificación automática",
+            description = "Genera una planificación automática para las semanas requeridas."
+    )
+    @GetMapping("/planificar")
+    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> ejecutarPlanificacion(
+            @RequestParam("cantidadDeSemanas") int cantidadDeSemanas) {
+        ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.planificar(cantidadDeSemanas);
+        return ResponseEntity.ok(response);
     }
+
 }
