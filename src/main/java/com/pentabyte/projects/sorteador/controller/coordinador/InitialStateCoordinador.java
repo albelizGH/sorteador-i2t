@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/coordinador/inicial")
-public class InitialState {
+public class InitialStateCoordinador {
 
     private final AsignacionService asignacionService;
 
     @Autowired
-    public InitialState(AsignacionService asignacionService) {
+    public InitialStateCoordinador(AsignacionService asignacionService) {
         this.asignacionService = asignacionService;
     }
 
