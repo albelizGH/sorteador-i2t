@@ -36,7 +36,7 @@ public class InitialStateCoordinador {
     )
     @GetMapping("/asignaciones")
     public ResponseEntity getAsignaciones(@PageableDefault(size = 5) Pageable pageable) {
-        AsignacionInitialResponseDTO response = this.asignacionService.getInicial(pageable,null);
+        AsignacionInitialResponseDTO response = this.asignacionService.getInicialCoordinador(pageable);
         return ResponseEntity.ok(response);
     }
 

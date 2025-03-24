@@ -31,11 +31,7 @@ import org.springframework.web.bind.annotation.*;
         //las asignaciones pero x ID del integrante//
         //los grupos por integrante//
 
-        @GetMapping("/asignaciones")
-        public ResponseEntity getAsignaciones(@PageableDefault(size = 5) Pageable pageable, @RequestParam Long id) {
-            AsignacionInitialResponseDTO response = this.asignacionService.getInicial(pageable,id);
-            return ResponseEntity.ok(response);
-        }
+
 
 
 
