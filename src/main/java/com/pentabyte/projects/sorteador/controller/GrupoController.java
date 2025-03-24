@@ -5,7 +5,6 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.GrupoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.GrupoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.GrupoResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.service.GrupoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,8 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/grupos")
@@ -62,16 +59,14 @@ public class GrupoController {
     }
 
     @Operation(
-            summary ="Agregar integrante a un grupo",
+            summary = "Agregar integrante a un grupo",
             description = "Se agrega un integrante a un grupo específico segun su ID de integrante y el ID de grupo."
     )
     @PatchMapping("/{grupoId}")
     public ResponseEntity<ResponseDTO<GrupoResponseDTO>> agregarIntegrante(
-                @PathVariable Long grupoId , @RequestBody @Valid GrupoUpdateDTO grupoUpdateDTO) {
-        ResponseDTO<GrupoResponseDTO> response=grupoService.agregarIntegranteAGrupo(grupoId,grupoUpdateDTO);
+            @PathVariable Long grupoId, @RequestBody @Valid GrupoUpdateDTO grupoUpdateDTO) {
+        ResponseDTO<GrupoResponseDTO> response = grupoService.agregarIntegranteAGrupo(grupoId, grupoUpdateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
-
     }
 
 }

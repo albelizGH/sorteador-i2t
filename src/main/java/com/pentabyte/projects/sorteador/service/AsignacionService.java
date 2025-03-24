@@ -25,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -445,13 +444,10 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
 
-    public AsignacionInitialResponseDTO getInicialCoordinador(Pageable pageable) {
+    public AsignacionInitialResponseDTO getInicialAsignacionesCoordinador(Pageable pageable, Long grupoId) {
 
-        Page<AsignacionInitialDTO> asignacionPlanificadaPage = this.asignacionRepository.findAsinacionesPlanificadas(pageable).map(this::AsignacionInitialMapper);
-        Page<AsignacionInitialDTO> asignacionBorradorPage = this.asignacionRepository.findAsinacionesBorrador(pageable).map(this::AsignacionInitialMapper);
-
-        PaginaDTO<AsignacionInitialDTO> asignacionPlanificadaDTO = new PaginaDTO<>(asignacionPlanificadaPage);
-        PaginaDTO<AsignacionInitialDTO> asignacionBorradorDTO = new PaginaDTO<>(asignacionBorradorPage);
+        PaginaDTO<AsignacionInitialDTO> asignacionPlanificadaDTO = this.getAsignacionesPlanificadaPage(pageable, grupoId);
+        PaginaDTO<AsignacionInitialDTO> asignacionBorradorDTO = this.getAsignacionesBorradorPage(pageable, grupoId);
 
         int asignacionesTotales = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue() + asignacionBorradorDTO.paginacion().cantidadDeElementos().intValue();
         int planificadas = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue();
@@ -466,14 +462,26 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         return new AsignacionInitialResponseDTO(asignacionPlanificadaDTO, asignacionBorradorDTO, global);
     }
 
-    private AsignacionInitialDTO AsignacionInitialMapper(Asignacion asignacion) {
+    public PaginaDTO<AsignacionInitialDTO> getAsignacionesPlanificadaPage(Pageable pageable, Long grupoId) {
+        Page<AsignacionInitialDTO> asignacionPlanificadaPage = this.asignacionRepository.findAsinacionesPlanificadas(pageable, grupoId).map(this::asignacionInitialMapper);
+        PaginaDTO<AsignacionInitialDTO> asignacionPlanificadaDTO = new PaginaDTO<>(asignacionPlanificadaPage);
+        return asignacionPlanificadaDTO;
+    }
+
+    public PaginaDTO<AsignacionInitialDTO> getAsignacionesBorradorPage(Pageable pageable, Long grupoId) {
+        Page<AsignacionInitialDTO> asignacionBorradorPage = this.asignacionRepository.findAsinacionesBorrador(pageable, grupoId).map(this::asignacionInitialMapper);
+        PaginaDTO<AsignacionInitialDTO> asignacionBorradorDTO = new PaginaDTO<>(asignacionBorradorPage);
+        return asignacionBorradorDTO;
+    }
+
+    private AsignacionInitialDTO asignacionInitialMapper(Asignacion asignacion) {
         return new AsignacionInitialDTO(
                 asignacion.getId(),
                 asignacion.getGrupo().getId(),
                 asignacion.getSorteo().getId(),
                 asignacion.getSorteo().getProducto().getNombre(),
                 asignacion.getSorteo().getProducto().getOrden(),
-                asignacion.getSorteo().getFecha().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                asignacion.getSorteo().getFecha(),
                 asignacion.getEstado(),
                 asignacion.getGrupo().getNombre(),
                 asignacion.getGrupo().getIntegranteList().stream()
@@ -484,6 +492,26 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                         .filter(integrante -> integrante.getRol().equals(Rol.AUTORIDAD))
                         .map(integrante -> integrante.getNombre())
                         .collect(Collectors.toList())
+        );
+    }
+
+    public ResponseDTO<PaginaDTO<AsignacionResponseDTO>> obtenerPlanificadas(Pageable pageable) {
+        Page<AsignacionResponseDTO> asignacionPage = asignacionRepository.findAsinacionesPlanificadas(pageable, null)
+                .map(asignacionMapper::toResponseDTO);
+
+        return new ResponseDTO<>(
+                new PaginaDTO<>(asignacionPage),
+                new ResponseDTO.EstadoDTO("Lista de asignaciones planificadas obtenida exitosamente", "200")
+        );
+    }
+
+    public ResponseDTO<PaginaDTO<AsignacionResponseDTO>> obtenerBorrador(Pageable pageable) {
+        Page<AsignacionResponseDTO> asignacionPage = asignacionRepository.findAsinacionesBorrador(pageable, null)
+                .map(asignacionMapper::toResponseDTO);
+
+        return new ResponseDTO<>(
+                new PaginaDTO<>(asignacionPage),
+                new ResponseDTO.EstadoDTO("Lista de asignaciones en borrador obtenida exitosamente", "200")
         );
     }
 }

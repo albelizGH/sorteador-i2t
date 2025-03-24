@@ -7,11 +7,17 @@ import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplaz
 import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialResponseDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.SolicitudDeReemplazoMapper;
 import com.pentabyte.projects.sorteador.model.*;
-import com.pentabyte.projects.sorteador.repository.*;
+import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
+import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
+import com.pentabyte.projects.sorteador.repository.SolicitudDeReemplazoRepository;
+import com.pentabyte.projects.sorteador.repository.SorteoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -150,7 +156,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
      * Obtiene una lista paginada de integrantes de mismo rol y distinto grupo del id de integrante.
      *
      * @param idSolicitante Id del integrante solicitante.
-     * @param paginacion Objeto de paginación proporcionado por Spring.
+     * @param paginacion    Objeto de paginación proporcionado por Spring.
      * @return {@link ResponseDTO} con la lista paginada y filtrada de integrantes.
      */
     public ResponseDTO<PaginaDTO<IntegranteResponseDTO>> obtenerMismoRolDistintoGrupo(Long idSolicitante, Pageable paginacion) {
@@ -180,7 +186,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
      * Recupera una lista paginada de fechas asociadas a un solicitante específico identificado por su ID.
      *
      * @param idSolicitante Id del integrante solicitante.
-     * @param paginacion Objeto de paginación proporcionado por Spring.
+     * @param paginacion    Objeto de paginación proporcionado por Spring.
      * @return {@link ResponseDTO} con la lista paginada de fechas.
      */
     public ResponseDTO<PaginaDTO<SorteoResponseDTO>> buscarFechasPorSolicitante(Long idSolicitante, Pageable paginacion) {
@@ -204,8 +210,8 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
      * Recupera una lista paginada de fechas asociadas a una devolución específica identificada por su ID, filtrando por un id de sorteo.
      *
      * @param idSolicitante Id del integrante solicitante.
-     * @param SorteoId Id del sorteo que el integrante reemplazará.
-     * @param paginacion Objeto de paginación proporcionado por Spring.
+     * @param SorteoId      Id del sorteo que el integrante reemplazará.
+     * @param paginacion    Objeto de paginación proporcionado por Spring.
      * @return {@link ResponseDTO} con la lista paginada de fechas.
      */
     public ResponseDTO<PaginaDTO<SorteoResponseDTO>> buscarFechasParaDevolucion(Long idSolicitante, Long SorteoId, Pageable paginacion) {
@@ -229,7 +235,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     /**
      * Actualiza una solicitud de reeemplazo aceptandola.
      *
-     * @param solicitudId Id de la solicitud de reemplazo.
+     * @param solicitudId           Id de la solicitud de reemplazo.
      * @param usuarioReemplazanteId Id del usuario reemplazante.
      * @return {@link ResponseDTO} con la solicitud de reemplazo actualizada.
      */
@@ -361,5 +367,53 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                 ),
                 new ResponseDTO.EstadoDTO("Solicitud de reemplazo aprobada exitosamente", "200")
         );
+    }
+
+    public ReemplazoInitialResponseDTO getIncialReemplazosCoordinador(Pageable pageable) {
+
+
+        PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesCoordinador(pageable);
+
+        PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesCoordinador(pageable);
+
+
+        GlobalDTO globalDTO = GlobalDTO.builder()
+                .pendientes(Math.toIntExact(solicitudesNoPendientes.paginacion().totalDeElementos()))
+                .noPendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
+                .build();
+
+        return new ReemplazoInitialResponseDTO(
+                globalDTO,
+                solicitudesPendientes,
+                solicitudesNoPendientes
+        );
+    }
+
+    public PaginaDTO<ReemplazoInitialDTO> getReemplazosPendientesCoordinador(Pageable pageable) {
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAll(pageable)
+                .map(this::toInitialDTO);
+        return new PaginaDTO<>(reemplazosPage);
+    }
+
+    public PaginaDTO<ReemplazoInitialDTO> getReemplazosNoPendientesCoordinador(Pageable pageable) {
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllNoPendientes(pageable)
+                .map(this::toInitialDTO);
+        return new PaginaDTO<>(reemplazosPage);
+    }
+
+    private ReemplazoInitialDTO toInitialDTO(SolicitudDeReemplazo solicitud) {
+        return new ReemplazoInitialDTO(
+                solicitud.getId(),
+                solicitud.getEmpleadoSolicitante().getNombre(),
+                solicitud.getEmpleadoReemplazo().getNombre(),
+                solicitud.getDescripcion(),
+                solicitud.getFechaDeSolicitud(),
+                solicitud.getAsignacionDeSolicitante().getSorteo().getFecha().toLocalDate(),
+                solicitud.getAsignacionDeSolicitante().getSorteo().getProducto().getNombre(),
+                solicitud.getEmpleadoSolicitante().getId(),
+                solicitud.getEmpleadoReemplazo().getId(),
+                solicitud.getEstadoDeSolicitud(),
+                solicitud.getAsignacionDeSolicitante().getId(),
+                solicitud.getAsignacionDeReemplazo().getId());
     }
 }

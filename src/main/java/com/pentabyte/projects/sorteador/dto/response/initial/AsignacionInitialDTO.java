@@ -2,6 +2,7 @@ package com.pentabyte.projects.sorteador.dto.response.initial;
 
 import com.pentabyte.projects.sorteador.model.Estado;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record AsignacionInitialDTO(
@@ -10,7 +11,7 @@ public record AsignacionInitialDTO(
         Long sorteoId,
         String producto,
         Integer orden,
-        String fecha,
+        LocalDateTime fecha,
         Estado estado,
         String grupo,
         List<String> autoridades,
