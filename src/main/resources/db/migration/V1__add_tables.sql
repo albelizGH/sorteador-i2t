@@ -100,7 +100,8 @@ CREATE TABLE AUT_SOLICITUD_REEMPLAZO (
     sol_estado ENUM(
         'PENDIENTE',
         'APROBADA',
-        'CANCELADA'
+        'CANCELADA',
+        'RECHAZADA'
     ),
     aut_asignacion_solicitante BIGINT NOT NULL,
     aut_asignacion_reemplazo BIGINT NOT NULL,

@@ -308,7 +308,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
             );
         }
 
-        solicitud.setEstadoDeSolicitud(SolEstado.CANCELADA);
+        solicitud.setEstadoDeSolicitud(SolEstado.RECHAZADA);
         solicitudDeReemplazoRepository.save(solicitud);
 
         return new ResponseDTO<>(
@@ -370,11 +370,11 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
         );
     }
 
-    public ReemplazoInitialResponseDTO getIncialReemplazosAuxiliar(Pageable pageable,Long id) {
+    public ReemplazoInitialResponseDTO getIncialReemplazosAuxiliar(Pageable pageable, Long id) {
 
 
-        PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesAuxiliar(pageable,id);
-        PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesAuxiliar(pageable,id);
+        PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesAuxiliar(pageable, id);
+        PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesAuxiliar(pageable, id);
 
         GlobalDTO globalDTO = GlobalDTO.builder()
                 .pendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
@@ -392,20 +392,20 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     }
 
 
-
-    public PaginaDTO<ReemplazoInitialDTO> getReemplazosPendientesAuxiliar(Pageable pageable,Long id) {
-        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllPendientesPorSolicitante(pageable,id)
+    public PaginaDTO<ReemplazoInitialDTO> getReemplazosPendientesAuxiliar(Pageable pageable, Long id) {
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllPendientesPorSolicitante(pageable, id)
                 .map(this::toInitialDTO);
         return new PaginaDTO<>(reemplazosPage);
     }
-    public PaginaDTO<ReemplazoInitialDTO> getReemplazosNoPendientesAuxiliar(Pageable pageable,Long id) {
-        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllNoPendientesPorSolicitante(pageable,id)
+
+    public PaginaDTO<ReemplazoInitialDTO> getReemplazosNoPendientesAuxiliar(Pageable pageable, Long id) {
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllNoPendientesPorSolicitante(pageable, id)
                 .map(this::toInitialDTO);
         return new PaginaDTO<>(reemplazosPage);
     }
 
     public ReemplazoInitialResponseDTO getIncialReemplazosCoordinador(Pageable pageable) {
-        
+
         PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesCoordinador(pageable);
 
         PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesCoordinador(pageable);
@@ -427,7 +427,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     }
 
     public PaginaDTO<ReemplazoInitialDTO> getReemplazosPendientesCoordinador(Pageable pageable) {
-        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAll(pageable)
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllPendientes(pageable)
                 .map(this::toInitialDTO);
         return new PaginaDTO<>(reemplazosPage);
     }

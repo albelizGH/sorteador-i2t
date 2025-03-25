@@ -4,6 +4,7 @@ import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.IntegranteCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.IntegranteInitialDTO;
 import com.pentabyte.projects.sorteador.service.IntegranteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,6 +58,16 @@ public class IntegranteController {
             @RequestBody @Valid IntegranteCreateDTO integrante) {
         ResponseDTO<IntegranteResponseDTO> response = integranteService.crear(integrante);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Obtener el estado inicial de integrante",
+            description = "Obtiene el estado inicial de un integrante por su id"
+    )
+    @GetMapping("/inicial")
+    public ResponseEntity getInicialIntegranteById(@RequestParam Long id) {
+        IntegranteInitialDTO response = this.integranteService.getInicialIntegranteByIdCoordinador(id);
+        return ResponseEntity.ok(response);
     }
 
 
