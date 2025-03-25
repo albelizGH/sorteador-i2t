@@ -90,11 +90,10 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
      * Hace un borrado lógico de un sorteo de la base de datos.
      *
      * @param id Identificador del sorteo a eliminar.
-     * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<SorteoResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
     /**

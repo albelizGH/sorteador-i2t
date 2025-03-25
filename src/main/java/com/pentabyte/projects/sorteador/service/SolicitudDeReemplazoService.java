@@ -95,8 +95,9 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     }
 
     @Override
-    public ResponseDTO<SolicitudDeReemplazoResponseDTO> eliminar(Long id) {
-        return null; // No se realiza ninguna modificación aquí
+    public void eliminar(Long id) {
+        this.solicitudDeReemplazoRepository.deleteById(id);
+
     }
 
     /**
@@ -367,6 +368,40 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                 ),
                 new ResponseDTO.EstadoDTO("Solicitud de reemplazo aprobada exitosamente", "200")
         );
+    }
+
+    public ReemplazoInitialResponseDTO getIncialReemplazosAuxiliar(Pageable pageable,Long id) {
+
+
+        PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesAuxiliar(pageable,id);
+        PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesAuxiliar(pageable,id);
+
+        GlobalDTO globalDTO = GlobalDTO.builder()
+                .pendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
+                .noPendientes(Math.toIntExact(solicitudesNoPendientes.paginacion().totalDeElementos()))
+                .build();
+
+        return new ReemplazoInitialResponseDTO(
+                globalDTO,
+                solicitudesPendientes.contenido(),
+                solicitudesNoPendientes.contenido(),
+                solicitudesPendientes.paginacion(),
+                solicitudesNoPendientes.paginacion()
+        );
+
+    }
+
+
+
+    public PaginaDTO<ReemplazoInitialDTO> getReemplazosPendientesAuxiliar(Pageable pageable,Long id) {
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllPendientesPorSolicitante(pageable,id)
+                .map(this::toInitialDTO);
+        return new PaginaDTO<>(reemplazosPage);
+    }
+    public PaginaDTO<ReemplazoInitialDTO> getReemplazosNoPendientesAuxiliar(Pageable pageable,Long id) {
+        Page<ReemplazoInitialDTO> reemplazosPage = solicitudDeReemplazoRepository.findAllNoPendientesPorSolicitante(pageable,id)
+                .map(this::toInitialDTO);
+        return new PaginaDTO<>(reemplazosPage);
     }
 
     public ReemplazoInitialResponseDTO getIncialReemplazosCoordinador(Pageable pageable) {

@@ -86,8 +86,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
      * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<ProductoResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
     }
 
     /**
@@ -107,7 +106,12 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 new ResponseDTO.EstadoDTO("Producto encontrado exitosamente", "200")
         );
     }
+    public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable){
 
+        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
+
+        return new PaginaDTO<>(productoPage);
+    }
     /**
      * Obtiene una lista paginada de todos los productos.
      *
@@ -127,7 +131,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
 
     public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable) {
 
-        Page<ProductoInitialDTO> productoPage = productoRepository.findAll(pageable).map(producto -> this.productoInitialMapper(producto));
+        Page<ProductoInitialDTO> productoPage = productoRepository.findAll(pageable).map(producto -> this.toInitialDTO(producto));
 
         PaginaDTO<ProductoInitialDTO> productoDTO = new PaginaDTO<>(productoPage);
 
@@ -140,7 +144,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         return new ProductoInitialResponseDTO(global, productoDTO.contenido(), productoDTO.paginacion());
     }
 
-    private ProductoInitialDTO productoInitialMapper(Producto producto) {
+    private ProductoInitialDTO toInitialDTO(Producto producto) {
 
         return new ProductoInitialDTO(
                 producto.getId(),

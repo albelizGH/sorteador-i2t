@@ -152,8 +152,8 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
      * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<CategoriaResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
 
@@ -196,7 +196,7 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
 
     public CategoriaInitialResponseDTO getInicialCoordinador(Pageable paginacion) {
         Page<CategoriaInitialDTO> categoriaPage = categoriaRepository.findAll(paginacion).map(this::categoriaInitialMapper);
-        Page<CategoriaTopeInitialDTO> categoriaTopePage = categoriaTopeRepository.findAll(paginacion).map(this::categoriaTopeInitialMapper);
+        Page<CategoriaTopeInitialDTO> categoriaTopePage = categoriaTopeRepository.findAll(paginacion).map(this::toInitialDTO);
 
         PaginaDTO<CategoriaInitialDTO> categoriaDTO = new PaginaDTO<>(categoriaPage);
         PaginaDTO<CategoriaTopeInitialDTO> categoriaTopeDTO = new PaginaDTO<>(categoriaTopePage);
@@ -211,7 +211,10 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
         return new CategoriaInitialResponseDTO(global, categoriaDTO.contenido(), categoriaTopeDTO.contenido(), categoriaDTO.paginacion(), categoriaTopeDTO.paginacion());
 
     }
-
+    public PaginaDTO<CategoriaInitialDTO> getCategoriasCoordinador(Pageable paginacion){
+        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.categoriaInitialMapper(categoria));
+        return new PaginaDTO<>(categoriaPage);
+    }
     private CategoriaInitialDTO categoriaInitialMapper(Categoria categoria) {
 
         Integer cantidadMaximaDeAutoridades = categoria.getCategoriaTopeList().stream().filter(CategoriaTope::getEsAutoridad).map(CategoriaTope::getCantidadMaxima).reduce(0, Integer::sum);
@@ -230,7 +233,7 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
 
     }
 
-    private CategoriaTopeInitialDTO categoriaTopeInitialMapper(CategoriaTope categoria) {
+    private CategoriaTopeInitialDTO toInitialDTO(CategoriaTope categoria) {
         return new CategoriaTopeInitialDTO(
                 categoria.getId(),
                 categoria.getCantidadMinima(),

@@ -35,9 +35,8 @@ public interface CrudServiceInterface<T extends Record, ID, Dc, Du> {
      * Elimina una entidad por su identificador.
      *
      * @param id Identificador de la entidad a eliminar.
-     * @return ResponseDTO con la entidad eliminada o una confirmación.
      */
-    ResponseDTO<T> eliminar(ID id);
+    void eliminar(ID id);
 
     /**
      * Busca una entidad por su identificador.

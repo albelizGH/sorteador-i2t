@@ -4,6 +4,7 @@ import com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanifi
 import com.pentabyte.projects.sorteador.model.Grupo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,6 +36,14 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
             WHERE c.id IN :idsCategorias
             """)
     List<GrupoPlanificacionDTO> findGruposPoridsCategorias(List<Long> idsCategorias);
+
+    @Query("""
+        SELECT g
+        FROM Grupo g
+        LEFT JOIN g.integranteList i
+        WHERE i.id = :idIntegrante
+        """)
+    Grupo obtenerGrupoPorIntegrante(@Param("idIntegrante") Long idIntegrante);
 
 
 }

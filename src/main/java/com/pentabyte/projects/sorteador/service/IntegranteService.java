@@ -5,6 +5,7 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.IntegranteUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.IntegranteCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.IntegranteInitialDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.IntegranteMapper;
@@ -70,10 +71,14 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     public ResponseDTO<IntegranteResponseDTO> actualizar(Long id, IntegranteUpdateDTO dto) {
         return null;
     }
-
+    /**
+     * Hace un borrado lógico de una INTEGRANTE de la base de datos.
+     *
+     * @param id Identificador de integrante a eliminar.
+     */
     @Override
-    public ResponseDTO<IntegranteResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
     @Override
@@ -110,4 +115,33 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                 new ResponseDTO.EstadoDTO("Lista de integrantes obtenida exitosamente", "200")
         );
     }
-}
+
+    public IntegranteInitialDTO getIntegranteByIdCoordinador(Long id){
+
+        Integrante integrante=integranteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
+
+        return toInitialDTO(integrante);
+    }
+
+    public IntegranteInitialDTO getInicialIntegranteByIdCoordinador(Long id){
+
+        Integrante integrante=integranteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
+
+        return toInitialDTO(integrante);
+    }
+
+    private IntegranteInitialDTO toInitialDTO(Integrante integrante){
+        return new IntegranteInitialDTO(
+                integrante.getId(),
+                integrante.getGrupo().getId(),
+                integrante.getNombre(),
+                integrante.getLegajo(),
+                integrante.getRol(),
+                integrante.getUsuario().getId()
+        );
+
+    }
+    }
+

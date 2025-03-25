@@ -27,7 +27,7 @@ public class AsignacionCoordinadorController {
     public AsignacionCoordinadorController(AsignacionService asignacionService) {
         this.asignacionService = asignacionService;
     }
-    
+
 
     @Operation(
             summary = "Crear una nueva asignación",
