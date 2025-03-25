@@ -83,11 +83,10 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
      * Hace un borrado lógico de un producto de la base de datos.
      *
      * @param id Identificador del producto a eliminar.
-     * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<ProductoResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
     /**
@@ -127,7 +126,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
 
     public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable){
 
-        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.productoInitialMapper(producto));
+        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
 
         PaginaDTO<ProductoInitialDTO> productoDTO=new PaginaDTO<>(productoPage);
 
@@ -142,12 +141,12 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
 
     public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable){
 
-        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.productoInitialMapper(producto));
+        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
 
         return new PaginaDTO<>(productoPage);
     }
 
-    private ProductoInitialDTO productoInitialMapper(Producto producto){
+    private ProductoInitialDTO toInitialDTO(Producto producto){
 
         return new ProductoInitialDTO(
                 producto.getId(),

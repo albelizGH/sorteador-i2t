@@ -62,16 +62,7 @@ public class ReemplazoCoordinadorController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Crear una nueva solicitud de reemplazo",
-            description = "Registra una nueva solicitud de reemplazo en el sistema con los datos proporcionados."
-    )
-    @PostMapping
-    public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> crear(
-            @RequestBody @Valid SolicitudDeReemplazoCreateDTO solicitudDeReemplazo) {
-        ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.crear(solicitudDeReemplazo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+
 
     @Operation(
             summary = "Aceptar solicitud de reemplazo",

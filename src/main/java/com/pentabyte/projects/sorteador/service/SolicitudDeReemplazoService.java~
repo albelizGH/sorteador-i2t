@@ -95,9 +95,9 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     }
 
     @Override
-    public void eliminar(Long id) {
+    public ResponseDTO<> eliminar(Long id) {
         this.solicitudDeReemplazoRepository.deleteById(id);
-
+        return ResponseDTO<>;
     }
 
     /**

@@ -71,10 +71,14 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     public ResponseDTO<IntegranteResponseDTO> actualizar(Long id, IntegranteUpdateDTO dto) {
         return null;
     }
-
+    /**
+     * Hace un borrado lógico de una INTEGRANTE de la base de datos.
+     *
+     * @param id Identificador de integrante a eliminar.
+     */
     @Override
-    public ResponseDTO<IntegranteResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
     @Override
@@ -112,17 +116,23 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
         );
     }
 
-
-
-    public IntegranteInitialDTO getInicialByIntegranteById(Long id){
+    public IntegranteInitialDTO getIntegranteByIdCoordinador(Long id){
 
         Integrante integrante=integranteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
 
-        return integranteInitialMapper(integrante);
+        return toInitialDTO(integrante);
     }
 
-    private IntegranteInitialDTO integranteInitialMapper(Integrante integrante){
+    public IntegranteInitialDTO getInicialIntegranteByIdCoordinador(Long id){
+
+        Integrante integrante=integranteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
+
+        return toInitialDTO(integrante);
+    }
+
+    private IntegranteInitialDTO toInitialDTO(Integrante integrante){
         return new IntegranteInitialDTO(
                 integrante.getId(),
                 integrante.getGrupo().getId(),

@@ -17,6 +17,7 @@ import com.pentabyte.projects.sorteador.mapper.SorteoMapper;
 import com.pentabyte.projects.sorteador.model.*;
 import com.pentabyte.projects.sorteador.repository.AsignacionRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
+import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
 import com.pentabyte.projects.sorteador.repository.SorteoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +41,16 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     private final SorteoRepository sorteoRepository;
     private final AsignacionMapper asignacionMapper;
     private final SorteoMapper sorteoMapper;
+    private final IntegranteRepository integranteRepository;
 
     @Autowired
-    public AsignacionService(AsignacionRepository asignacionRepository, GrupoRepository grupoRepository, SorteoRepository sorteoRepository, AsignacionMapper asignacionMapper, SorteoMapper sorteoMapper) {
+    public AsignacionService(AsignacionRepository asignacionRepository, GrupoRepository grupoRepository, SorteoRepository sorteoRepository, AsignacionMapper asignacionMapper, SorteoMapper sorteoMapper, IntegranteRepository integranteRepository) {
         this.asignacionRepository = asignacionRepository;
         this.grupoRepository = grupoRepository;
         this.sorteoRepository = sorteoRepository;
         this.asignacionMapper = asignacionMapper;
         this.sorteoMapper = sorteoMapper;
+        this.integranteRepository = integranteRepository;
     }
 
 
@@ -80,10 +83,14 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     public ResponseDTO<AsignacionResponseDTO> actualizar(Long id, AsignacionUpdateDTO dto) {
         return null;
     }
-
+    /**
+     * Hace un borrado lógico de una asignacion de la base de datos.
+     *
+     * @param id Identificador de asignacion a eliminar.
+     */
     @Override
-    public ResponseDTO<AsignacionResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
     @Override
@@ -216,14 +223,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
 
-
-
-
-
-
-
     /*METODOS AUXILIARES*/
-
 
     /**
      * Obtiene los sorteos confirmados dentro de un rango de fechas especificado.
@@ -468,19 +468,50 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         );
     }
 
+    public AsignacionInitialResponseDTO getInicialAsignacionesAuxiliar(Pageable pageable,Long id){
+        Integrante integrante=this.integranteRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el integrante con ID: " +id));
+
+        PaginaDTO<AsignacionInitialDTO> asignacionDTO=this.getAsignacionesAuxiliarPage(pageable,id);
+
+        int asignacionesTotales = asignacionDTO.paginacion().cantidadDeElementos().intValue() + asignacionDTO.paginacion().cantidadDeElementos().intValue();
+        int planificadas = asignacionDTO.paginacion().cantidadDeElementos().intValue();
+        int borrador = asignacionDTO.paginacion().cantidadDeElementos().intValue();
+
+        GlobalDTO global = GlobalDTO.builder()
+                .totales(asignacionesTotales)
+                .planificadas(planificadas)
+                .build();
+
+        return new AsignacionInitialResponseDTO(
+                asignacionDTO.contenido(),
+                null,
+                global,
+                asignacionDTO.paginacion(),
+                null
+        );
+    }
+
+
     public PaginaDTO<AsignacionInitialDTO> getAsignacionesPlanificadaPage(Pageable pageable, Long grupoId) {
-        Page<AsignacionInitialDTO> asignacionPlanificadaPage = this.asignacionRepository.findAsinacionesPlanificadas(pageable, grupoId).map(this::asignacionInitialMapper);
+        Page<AsignacionInitialDTO> asignacionPlanificadaPage = this.asignacionRepository.findAsinacionesPlanificadas(pageable, grupoId).map(this::toInitialDTO);
         PaginaDTO<AsignacionInitialDTO> asignacionPlanificadaDTO = new PaginaDTO<>(asignacionPlanificadaPage);
         return asignacionPlanificadaDTO;
+
     }
 
     public PaginaDTO<AsignacionInitialDTO> getAsignacionesBorradorPage(Pageable pageable, Long grupoId) {
-        Page<AsignacionInitialDTO> asignacionBorradorPage = this.asignacionRepository.findAsinacionesBorrador(pageable, grupoId).map(this::asignacionInitialMapper);
+        Page<AsignacionInitialDTO> asignacionBorradorPage = this.asignacionRepository.findAsinacionesBorrador(pageable, grupoId).map(this::toInitialDTO);
         PaginaDTO<AsignacionInitialDTO> asignacionBorradorDTO = new PaginaDTO<>(asignacionBorradorPage);
         return asignacionBorradorDTO;
     }
 
-    private AsignacionInitialDTO asignacionInitialMapper(Asignacion asignacion) {
+    public PaginaDTO<AsignacionInitialDTO> getAsignacionesAuxiliarPage(Pageable pageable, Long id) {
+        Page<AsignacionInitialDTO> asignacionPage = this.asignacionRepository.obtenerAsignacionesPorIntegrante(id,pageable).map(this::toInitialDTO);
+        PaginaDTO<AsignacionInitialDTO> asignacionDTO = new PaginaDTO<>(asignacionPage);
+        return asignacionDTO;
+    }
+
+    private AsignacionInitialDTO toInitialDTO(Asignacion asignacion) {
         return new AsignacionInitialDTO(
                 asignacion.getId(),
                 asignacion.getGrupo().getId(),
@@ -520,5 +551,16 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 new ResponseDTO.EstadoDTO("Lista de asignaciones en borrador obtenida exitosamente", "200")
         );
     }
+
+    public ResponseDTO<PaginaDTO<AsignacionInitialDTO>> getAsignacionesPlanificadasAuxiliar(Pageable pageable, Long id) {
+        Page<AsignacionInitialDTO> asignacionPage=this.asignacionRepository.obtenerAsignacionesPorIntegrante(id,pageable).map(this::toInitialDTO);
+
+
+        return new ResponseDTO<>(
+                new PaginaDTO<>(asignacionPage),
+                new ResponseDTO.EstadoDTO("Lista de asignaciones planificadas obtenida exitosamente", "200")
+        );
+    }
+
 }
 

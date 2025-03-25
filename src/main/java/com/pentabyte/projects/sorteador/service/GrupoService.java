@@ -121,11 +121,10 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
      * Hace un borrado lógico de un grupo de la base de datos.
      *
      * @param id Identificador de grupo a eliminar.
-     * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<GrupoResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
 
@@ -230,9 +229,29 @@ public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoU
         );
     }
 
+    public PaginaDTO<GrupoInitialDTO> getGruposCoordinador(Pageable pageable){
+
+        Page<GrupoInitialDTO> grupoPage = grupoRepository.findAll(pageable).map(grupo -> this.toInitialDTO(grupo));
+
+        PaginaDTO<GrupoInitialDTO> grupoDTO=new PaginaDTO<>(grupoPage);
+
+
+        return new PaginaDTO<>(grupoPage);
+    }
+    public GrupoInitialDTO getGrupoAuxiliar(Long id){
+        Grupo grupo=this.grupoRepository.obtenerGrupoPorIntegrante(id);
+
+        GrupoInitialDTO grupoInitialDTO=this.toInitialDTO(grupo);
+
+
+
+        return grupoInitialDTO;
+    }
+
+
     public GrupoInitialResponseDTO getInicialCoordinador(Pageable pageable){
 
-        Page<GrupoInitialDTO> grupoPage = grupoRepository.findAll(pageable).map(grupo -> this.grupoInitialMapper(grupo));
+        Page<GrupoInitialDTO> grupoPage = grupoRepository.findAll(pageable).map(grupo -> this.toInitialDTO(grupo));
 
         PaginaDTO<GrupoInitialDTO> grupoDTO=new PaginaDTO<>(grupoPage);
 
@@ -245,7 +264,7 @@ public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoU
         return new GrupoInitialResponseDTO(global,grupoDTO);
     }
 
-    private GrupoInitialDTO grupoInitialMapper(Grupo grupo){
+    private GrupoInitialDTO toInitialDTO(Grupo grupo){
 
         return new GrupoInitialDTO(
                 grupo.getId(),

@@ -118,8 +118,8 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
      * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<CategoriaTopeResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
     /**

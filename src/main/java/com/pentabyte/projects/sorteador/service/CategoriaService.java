@@ -145,11 +145,10 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
      * Hace un borrado lógico de una categoría de la base de datos.
      *
      * @param id Identificador de la categoría a eliminar.
-     * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
-    public ResponseDTO<CategoriaResponseDTO> eliminar(Long id) {
-        return null;
+    public void eliminar(Long id) {
+
     }
 
 
@@ -191,7 +190,7 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
 
 
     public CategoriaInitialResponseDTO getInicialCoordinador(Pageable paginacion) {
-        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.categoriaInitialMapper(categoria));
+        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.toInitialDTO(categoria));
 
         PaginaDTO<CategoriaInitialDTO> categoriaDTO=new PaginaDTO<>(categoriaPage);
 
@@ -206,11 +205,11 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
     }
 
     public PaginaDTO<CategoriaInitialDTO> getCategoriasCoordinador(Pageable paginacion){
-        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.categoriaInitialMapper(categoria));
+        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.toInitialDTO(categoria));
         return new PaginaDTO<>(categoriaPage);
     }
 
-    private CategoriaInitialDTO categoriaInitialMapper(Categoria categoria){
+    private CategoriaInitialDTO toInitialDTO(Categoria categoria){
 
         return new CategoriaInitialDTO(
                 categoria.getId(),

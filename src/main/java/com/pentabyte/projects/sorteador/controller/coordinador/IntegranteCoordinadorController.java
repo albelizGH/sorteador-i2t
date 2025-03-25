@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/coordinador/integrantes")
@@ -27,14 +25,14 @@ public class IntegranteCoordinadorController {
         this.integranteService = integranteService;
     }
 
-//    @GetMapping()
-//    public ResponseEntity<ResponseDTO<PaginaDTO<IntegranteInitialDTO>>> getIntegrantes(@PageableDefault(size = 5) Pageable pageable){
-//        PaginaDTO<IntegranteInitialDTO> paginaDTO = this.integranteService.getIntegrantesCoordinador(pageable);
-//
-//        ResponseDTO response = new ResponseDTO(paginaDTO,
-//                new ResponseDTO.EstadoDTO("Integrantes recuperados correctamente", "200"));
-//
-//        return ResponseEntity.ok(response);
-//    }
+    @GetMapping()
+    public ResponseEntity<ResponseDTO<PaginaDTO<IntegranteInitialDTO>>> getIntegranteById(@RequestParam Long id){
+        IntegranteInitialDTO integranteDTO = this.integranteService.getIntegranteByIdCoordinador(id);
+
+        ResponseDTO response = new ResponseDTO(integranteDTO,
+                new ResponseDTO.EstadoDTO("Integrantes recuperados correctamente", "200"));
+
+        return ResponseEntity.ok(response);
+    }
 
 }
