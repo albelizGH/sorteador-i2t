@@ -6,6 +6,7 @@ import java.util.List;
 
 public record GrupoInitialResponseDTO(
         GlobalDTO global,
-        PaginaDTO<GrupoInitialDTO> grupos
+        PaginaDTO.PaginacionDTO paginacion,
+        List<GrupoInitialDTO> grupos
 ) {
 }

@@ -6,7 +6,10 @@ import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaUpdat
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaCreateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.initial.*;
+import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaTopeInitialDTO;
+import com.pentabyte.projects.sorteador.dto.response.initial.GlobalDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.exception.YaExisteElRecursoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
@@ -26,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * Servicio que gestiona la lógica de negocio de las categorías.
@@ -40,6 +42,7 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
     private final CategoriaTopeRepository categoriaTopeRepository;
     private final GrupoRepository grupoRepository;
     private final ProductoRepository productoRepository;
+
     @Autowired
     public CategoriaService(CategoriaMapper categoriaMapper, CategoriaRepository categoriaRepository, CategoriaTopeRepository categoriaTopeRepository, GrupoRepository grupoRepository, ProductoRepository productoRepository) {
         this.categoriaRepository = categoriaRepository;
@@ -127,8 +130,9 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
                 new ResponseDTO.EstadoDTO(
                         "Categoría creada exitosamente",
                         "201")
-                );
+        );
     }
+
     /**
      * Actualiza una categoría existente.
      *
@@ -145,6 +149,7 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
      * Hace un borrado lógico de una categoría de la base de datos.
      *
      * @param id Identificador de la categoría a eliminar.
+     * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
     public void eliminar(Long id) {
@@ -190,37 +195,50 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
 
 
     public CategoriaInitialResponseDTO getInicialCoordinador(Pageable paginacion) {
-        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.toInitialDTO(categoria));
+        Page<CategoriaInitialDTO> categoriaPage = categoriaRepository.findAll(paginacion).map(this::categoriaInitialMapper);
+        Page<CategoriaTopeInitialDTO> categoriaTopePage = categoriaTopeRepository.findAll(paginacion).map(this::toInitialDTO);
 
-        PaginaDTO<CategoriaInitialDTO> categoriaDTO=new PaginaDTO<>(categoriaPage);
+        PaginaDTO<CategoriaInitialDTO> categoriaDTO = new PaginaDTO<>(categoriaPage);
+        PaginaDTO<CategoriaTopeInitialDTO> categoriaTopeDTO = new PaginaDTO<>(categoriaTopePage);
 
-        int totales=categoriaDTO.paginacion().totalDeElementos().intValue();
 
-        GlobalDTO global= GlobalDTO.builder()
+        int totales = categoriaDTO.paginacion().totalDeElementos().intValue();
+
+        GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)
                 .build();
 
-        return new CategoriaInitialResponseDTO(global,categoriaDTO);
+        return new CategoriaInitialResponseDTO(global, categoriaDTO.contenido(), categoriaTopeDTO.contenido(), categoriaDTO.paginacion(), categoriaTopeDTO.paginacion());
 
     }
-
     public PaginaDTO<CategoriaInitialDTO> getCategoriasCoordinador(Pageable paginacion){
-        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.toInitialDTO(categoria));
+        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.categoriaInitialMapper(categoria));
         return new PaginaDTO<>(categoriaPage);
     }
+    private CategoriaInitialDTO categoriaInitialMapper(Categoria categoria) {
 
-    private CategoriaInitialDTO toInitialDTO(Categoria categoria){
+        Integer cantidadMaximaDeAutoridades = categoria.getCategoriaTopeList().stream().filter(CategoriaTope::getEsAutoridad).map(CategoriaTope::getCantidadMaxima).reduce(0, Integer::sum);
+        Integer cantidadMaximaDeAuxiliares = categoria.getCategoriaTopeList().stream().filter(categoriaTope -> !categoriaTope.getEsAutoridad()).map(CategoriaTope::getCantidadMaxima).reduce(0, Integer::sum);
+        Integer cantidadMinimaDeAuxiliares = categoria.getCategoriaTopeList().stream().filter(categoriaTope -> !categoriaTope.getEsAutoridad()).map(CategoriaTope::getCantidadMinima).reduce(0, Integer::sum);
+        Integer cantidadMinimaDeAutoridades = categoria.getCategoriaTopeList().stream().filter(CategoriaTope::getEsAutoridad).map(CategoriaTope::getCantidadMinima).reduce(0, Integer::sum);
 
         return new CategoriaInitialDTO(
                 categoria.getId(),
                 categoria.getNombre(),
-                categoria.getCategoriaTopeList().stream().map(categoriaTope -> new CategoriaTopeInitialDTO(
-                        categoriaTope.getId(),
-                        categoriaTope.getCantidadMinima(),
-                        categoriaTope.getCantidadMaxima(),
-                        categoriaTope.getEsAutoridad()
-                        )).collect(Collectors.toList())
-                );
+                cantidadMaximaDeAutoridades,
+                cantidadMinimaDeAutoridades,
+                cantidadMaximaDeAuxiliares,
+                cantidadMinimaDeAuxiliares
+        );
 
+    }
+
+    private CategoriaTopeInitialDTO toInitialDTO(CategoriaTope categoria) {
+        return new CategoriaTopeInitialDTO(
+                categoria.getId(),
+                categoria.getCantidadMinima(),
+                categoria.getCantidadMaxima(),
+                categoria.getEsAutoridad()
+        );
     }
 }

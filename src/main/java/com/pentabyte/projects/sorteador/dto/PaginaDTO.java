@@ -11,7 +11,7 @@ public record PaginaDTO<T>(
 
     public PaginaDTO(Page<T> page) {
         this(page.getContent(), new PaginacionDTO(
-                page.getNumberOfElements(),
+                5,
                 page.getTotalElements(),
                 page.getTotalPages(),
                 page.getNumber(),

@@ -261,7 +261,7 @@ public ResponseDTO<GrupoResponseDTO> agregarIntegranteAGrupo(Long grupoId,GrupoU
                 .totales(totales)
                 .build();
 
-        return new GrupoInitialResponseDTO(global,grupoDTO);
+        return new GrupoInitialResponseDTO(global,grupoDTO.paginacion(),grupoDTO.contenido());
     }
 
     private GrupoInitialDTO toInitialDTO(Grupo grupo){

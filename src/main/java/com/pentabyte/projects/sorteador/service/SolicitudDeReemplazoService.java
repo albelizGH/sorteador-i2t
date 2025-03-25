@@ -383,8 +383,10 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
 
         return new ReemplazoInitialResponseDTO(
                 globalDTO,
-                solicitudesPendientes,
-                solicitudesNoPendientes
+                solicitudesPendientes.contenido(),
+                solicitudesNoPendientes.contenido(),
+                solicitudesPendientes.paginacion(),
+                solicitudesNoPendientes.paginacion()
         );
 
     }
@@ -403,22 +405,24 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     }
 
     public ReemplazoInitialResponseDTO getIncialReemplazosCoordinador(Pageable pageable) {
-
-
+        
         PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesCoordinador(pageable);
 
         PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesCoordinador(pageable);
 
 
         GlobalDTO globalDTO = GlobalDTO.builder()
-                .pendientes(Math.toIntExact(solicitudesNoPendientes.paginacion().totalDeElementos()))
-                .noPendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
+                .pendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
+                .noPendientes(Math.toIntExact(solicitudesNoPendientes.paginacion().totalDeElementos()))
                 .build();
 
         return new ReemplazoInitialResponseDTO(
                 globalDTO,
-                solicitudesPendientes,
-                solicitudesNoPendientes
+                solicitudesPendientes.contenido(),
+                solicitudesNoPendientes.contenido(),
+                solicitudesPendientes.paginacion(),
+                solicitudesNoPendientes.paginacion()
+
         );
     }
 

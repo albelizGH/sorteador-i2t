@@ -6,6 +6,9 @@ import java.util.List;
 
 public record CategoriaInitialResponseDTO(
         GlobalDTO global,
-       PaginaDTO<CategoriaInitialDTO> categorias
+        List<CategoriaInitialDTO> categorias,
+        List<CategoriaTopeInitialDTO> categoriasTopes,
+        PaginaDTO.PaginacionDTO paginacion,
+        PaginaDTO.PaginacionDTO categoriaTopePaginacion
 ) {
 }

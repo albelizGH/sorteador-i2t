@@ -83,10 +83,10 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
      * Hace un borrado lógico de un producto de la base de datos.
      *
      * @param id Identificador del producto a eliminar.
+     * @return {@link ResponseDTO} indicando el estado de la operación.
      */
     @Override
     public void eliminar(Long id) {
-
     }
 
     /**
@@ -106,7 +106,12 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 new ResponseDTO.EstadoDTO("Producto encontrado exitosamente", "200")
         );
     }
+    public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable){
 
+        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
+
+        return new PaginaDTO<>(productoPage);
+    }
     /**
      * Obtiene una lista paginada de todos los productos.
      *
@@ -124,29 +129,22 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         );
     }
 
-    public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable){
+    public ProductoInitialResponseDTO getInicialCoordinador(Pageable pageable) {
 
-        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
+        Page<ProductoInitialDTO> productoPage = productoRepository.findAll(pageable).map(producto -> this.toInitialDTO(producto));
 
-        PaginaDTO<ProductoInitialDTO> productoDTO=new PaginaDTO<>(productoPage);
+        PaginaDTO<ProductoInitialDTO> productoDTO = new PaginaDTO<>(productoPage);
 
-        int totales=productoDTO.paginacion().totalDeElementos().intValue();
+        int totales = productoDTO.paginacion().totalDeElementos().intValue();
 
-        GlobalDTO global= GlobalDTO.builder()
+        GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)
                 .build();
 
-        return new ProductoInitialResponseDTO(global,productoDTO);
+        return new ProductoInitialResponseDTO(global, productoDTO.contenido(), productoDTO.paginacion());
     }
 
-    public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable){
-
-        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
-
-        return new PaginaDTO<>(productoPage);
-    }
-
-    private ProductoInitialDTO toInitialDTO(Producto producto){
+    private ProductoInitialDTO toInitialDTO(Producto producto) {
 
         return new ProductoInitialDTO(
                 producto.getId(),
@@ -156,10 +154,6 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
         );
 
     }
-
-
-
 }
-
 
 
