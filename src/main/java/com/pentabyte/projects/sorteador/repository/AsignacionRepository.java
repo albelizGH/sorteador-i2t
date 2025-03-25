@@ -2,13 +2,16 @@ package com.pentabyte.projects.sorteador.repository;
 
 import com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanificacionDTO;
 import com.pentabyte.projects.sorteador.model.Asignacion;
+import com.pentabyte.projects.sorteador.model.Estado;
 import com.pentabyte.projects.sorteador.model.Sorteo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -101,5 +104,10 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
         WHERE i.id = :idIntegrante AND a.estado = 'PLANIFICADO'
         """, nativeQuery = true)
     Page<Asignacion> obtenerAsignacionesPorIntegrante(Long idIntegrante, Pageable paginacion);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Asignacion a SET a.estado = :nuevoEstado WHERE a.estado = :estadoActual")
+    void actualizarEstado(@Param("nuevoEstado") Estado nuevoEstado, @Param("estadoActual") Estado estadoActual);
 }
 
