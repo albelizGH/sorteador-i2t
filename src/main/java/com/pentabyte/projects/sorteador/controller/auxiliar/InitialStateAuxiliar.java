@@ -1,4 +1,5 @@
 package com.pentabyte.projects.sorteador.controller.auxiliar;
+
 import com.pentabyte.projects.sorteador.dto.response.initial.AsignacionInitialResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.GrupoInitialDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialResponseDTO;
@@ -8,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
-    @RequestMapping("/auxiliar/inicial")
-    public class InitialStateAuxiliar {
+@RequestMapping("/auxiliar/inicial")
+public class InitialStateAuxiliar {
 
     private final AsignacionService asignacionService;
     private final GrupoService grupoService;
@@ -54,12 +60,12 @@ import org.springframework.web.bind.annotation.*;
 
 
     @Operation(
-            summary="Obtener el estado inicial de grupo",
+            summary = "Obtener el estado inicial de grupo",
             description = "Obtiene el estado inicial de un de los sorteos por integrante"
     )
     @GetMapping("/grupos")
-    public ResponseEntity getGrupo(@RequestParam Long id){
-        GrupoInitialDTO response = this.grupoService.getGrupoAuxiliar(id);
+    public ResponseEntity getGrupo(@RequestParam Long id) {
+        List<GrupoInitialDTO> response = this.grupoService.getGrupoAuxiliar(id);
         return ResponseEntity.ok(response);
     }
 

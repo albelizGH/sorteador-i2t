@@ -32,7 +32,7 @@ public interface SolicitudDeReemplazoRepository extends JpaRepository<SolicitudD
             JOIN aut_integrante i ON i.id = szo.aut_empleado_solicitante
             JOIN aut_asignacion a ON a.id = szo.aut_asignacion_solicitante
              wHERE szo.aut_empleado_solicitante = :id AND szo.sol_estado = 'PENDIENTE'
-             """,nativeQuery = true)
+            """, nativeQuery = true)
     Page<SolicitudDeReemplazo> findAllPendientesPorSolicitante(Pageable pageable, Long id);
 
     @Query(value = """
@@ -41,9 +41,17 @@ public interface SolicitudDeReemplazoRepository extends JpaRepository<SolicitudD
             JOIN aut_integrante i ON i.id = szo.aut_empleado_solicitante
             JOIN aut_asignacion a ON a.id = szo.aut_asignacion_solicitante
              wHERE szo.aut_empleado_solicitante = :id AND szo.sol_estado = 'APROBADA'
-             """,nativeQuery = true)
+            """, nativeQuery = true)
     Page<SolicitudDeReemplazo> findAllNoPendientesPorSolicitante(Pageable pageable, Long id);
 
+
+    @Query("""
+            SELECT s
+            FROM SolicitudDeReemplazo s
+            WHERE s.estadoDeSolicitud = 'PENDIENTE'
+            """
+    )
+    Page<SolicitudDeReemplazo> findAllPendientes(Pageable pageable);
 
 }
 

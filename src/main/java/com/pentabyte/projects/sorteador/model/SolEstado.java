@@ -6,7 +6,8 @@ import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 public enum SolEstado {
     PENDIENTE("Pendiente"),
     APROBADA("Aprobada"),
-    CANCELADA("Cancelada");
+    CANCELADA("Cancelada"),
+    RECHAZADA("Rechazada");
 
     private final String displaySolEstado;
 
