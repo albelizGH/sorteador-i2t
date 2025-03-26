@@ -7,6 +7,6 @@ public record GrupoInitialDTO(
         String categoria,
         String nombre,
         Integer ordenGrupo,
-        List<IntegranteInitialDTO> integranteList
+        List<IntegranteInitialDTO> integrantes
 ) {
 }
