@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class IntegranteService implements CrudServiceInterface<IntegranteResponseDTO, Long, IntegranteCreateDTO, IntegranteUpdateDTO> {
@@ -114,6 +116,20 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                 new PaginaDTO<>(integrantePage),
                 new ResponseDTO.EstadoDTO("Lista de integrantes obtenida exitosamente", "200")
         );
+    }
+
+    public List<IntegranteResponseDTO> obtenerTodosIntegrantesSinGrupo(){
+
+        List<Integrante> integrantes=integranteRepository.findByGrupoIsNull();
+
+        return integrantes.stream()
+                .map(integrante -> IntegranteResponseDTO.builder()
+                        .id(integrante.getId())
+                        .nombre(integrante.getNombre())
+                        .rol(integrante.getRol())
+                        .build())
+                .collect(Collectors.toList());
+
     }
 
     public IntegranteInitialDTO getIntegranteByIdCoordinador(Long id){

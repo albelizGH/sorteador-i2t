@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface GrupoRepository extends JpaRepository<Grupo, Long> {
-    
+
     @Query("""
             SELECT g.id, g.ordenDeGrupo
             FROM Grupo g
@@ -20,7 +20,7 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
     List<Object[]> findGruposOrdenPorCategorias(List<Long> idsCategorias);
 
     boolean existsByNombre(String nombre);
-    
+
     @Query("""
             SELECT g.categoria.id, COUNT(g)
             FROM Grupo g
@@ -38,12 +38,17 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
     List<GrupoPlanificacionDTO> findGruposPoridsCategorias(List<Long> idsCategorias);
 
     @Query("""
-        SELECT g
-        FROM Grupo g
-        LEFT JOIN g.integranteList i
-        WHERE i.id = :idIntegrante
-        """)
+            SELECT g
+            FROM Grupo g
+            LEFT JOIN g.integranteList i
+            WHERE i.id = :idIntegrante
+            """)
     Grupo obtenerGrupoPorIntegrante(@Param("idIntegrante") Long idIntegrante);
 
-
+    @Query("""
+            SELECT g.ordenDeGrupo
+            FROM Grupo g 
+            ORDER BY g.ordenDeGrupo DESC LIMIT 1
+            """)
+    Integer obtenerUltimoOrden();
 }

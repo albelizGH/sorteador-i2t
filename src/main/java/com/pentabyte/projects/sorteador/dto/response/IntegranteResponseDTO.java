@@ -7,10 +7,10 @@ import lombok.Builder;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record IntegranteResponseDTO(
-        Long id,
-        String nombre,
+        Long id,//1//
+        String nombre,//2//
         Integer legajo,
-        Rol rol,
+        Rol rol,//3//
         Long grupoId
 ) {
 }

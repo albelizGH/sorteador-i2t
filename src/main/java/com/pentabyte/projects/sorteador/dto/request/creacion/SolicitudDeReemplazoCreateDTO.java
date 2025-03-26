@@ -7,8 +7,7 @@ import java.time.LocalDate;
 
 public record SolicitudDeReemplazoCreateDTO(
 
-        @NotBlank(message = "El nombre no puede estar vacío")
-        String nombre,
+
 
         @NotEmpty(message = "La descripción no puede estar vacía")
         @Size(max = 255, message = "La descripción no puede exceder los 255 caracteres")
@@ -18,8 +17,7 @@ public record SolicitudDeReemplazoCreateDTO(
         @FutureOrPresent(message = "La fecha de solicitud no puede ser anterior a este momento")
         LocalDate fechaDeSolicitud,
 
-        @NotNull(message = "El estado de la solicitud no puede ser nulo")
-        SolEstado estadoDeSolicitud,
+
 
         @NotNull(message = "El id del empleado solicitante no puede ser nulo")
         Long empleadoSolicitanteId,
