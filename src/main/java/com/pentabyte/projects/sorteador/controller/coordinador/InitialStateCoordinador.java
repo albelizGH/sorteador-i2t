@@ -116,4 +116,6 @@ public class InitialStateCoordinador {
         return ResponseEntity.ok(response);
     }
 
+
+
 }

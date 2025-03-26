@@ -2,6 +2,7 @@ package com.pentabyte.projects.sorteador.controller.coordinador;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.IntegranteInitialDTO;
 import com.pentabyte.projects.sorteador.service.IntegranteService;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/coordinador/integrantes")
@@ -32,6 +35,12 @@ public class IntegranteCoordinadorController {
         ResponseDTO response = new ResponseDTO(integranteDTO,
                 new ResponseDTO.EstadoDTO("Integrantes recuperados correctamente", "200"));
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/sin-grupo")
+    public ResponseEntity<List<IntegranteResponseDTO>> obtenerTodosIntegrantesSinGrupo() {
+        List<IntegranteResponseDTO> response = integranteService.obtenerTodosIntegrantesSinGrupo();
         return ResponseEntity.ok(response);
     }
 

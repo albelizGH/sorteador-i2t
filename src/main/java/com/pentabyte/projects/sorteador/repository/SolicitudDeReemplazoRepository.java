@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface SolicitudDeReemplazoRepository extends JpaRepository<SolicitudDeReemplazo, Long> {
 
@@ -52,6 +54,12 @@ public interface SolicitudDeReemplazoRepository extends JpaRepository<SolicitudD
             """
     )
     Page<SolicitudDeReemplazo> findAllPendientes(Pageable pageable);
+
+    @Query("""
+            SELECT s.id
+            FROM SolicitudDeReemplazo s
+            ORDER BY s.id DESC LIMIT 1""")
+    Optional<Long> obtenerUltimoId();
 
 }
 

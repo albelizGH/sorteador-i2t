@@ -23,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Servicio que gestiona la lógica de negocio de las solicitudes de reemplazo.
  * Proporciona operaciones CRUD para la entidad {@link SolicitudDeReemplazo}.
@@ -64,10 +66,10 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
 
         SolicitudDeReemplazo solicitudDeReemplazoDb = solicitudDeReemplazoRepository.save(new SolicitudDeReemplazo(
                 null,
-                dto.nombre(),
+                obtenerNombreSolicitudDeReemplazo(),
                 dto.descripcion(),
                 dto.fechaDeSolicitud(),
-                dto.estadoDeSolicitud(),
+                SolEstado.PENDIENTE,
                 empleadoSolicitante,
                 empleadoReemplazo,
                 asignacionDeSolicitante,
@@ -87,6 +89,14 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                 ),
                 new ResponseDTO.EstadoDTO("Solicitud de reemplazo creada exitosamente", "201")
         );
+    }
+    private String obtenerNombreSolicitudDeReemplazo(){
+
+
+        Optional<Long> ultimoId = this.solicitudDeReemplazoRepository.obtenerUltimoId();
+
+        long id = ultimoId.orElse(0L);
+        return "Solicitud " + (id + 1);
     }
 
     @Override

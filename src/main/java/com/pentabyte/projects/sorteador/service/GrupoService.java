@@ -83,7 +83,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
         Grupo grupoDb = new Grupo();
         grupoDb.setId(null);
         grupoDb.setNombre(grupoCreateDTO.nombre());
-        grupoDb.setOrdenDeGrupo(grupoCreateDTO.ordenDeGrupo());
+        grupoDb.setOrdenDeGrupo(obtenerUltimoOrdenGrupo() + 1);
         grupoDb.setCategoria(categoria);
         this.grupoRepository.save(grupoDb);
 
@@ -102,6 +102,10 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                 grupoResponseDTO,
                 new ResponseDTO.EstadoDTO("Grupo creado exitosamente", "200")
         );
+    }
+
+    private Integer obtenerUltimoOrdenGrupo(){
+        return this.grupoRepository.obtenerUltimoOrden();
     }
 
 
