@@ -11,20 +11,14 @@ public record PaginaDTO<T>(
 
     public PaginaDTO(Page<T> page) {
         this(page.getContent(), new PaginacionDTO(
-                5,
-                page.getTotalElements(),
-                page.getTotalPages(),
-                page.getNumber(),
-                page.isLast()
+                page.getNumberOfElements(),
+                page.getTotalElements()
         ));
     }
 
     public record PaginacionDTO(
             Integer cantidadDeElementos,
-            Long totalDeElementos,
-            Integer totalDePaginas,
-            Integer numeroDePagina,
-            Boolean esUltimaPagina
+            Long totalDeElementos
     ) {
     }
 }

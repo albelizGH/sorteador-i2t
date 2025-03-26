@@ -37,10 +37,11 @@ public class SorteoCoordinadorController {
         LocalDateTime fechaInicioLocalDateTime = fechaInicio != null ? fechaInicio.atStartOfDay() : null;
         LocalDateTime fechaFinLocalDateTime = fechaFin != null ? fechaFin.atStartOfDay() : null;
 
+
         PaginaDTO<SorteoInitialDTO> paginaDTO = this.sorteoService.getSorteosCoordinador(pageable, categoriaId, fechaInicioLocalDateTime, fechaFinLocalDateTime);
         ResponseDTO response = new ResponseDTO(paginaDTO,
                 new ResponseDTO.EstadoDTO("Sorteos recuperados correctamente", "200"));
-        
+
         return ResponseEntity.ok(response);
     }
 }

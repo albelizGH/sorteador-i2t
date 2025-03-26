@@ -45,9 +45,11 @@ public class AsignacionCoordinadorController {
             description = "Genera una planificación automática para las semanas requeridas."
     )
     @GetMapping("/planificar")
-    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> ejecutarPlanificacion(
+    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionInitialDTO>>> ejecutarPlanificacion(
             @RequestParam("cantidadDeSemanas") int cantidadDeSemanas) {
-        ResponseDTO<PaginaDTO<AsignacionResponseDTO>> response = asignacionService.planificar(cantidadDeSemanas);
+
+        ResponseDTO<PaginaDTO<AsignacionInitialDTO>> response = asignacionService.planificar(cantidadDeSemanas);
+
         return ResponseEntity.ok(response);
     }
 

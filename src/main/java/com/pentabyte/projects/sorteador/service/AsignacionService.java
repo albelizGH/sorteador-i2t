@@ -83,6 +83,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     public ResponseDTO<AsignacionResponseDTO> actualizar(Long id, AsignacionUpdateDTO dto) {
         return null;
     }
+
     /**
      * Hace un borrado lógico de una asignacion de la base de datos.
      *
@@ -127,7 +128,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
      * @throws RecursoNoEncontradoException Si no se encuentran sorteos confirmados o categorías dentro del rango de fechas.
      */
     @Transactional
-    public ResponseDTO<PaginaDTO<AsignacionResponseDTO>> planificar(int semanas) {
+    public ResponseDTO<PaginaDTO<AsignacionInitialDTO>> planificar(int semanas) {
         /*
          * Lógica de la planificación automática:
          *
@@ -204,15 +205,22 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         List<Asignacion> asignacionesDB = asignacionRepository.saveAll(asignaciones);
 
         // Mapear las asignaciones a DTOs
-        List<AsignacionResponseDTO> asignacionResponseDTOS = asignacionesDB.stream()
-                .map(asignacionMapper::toResponseDTO)
+        List<AsignacionInitialDTO> asignacionResponseDTOS = asignacionesDB.stream()
+                .map(asignacion -> this.toInitialDTO(asignacion))
                 .collect(Collectors.toList());
 
         // Crear la paginación de las asignaciones
-        PaginaDTO<AsignacionResponseDTO> asignacionesDTO = crearPaginacion(asignacionResponseDTOS, 5);
+        PaginaDTO<AsignacionInitialDTO> response =
+                new PaginaDTO<AsignacionInitialDTO>(asignacionResponseDTOS,
+                        new PaginaDTO.PaginacionDTO(
+                                5,
+                                (long) asignacionResponseDTOS.size()
+                        )
+                );
 
-        return new ResponseDTO<>(
-                asignacionesDTO,
+
+        return new ResponseDTO<PaginaDTO<AsignacionInitialDTO>>(
+                response,
                 new ResponseDTO.EstadoDTO("Planificación ejecutada exitosamente", "200")
         );
 
@@ -221,6 +229,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
          * */
 
     }
+
 
 
     /*METODOS AUXILIARES*/
@@ -400,10 +409,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 asignaciones,
                 new PaginaDTO.PaginacionDTO(
                         elementosPorPagina,
-                        (long) asignaciones.size(),
-                        totalDePaginas,
-                        0,
-                        totalDePaginas - 1 == 0
+                        (long) asignaciones.size()
                 )
         );
         return asignacionesDTO;
@@ -468,10 +474,10 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         );
     }
 
-    public AsignacionInitialResponseDTO getInicialAsignacionesAuxiliar(Pageable pageable,Long id){
-        Integrante integrante=this.integranteRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el integrante con ID: " +id));
+    public AsignacionInitialResponseDTO getInicialAsignacionesAuxiliar(Pageable pageable, Long id) {
+        Integrante integrante = this.integranteRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el integrante con ID: " + id));
 
-        PaginaDTO<AsignacionInitialDTO> asignacionDTO=this.getAsignacionesAuxiliarPage(pageable,id);
+        PaginaDTO<AsignacionInitialDTO> asignacionDTO = this.getAsignacionesAuxiliarPage(pageable, id);
 
         int asignacionesTotales = asignacionDTO.paginacion().cantidadDeElementos().intValue() + asignacionDTO.paginacion().cantidadDeElementos().intValue();
         int planificadas = asignacionDTO.paginacion().cantidadDeElementos().intValue();
@@ -506,7 +512,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
     public PaginaDTO<AsignacionInitialDTO> getAsignacionesAuxiliarPage(Pageable pageable, Long id) {
-        Page<AsignacionInitialDTO> asignacionPage = this.asignacionRepository.obtenerAsignacionesPorIntegrante(id,pageable).map(this::toInitialDTO);
+        Page<AsignacionInitialDTO> asignacionPage = this.asignacionRepository.obtenerAsignacionesPorIntegrante(id, pageable).map(this::toInitialDTO);
         PaginaDTO<AsignacionInitialDTO> asignacionDTO = new PaginaDTO<>(asignacionPage);
         return asignacionDTO;
     }
@@ -553,7 +559,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     }
 
     public ResponseDTO<PaginaDTO<AsignacionInitialDTO>> getAsignacionesPlanificadasAuxiliar(Pageable pageable, Long id) {
-        Page<AsignacionInitialDTO> asignacionPage=this.asignacionRepository.obtenerAsignacionesPorIntegrante(id,pageable).map(this::toInitialDTO);
+        Page<AsignacionInitialDTO> asignacionPage = this.asignacionRepository.obtenerAsignacionesPorIntegrante(id, pageable).map(this::toInitialDTO);
 
 
         return new ResponseDTO<>(
