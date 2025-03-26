@@ -2,7 +2,6 @@ package com.pentabyte.projects.sorteador.controller.coordinador;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
-import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplazoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
@@ -10,10 +9,8 @@ import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialDTO
 import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +60,6 @@ public class ReemplazoCoordinadorController {
     }
 
 
-
     @Operation(
             summary = "Aceptar solicitud de reemplazo",
             description = "Permite que un usuario reemplazante acepte una solicitud de reemplazo."
@@ -108,7 +104,7 @@ public class ReemplazoCoordinadorController {
             summary = "Obtener reemplazos no pendientes",
             description = "Obtiene una lista paginada de reemplazos no pendientes."
     )
-    @GetMapping("/no-pendientes")
+    @GetMapping("/no_pendientes")
     public ResponseEntity getReemplazosNoPendiente(@PageableDefault(size = 5) Pageable pageable) {
         PaginaDTO<ReemplazoInitialDTO> response = this.solicitudDeReemplazoService.getReemplazosNoPendientesCoordinador(pageable);
         return ResponseEntity.ok(response);

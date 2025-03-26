@@ -5,11 +5,10 @@ import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaTopeUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaTopeResponseDTO;
-import com.pentabyte.projects.sorteador.exception.CupoExcedidoException;
+import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaTopeInitialDTO;
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.CategoriaTopeMapper;
-import com.pentabyte.projects.sorteador.model.Categoria;
 import com.pentabyte.projects.sorteador.model.CategoriaTope;
 import com.pentabyte.projects.sorteador.repository.CategoriaRepository;
 import com.pentabyte.projects.sorteador.repository.CategoriaTopeRepository;
@@ -64,13 +63,13 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
                 new ResponseDTO.EstadoDTO(
                         "Categoría tope creada exitosamente",
                         "201")
-                );
-}
+        );
+    }
 
     /**
      * Actualiza una categoría tope existente.
      *
-     * @param id  Identificador de la categoría tope a actualizar.
+     * @param id                     Identificador de la categoría tope a actualizar.
      * @param categoriaTopeUpdateDTO DTO con los datos actualizados.
      * @return {@link ResponseDTO} con la categoría tope actualizada.
      */
@@ -83,7 +82,7 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
 
         Integer cantidadMaxima = this.categoriaTopeRepository.obtenerCantidadMaximaPorCategoriaTope(id);
 
-        Integer cantidadIntegrantes=0;
+        Integer cantidadIntegrantes = 0;
 
         if (categoriaTopeUpdateDTO.cantidadMaxima() < cantidadMaxima) {
 
@@ -99,7 +98,7 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
                         "Modificalo e intentalo con ingresar nuevamente");
             }
 
-        }else{
+        } else {
             categoriaTope.setCantidadMaxima(categoriaTopeUpdateDTO.cantidadMaxima());
             categoriaTopeRepository.save(categoriaTope);
         }
@@ -155,6 +154,29 @@ public class CategoriaTopeService implements CrudServiceInterface<CategoriaTopeR
         return new ResponseDTO<PaginaDTO<CategoriaTopeResponseDTO>>(
                 new PaginaDTO<>(categoriaTopesPage),
                 new ResponseDTO.EstadoDTO("Lista de categorías topes obtenida exitosamente", "200")
+        );
+    }
+
+
+    /**
+     * Obtiene una lista paginada de todas las categorías tope.
+     *
+     * @param paginacion Objeto de paginación proporcionado por Spring.
+     * @return {@link ResponseDTO} con la lista paginada de categorías tope.
+     */
+    public ResponseDTO<PaginaDTO<CategoriaTopeInitialDTO>> obtenerCategoriasCoordinador(Pageable paginacion) {
+
+        Page<CategoriaTopeInitialDTO> categoriaTopesPage = categoriaTopeRepository.findAll(paginacion)
+                .map(item -> new CategoriaTopeInitialDTO(
+                        item.getId(),
+                        item.getCantidadMinima(),
+                        item.getCantidadMaxima(),
+                        item.getEsAutoridad()
+                ));
+
+        return new ResponseDTO<PaginaDTO<CategoriaTopeInitialDTO>>(
+                new PaginaDTO<CategoriaTopeInitialDTO>(categoriaTopesPage.getContent(), new PaginaDTO.PaginacionDTO(categoriaTopesPage.getNumberOfElements(), categoriaTopesPage.getTotalElements())),
+                new ResponseDTO.EstadoDTO("Categorías tope recuperadas correctamente", "200")
         );
     }
 }
