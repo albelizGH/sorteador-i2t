@@ -1,9 +1,8 @@
-package com.pentabyte.projects.sorteador.controller;
+package com.pentabyte.projects.sorteador.controller.crud;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.GrupoUpdateDTO;
-import com.pentabyte.projects.sorteador.dto.request.creacion.GrupoCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.GrupoResponseDTO;
 import com.pentabyte.projects.sorteador.service.GrupoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,17 +44,6 @@ public class GrupoController {
     public ResponseEntity<ResponseDTO<GrupoResponseDTO>> obtenerPorId(@PathVariable Long id) {
         ResponseDTO<GrupoResponseDTO> response = grupoService.obtenerPorId(id);
         return ResponseEntity.ok(response);
-    }
-
-    @Operation(
-            summary = "Crear un nuevo grupo",
-            description = "Registra un nuevo grupo en el sistema con los datos proporcionados."
-    )
-    @PostMapping
-    public ResponseEntity<ResponseDTO<GrupoResponseDTO>> crear(
-            @RequestBody @Valid GrupoCreateDTO grupoCreateDTO) {
-        ResponseDTO<GrupoResponseDTO> response = grupoService.crear(grupoCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(

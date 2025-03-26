@@ -1,4 +1,4 @@
-package com.pentabyte.projects.sorteador.controller;
+package com.pentabyte.projects.sorteador.controller.crud;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;

@@ -83,7 +83,6 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
         Grupo grupoDb = new Grupo();
         grupoDb.setId(null);
         grupoDb.setNombre(grupoCreateDTO.nombre());
-        grupoDb.setOrdenDeGrupo(grupoCreateDTO.ordenDeGrupo());
         grupoDb.setCategoria(categoria);
         this.grupoRepository.save(grupoDb);
 
