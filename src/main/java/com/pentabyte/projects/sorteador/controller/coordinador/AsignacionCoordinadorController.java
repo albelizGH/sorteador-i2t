@@ -82,4 +82,13 @@ public class AsignacionCoordinadorController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/aprobar")
+    public ResponseEntity aprobarAsignaciones() {
+        this.asignacionService.aprobarAsignaciones();
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }

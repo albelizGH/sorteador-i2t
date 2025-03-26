@@ -567,6 +567,12 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 new ResponseDTO.EstadoDTO("Lista de asignaciones planificadas obtenida exitosamente", "200")
         );
     }
+    public void aprobarAsignaciones(){
+        this.asignacionRepository.actualizarEstado(Estado.PLANIFICADO,Estado.BORRADOR);
+    }
+
+
+
 
 }
 
