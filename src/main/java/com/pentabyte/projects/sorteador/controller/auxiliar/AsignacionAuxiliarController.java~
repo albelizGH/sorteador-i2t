@@ -29,7 +29,7 @@ public class AsignacionAuxiliarController {
     }
 
     @GetMapping("/futuras")
-    public ResponseEntity getAsignacionesFuturas(@RequestParam Long id) {
+    public ResponseEntity<List<AsignacionInitialDTO>> getAsignacionesFuturas(@RequestParam Long id) {
         List<AsignacionInitialDTO> response= this.asignacionService.getAsignacionesFuturasAuxiliares(id);
         return ResponseEntity.ok(response);
     }

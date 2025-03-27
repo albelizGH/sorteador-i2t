@@ -219,7 +219,8 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                     cantidadIntegrantesAutoridades++;
 
                     break;
-
+                default:
+                    throw new RecursoNoEncontradoException("Rol no encontrado");
             }
             integrante.setGrupo(grupo);
             integranteRepository.save(integrante);
