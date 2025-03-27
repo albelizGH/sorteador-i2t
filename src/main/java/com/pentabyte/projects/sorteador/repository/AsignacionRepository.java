@@ -97,25 +97,25 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     Page<Sorteo> obtenerFechasDisponiblesParaDevolucion(Long idDevolucion, Long SorteoId, Pageable paginacion);
 
     @Query(value = """
-        SELECT a.*
-        FROM aut_asignacion a
-        JOIN aut_grupo g ON g.id = a.aut_grupo_id
-        JOIN aut_integrante i ON g.id = i.aut_grupo_id
-        WHERE i.id = :idIntegrante AND a.estado = 'PLANIFICADO'
-        """, nativeQuery = true)
+            SELECT a.*
+            FROM aut_asignacion a
+            JOIN aut_grupo g ON g.id = a.aut_grupo_id
+            JOIN aut_integrante i ON g.id = i.aut_grupo_id
+            WHERE i.id = :idIntegrante AND a.estado = 'PLANIFICADO'
+            """, nativeQuery = true)
     Page<Asignacion> obtenerAsignacionesPorIntegrante(Long idIntegrante, Pageable paginacion);
 
     @Query(value = """
-    SELECT a.* 
-    FROM aut_asignacion a
-    JOIN aut_sorteo s ON s.id = a.aut_sorteo_id
-    JOIN aut_grupo g ON g.id = a.aut_grupo_id
-    JOIN aut_integrante i ON i.aut_grupo_id = g.id
-    WHERE i.id = :idIntegrante
-    AND a.estado = 'PLANIFICADO'
-    AND s.fecha >= :ahora
-    """, nativeQuery = true)
-    List<Asignacion> findAsignacionesBorradorConFechaMayorAById(LocalDateTime ahora, @Param("idIntegrante") Long idIntegrante);
+            SELECT a
+            FROM Asignacion a
+            JOIN a.sorteo s
+            JOIN a.grupo g
+            JOIN g.integranteList i
+            WHERE i.id = :idIntegrante
+            AND a.estado = 'PLANIFICADO'
+            AND s.fecha >= :fecha
+            """)
+    List<Asignacion> findAsignacionesPlanificadasConFechaMayorAById(LocalDateTime fecha, @Param("idIntegrante") Long idIntegrante);
 
     @Transactional
     @Modifying

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -90,7 +91,8 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                 new ResponseDTO.EstadoDTO("Solicitud de reemplazo creada exitosamente", "201")
         );
     }
-    private String obtenerNombreSolicitudDeReemplazo(){
+
+    private String obtenerNombreSolicitudDeReemplazo() {
 
 
         Optional<Long> ultimoId = this.solicitudDeReemplazoRepository.obtenerUltimoId();
@@ -167,30 +169,25 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
      * Obtiene una lista paginada de integrantes de mismo rol y distinto grupo del id de integrante.
      *
      * @param idSolicitante Id del integrante solicitante.
-     * @param paginacion    Objeto de paginación proporcionado por Spring.
      * @return {@link ResponseDTO} con la lista paginada y filtrada de integrantes.
      */
-    public ResponseDTO<PaginaDTO<IntegranteResponseDTO>> obtenerMismoRolDistintoGrupo(Long idSolicitante, Pageable paginacion) {
+    public List<IntegranteResponseDTO> obtenerMismoRolDistintoGrupo(Long idSolicitante) {
         Integrante integranteSolicitante = integranteRepository.findById(idSolicitante)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Solicitante no encontrado con ID: " + idSolicitante));
 
         Rol rol = integranteSolicitante.getRol();
         String grupo = integranteSolicitante.getGrupo().getNombre();
 
-        Page<Integrante> reemplazantes = integranteRepository.findReemplazantes(rol, grupo, paginacion);
-
-        return new ResponseDTO<>(
-                new PaginaDTO<>(reemplazantes.map(c -> {
-                    return IntegranteResponseDTO.builder()
-                            .id(c.getId())
-                            .nombre(c.getNombre())
-                            .legajo(c.getLegajo())
-                            .rol(c.getRol())
-                            .grupoId(c.getGrupo().getId())
-                            .build();
-                })),
-                new ResponseDTO.EstadoDTO("Lista de reemplazantes obtenida exitosamente", "200")
-        );
+        List<IntegranteResponseDTO> reemplazantes = integranteRepository.findReemplazantes(rol, grupo).stream().map(
+                integrante -> new IntegranteResponseDTO(
+                        integrante.getId(),
+                        integrante.getNombre(),
+                        integrante.getLegajo(),
+                        integrante.getRol(),
+                        integrante.getGrupo().getId()
+                )
+        ).toList();
+        return reemplazantes;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.pentabyte.projects.sorteador.controller.crud;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
+import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -46,6 +49,16 @@ public class SolicitudDeReemplazoController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> obtenerPorId(@PathVariable Long id) {
         ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.obtenerPorId(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Obtener una lista de integrantes con mismo rol y distinto grupo.",
+            description = "Devuelve una lista con integrantes del mismo rol pero distinto grupo del integrante que solicita."
+    )
+    @GetMapping("/reemplazantes/{idSolicitante}")
+    public ResponseEntity<List<IntegranteResponseDTO>> obtenerMismoRolDistintoGrupo(@PathVariable Long idSolicitante) {
+        List<IntegranteResponseDTO> response = solicitudDeReemplazoService.obtenerMismoRolDistintoGrupo(idSolicitante);
         return ResponseEntity.ok(response);
     }
 

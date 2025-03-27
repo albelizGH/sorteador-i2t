@@ -334,8 +334,8 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
 
     public List<AsignacionInitialDTO> getAsignacionesFuturasAuxiliares(Long id) {
         LocalDateTime fecha = LocalDateTime.now();
-        List<Asignacion> asignaciones = asignacionRepository.findAsignacionesBorradorConFechaMayorAById(fecha,id);
-        List<AsignacionInitialDTO> response = asignaciones.stream().map(asignacion -> this.toInitialDTO(asignacion)).collect(Collectors.toList());
+        List<Asignacion> asignaciones = asignacionRepository.findAsignacionesPlanificadasConFechaMayorAById(fecha, id);
+        List<AsignacionInitialDTO> response = asignaciones.stream().map(this::toInitialDTO).collect(Collectors.toList());
         return response;
     }
 
@@ -573,11 +573,10 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 new ResponseDTO.EstadoDTO("Lista de asignaciones planificadas obtenida exitosamente", "200")
         );
     }
-    public void aprobarAsignaciones(){
-        this.asignacionRepository.actualizarEstado(Estado.PLANIFICADO,Estado.BORRADOR);
+
+    public void aprobarAsignaciones() {
+        this.asignacionRepository.actualizarEstado(Estado.PLANIFICADO, Estado.BORRADOR);
     }
-
-
 
 
 }

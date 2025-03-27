@@ -2,7 +2,6 @@ package com.pentabyte.projects.sorteador.controller.coordinador;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
-import com.pentabyte.projects.sorteador.dto.response.IntegranteResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.SorteoResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialDTO;
@@ -25,17 +24,6 @@ public class ReemplazoCoordinadorController {
         this.solicitudDeReemplazoService = solicitudDeReemplazoService;
     }
 
-    @Operation(
-            summary = "Obtener una lista de integrantes con mismo rol y distinto grupo.",
-            description = "Devuelve una lista con integrantes del mismo rol pero distinto grupo del integrante que solicita."
-    )
-    @GetMapping("/reemplazantes/{idSolicitante}")
-    public ResponseEntity<ResponseDTO<PaginaDTO<IntegranteResponseDTO>>> obtenerMismoRolDistintoGrupo(@PathVariable Long idSolicitante,
-                                                                                                      @PageableDefault(size = 10, page = 0) Pageable paginacion) {
-        ResponseDTO<PaginaDTO<IntegranteResponseDTO>> response = solicitudDeReemplazoService.obtenerMismoRolDistintoGrupo(idSolicitante, paginacion);
-
-        return ResponseEntity.ok(response);
-    }
 
     @Operation(
             summary = "Obtener fechas por solicitante.",
