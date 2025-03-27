@@ -1,12 +1,13 @@
 package com.pentabyte.projects.sorteador.dto.request.creacion;
 
-import com.pentabyte.projects.sorteador.model.SolEstado;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
 public record SolicitudDeReemplazoCreateDTO(
-
 
 
         @NotEmpty(message = "La descripción no puede estar vacía")
@@ -16,8 +17,6 @@ public record SolicitudDeReemplazoCreateDTO(
         @NotNull(message = "La fecha de solicitud no puede ser nula")
         @FutureOrPresent(message = "La fecha de solicitud no puede ser anterior a este momento")
         LocalDate fechaDeSolicitud,
-
-
 
         @NotNull(message = "El id del empleado solicitante no puede ser nulo")
         Long empleadoSolicitanteId,

@@ -4,7 +4,6 @@ import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.CategoriaUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaCreateDTO;
-import com.pentabyte.projects.sorteador.dto.request.creacion.CategoriaTopeCreateDTO;
 import com.pentabyte.projects.sorteador.dto.response.CategoriaResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.CategoriaInitialResponseDTO;
@@ -16,8 +15,6 @@ import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.CategoriaMapper;
 import com.pentabyte.projects.sorteador.model.Categoria;
 import com.pentabyte.projects.sorteador.model.CategoriaTope;
-import com.pentabyte.projects.sorteador.model.Grupo;
-import com.pentabyte.projects.sorteador.model.Producto;
 import com.pentabyte.projects.sorteador.repository.CategoriaRepository;
 import com.pentabyte.projects.sorteador.repository.CategoriaTopeRepository;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
@@ -29,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Servicio que gestiona la lógica de negocio de las categorías.
@@ -73,54 +73,14 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
                 new Categoria(
                         null,
                         dto.nombre(),
-                        dto.ultimaSemanaDeAsignacion(),
-                        dto.ultimaFechaDeAsignacion(),
-                        dto.semanasAPlanificar(),
+                        null,
+                        null,
+                        null,
                         new ArrayList<>(),  // Lista de topes
                         new ArrayList<>(),  // Lista de grupos
                         new ArrayList<>()   // Lista de productos
                 )
         );
-
-        // Guardar los topes asociados a la categoría
-        for (CategoriaTopeCreateDTO categoriaTope : dto.categoriaTopeList()) {
-            this.categoriaTopeRepository.save(
-                    new CategoriaTope(
-                            null,
-                            categoriaDb,
-                            categoriaTope.cantidadMinima(),
-                            categoriaTope.cantidadMaxima(),
-                            categoriaTope.esAutoridad()
-                    )
-            );
-        }
-
-        // Guardar los grupos asociados a la categoría
-        for (Long grupoId : dto.grupoList()) {
-            Grupo grupoDb = this.grupoRepository.findById(grupoId)
-                    .orElseThrow(() -> new RecursoNoEncontradoException("No existe el grupo con ID: " + grupoId));
-
-            // Asociar la categoría al grupo
-            grupoDb.setCategoria(categoriaDb);
-            grupoRepository.save(grupoDb);
-
-            // Agregar el grupo a la categoría
-            categoriaDb.getGrupoList().add(grupoDb);
-        }
-        for (Long productoId : dto.productoList()) {
-            Producto productoDb = productoRepository.findById(productoId)
-                    .orElseThrow(() -> new RecursoNoEncontradoException("No existe el producto con ID: " + productoId));
-
-            // Asociar la categoría al producto
-            productoDb.setCategoria(categoriaDb);
-            productoRepository.save(productoDb);
-
-            // Agregar el producto a la categoría
-            categoriaDb.getProductoList().add(productoDb);
-        }
-
-        // Guardar la categoría nuevamente con los grupos y productos agregados
-        categoriaRepository.save(categoriaDb);
 
         // Mapear la categoría a la respuesta DTO
         CategoriaResponseDTO categoriaResponseDTO = categoriaMapper.toResponseDTO(categoriaDb);
@@ -211,10 +171,12 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
         return new CategoriaInitialResponseDTO(global, categoriaDTO.contenido(), categoriaTopeDTO.contenido(), categoriaDTO.paginacion(), categoriaTopeDTO.paginacion());
 
     }
-    public PaginaDTO<CategoriaInitialDTO> getCategoriasCoordinador(Pageable paginacion){
-        Page<CategoriaInitialDTO> categoriaPage=categoriaRepository.findAll(paginacion).map(categoria ->this.categoriaInitialMapper(categoria));
+
+    public PaginaDTO<CategoriaInitialDTO> getCategoriasCoordinador(Pageable paginacion) {
+        Page<CategoriaInitialDTO> categoriaPage = categoriaRepository.findAll(paginacion).map(categoria -> this.categoriaInitialMapper(categoria));
         return new PaginaDTO<>(categoriaPage);
     }
+
     private CategoriaInitialDTO categoriaInitialMapper(Categoria categoria) {
 
         Integer cantidadMaximaDeAutoridades = categoria.getCategoriaTopeList().stream().filter(CategoriaTope::getEsAutoridad).map(CategoriaTope::getCantidadMaxima).reduce(0, Integer::sum);
@@ -239,6 +201,53 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
                 categoria.getCantidadMinima(),
                 categoria.getCantidadMaxima(),
                 categoria.getEsAutoridad()
+        );
+    }
+
+    public CategoriaInitialDTO crearCategoria(CategoriaCreateDTO dto) {
+
+        // Verificar si el nombre ya existe
+        if (categoriaRepository.buscarNombre(dto.nombre()) > 0) {
+            throw new YaExisteElRecursoException("Ya existe una categoría con el nombre: " + dto.nombre());
+        }
+
+        List<CategoriaTope> lista = dto.categoriaTopeIdList().stream()
+                .map(item -> categoriaTopeRepository.getReferenceById(item))
+                .collect(Collectors.toList());
+
+
+        // Crear la categoría sin los grupos ni productos aún
+        Categoria categoriaDb = this.categoriaRepository.save(
+                new Categoria(
+                        null,
+                        dto.nombre(),
+                        0,
+                        null,
+                        0,
+                        lista,  // Lista de topes
+                        new ArrayList<>(),  // Lista de grupos
+                        new ArrayList<>()   // Lista de productos
+                )
+        );
+
+        // Guardar la categoría nuevamente con los grupos y productos agregados
+        categoriaRepository.save(categoriaDb);
+        Optional<CategoriaTope> categoriaTopeAutoridad = categoriaDb.getCategoriaTopeList()
+                .stream().filter(CategoriaTope::getEsAutoridad)
+                .findFirst();
+
+        Optional<CategoriaTope> categoriaTopeAuxiliar = categoriaDb.getCategoriaTopeList()
+                .stream().filter(categoriaTope -> categoriaTope.getEsAutoridad() == Boolean.FALSE)
+                .findFirst();
+
+        // Mapear la categoría a la respuesta DTO
+        return new CategoriaInitialDTO(
+                categoriaDb.getId(),
+                categoriaDb.getNombre(),
+                categoriaTopeAutoridad.get().getCantidadMaxima(),
+                categoriaTopeAutoridad.get().getCantidadMinima(),
+                categoriaTopeAuxiliar.get().getCantidadMaxima(),
+                categoriaTopeAuxiliar.get().getCantidadMinima()
         );
     }
 }
