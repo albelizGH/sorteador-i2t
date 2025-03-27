@@ -6,13 +6,25 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface IntegranteRepository extends JpaRepository<Integrante, Long> {
 
-    @Query("SELECT i FROM Integrante i WHERE i.rol = :rol AND i.grupo.nombre != :grupo")
-    List<Integrante> findReemplazantes(Rol rol, String grupo);
+    @Query("""
+    SELECT i 
+    FROM Integrante i
+    JOIN i.grupo g
+    JOIN g.asignacionList a
+    JOIN a.sorteo s
+    WHERE s.fecha >= :fecha
+    AND i.rol = :rol
+    AND g.nombre != :grupo
+    AND s.confirmado=true
+    AND a.estado='PLANIFICADO'
+    """)
+    List<Integrante> findReemplazantes(Rol rol, String grupo, LocalDateTime fecha);
 
     List<Integrante> findByGrupoIsNull();
 }
