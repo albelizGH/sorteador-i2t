@@ -31,6 +31,7 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     private final GrupoRepository grupoRepository;
     private final IntegranteMapper integranteMapper;
     private final UsuarioRepository usuarioRepository;
+
     @Autowired
     public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper, UsuarioRepository usuarioRepository) {
         this.integranteRepository = integranteRepository;
@@ -43,8 +44,8 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     public ResponseDTO<IntegranteResponseDTO> crear(IntegranteCreateDTO dto) {
         Grupo grupo = grupoRepository.findById(dto.grupoId())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + dto.grupoId()));
-        Usuario usuario=this.usuarioRepository.findById(dto.usuarioId())
-                .orElseThrow(()->new RecursoNoEncontradoException("Usuario no encontrado con ID: "+dto.usuarioId()));
+        Usuario usuario = this.usuarioRepository.findById(dto.usuarioId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con ID: " + dto.usuarioId()));
         Integrante integrante = integranteRepository.save(new Integrante(
                 null,
                 dto.nombre(),
@@ -73,6 +74,7 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     public ResponseDTO<IntegranteResponseDTO> actualizar(Long id, IntegranteUpdateDTO dto) {
         return null;
     }
+
     /**
      * Hace un borrado lógico de una INTEGRANTE de la base de datos.
      *
@@ -118,37 +120,38 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
         );
     }
 
-    public List<IntegranteResponseDTO> obtenerTodosIntegrantesSinGrupo(){
+    public List<IntegranteResponseDTO> obtenerTodosIntegrantesSinGrupo() {
 
-        List<Integrante> integrantes=integranteRepository.findByGrupoIsNull();
+        List<Integrante> integrantes = integranteRepository.findByGrupoIsNull();
 
         return integrantes.stream()
                 .map(integrante -> IntegranteResponseDTO.builder()
                         .id(integrante.getId())
                         .nombre(integrante.getNombre())
                         .rol(integrante.getRol())
+                        .legajo(integrante.getLegajo())
                         .build())
                 .collect(Collectors.toList());
 
     }
 
-    public IntegranteInitialDTO getIntegranteByIdCoordinador(Long id){
+    public IntegranteInitialDTO getIntegranteByIdCoordinador(Long id) {
 
-        Integrante integrante=integranteRepository.findById(id)
+        Integrante integrante = integranteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
 
         return toInitialDTO(integrante);
     }
 
-    public IntegranteInitialDTO getInicialIntegranteByIdCoordinador(Long id){
+    public IntegranteInitialDTO getInicialIntegranteByIdCoordinador(Long id) {
 
-        Integrante integrante=integranteRepository.findById(id)
+        Integrante integrante = integranteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
 
         return toInitialDTO(integrante);
     }
 
-    private IntegranteInitialDTO toInitialDTO(Integrante integrante){
+    private IntegranteInitialDTO toInitialDTO(Integrante integrante) {
         return new IntegranteInitialDTO(
                 integrante.getId(),
                 integrante.getGrupo().getId(),
@@ -159,5 +162,5 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
         );
 
     }
-    }
+}
 

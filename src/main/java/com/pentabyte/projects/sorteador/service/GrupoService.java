@@ -104,7 +104,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
         );
     }
 
-    private Integer obtenerUltimoOrdenGrupo(){
+    private Integer obtenerUltimoOrdenGrupo() {
         return this.grupoRepository.obtenerUltimoOrden();
     }
 
@@ -272,8 +272,8 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
 
         return new GrupoInitialDTO(
                 grupo.getId(),
-                grupo.getNombre(),
                 grupo.getCategoria().getNombre(),
+                grupo.getNombre(),
                 grupo.getOrdenDeGrupo(),
                 grupo.getIntegranteList().stream().map(integrante -> new IntegranteInitialDTO(
                         integrante.getId(),
