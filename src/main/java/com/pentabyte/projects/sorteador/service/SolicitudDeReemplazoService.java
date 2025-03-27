@@ -23,6 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -172,13 +175,18 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
      * @return {@link ResponseDTO} con la lista paginada y filtrada de integrantes.
      */
     public List<IntegranteResponseDTO> obtenerMismoRolDistintoGrupo(Long idSolicitante) {
+
+
         Integrante integranteSolicitante = integranteRepository.findById(idSolicitante)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Solicitante no encontrado con ID: " + idSolicitante));
 
+        LocalDateTime fecha = LocalDateTime.now();
+
         Rol rol = integranteSolicitante.getRol();
+
         String grupo = integranteSolicitante.getGrupo().getNombre();
 
-        List<IntegranteResponseDTO> reemplazantes = integranteRepository.findReemplazantes(rol, grupo).stream().map(
+        List<IntegranteResponseDTO> reemplazantes = integranteRepository.findReemplazantes(rol, grupo,fecha).stream().map(
                 integrante -> new IntegranteResponseDTO(
                         integrante.getId(),
                         integrante.getNombre(),
