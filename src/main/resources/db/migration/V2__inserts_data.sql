@@ -55,30 +55,6 @@ INSERT INTO aut_grupo (nombre, orden_grupo, aut_categoria_id) VALUES
   ('Grupo 6', 6, 2);
 
 -- ------------------------------------------------------------
--- 5) Inserción en AUT_USUARIOS (19 registros)
--- ------------------------------------------------------------
-INSERT INTO AUT_USUARIO (usuario, contrasenia) VALUES
-  ('juanperez', 'hashed_password_1'),
-  ('mariagonzalez', 'hashed_password_2'),
-  ('carloslopez', 'hashed_password_3'),
-  ('anamartinez', 'hashed_password_4'),
-  ('pedroramirez', 'hashed_password_5'),
-  ('laurafernandez', 'hashed_password_6'),
-  ('santiagoherrera', 'hashed_password_7'),
-  ('gabrielacastro', 'hashed_password_8'),
-  ('ricardodominguez', 'hashed_password_9'),
-  ('valentinarojas', 'hashed_password_10'),
-  ('matiasuarez', 'hashed_password_11'),
-  ('sofiaMorales', 'hashed_password_12'),
-  ('fernandoalvarez', 'hashed_password_13'),
-  ('camilatorres', 'hashed_password_14'),
-  ('javiernunez', 'hashed_password_15'),
-  ('paulabenitez', 'hashed_password_16'),
-  ('diegomendez', 'hashed_password_17'),
-  ('nataliafigueroa', 'hashed_password_18'),
-  ('alejobeliz', 'hashed_password_19');
-
--- ------------------------------------------------------------
 -- 5) Inserción en AUT_INTEGRANTE (19 registros)
 --    - 6 autoridades
 --    - 12 auxiliares
@@ -86,32 +62,33 @@ INSERT INTO AUT_USUARIO (usuario, contrasenia) VALUES
 --    Se asignan a distintos grupos
 -- ------------------------------------------------------------
 -- Autoridades (6)
-INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id,aut_usuario_id) VALUES
-  ('Autoridad 1', 1001, 'AUTORIDAD', 1,1),
-  ('Autoridad 2', 1002, 'AUTORIDAD', 2,2),
-  ('Autoridad 3', 1003, 'AUTORIDAD', 3,3),
-  ('Autoridad 4', 1004, 'AUTORIDAD', 4,4),
-  ('Autoridad 5', 1005, 'AUTORIDAD', 5,5),
-  ('Autoridad 6', 1006, 'AUTORIDAD', 6,6);
+INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
+  ('Autoridad 1', 1001, 'AUTORIDAD', 1, 'email1@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Autoridad 2', 1002, 'AUTORIDAD', 2, 'email2@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Autoridad 3', 1003, 'AUTORIDAD', 3, 'email3@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Autoridad 4', 1004, 'AUTORIDAD', 4, 'email4@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Autoridad 5', 1005, 'AUTORIDAD', 5, 'email5@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Autoridad 6', 1006, 'AUTORIDAD', 6, 'email6@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!');
 
--- Auxiliares (12)
-INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, aut_usuario_id) VALUES
-  ('Auxiliar 1', 2001, 'AUXILIAR', 1, 7),
-  ('Auxiliar 2', 2002, 'AUXILIAR', 1, 8),
-  ('Auxiliar 3', 2003, 'AUXILIAR', 2, 9),
-  ('Auxiliar 4', 2004, 'AUXILIAR', 2, 10),
-  ('Auxiliar 5', 2005, 'AUXILIAR', 3, 11),
-  ('Auxiliar 6', 2006, 'AUXILIAR', 3, 12),
-  ('Auxiliar 7', 2007, 'AUXILIAR', 4, 13),
-  ('Auxiliar 8', 2008, 'AUXILIAR', 4, 14),
-  ('Auxiliar 9', 2009, 'AUXILIAR', 5, 15),
-  ('Auxiliar 10', 2010, 'AUXILIAR', 5, 16),
-  ('Auxiliar 11', 2011, 'AUXILIAR', 6, 17),
-  ('Auxiliar 12', 2012, 'AUXILIAR', 6, 18);
+-- Auxiliares (12) (Corrección de `aut_grupo_id` y orden de columnas)
+INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
+  ('Auxiliar 1', 2001, 'AUXILIAR', 1, 'email7@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 2', 2002, 'AUXILIAR', 1, 'email8@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 3', 2003, 'AUXILIAR', 2, 'email9@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 4', 2004, 'AUXILIAR', 2, 'email10@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 5', 2005, 'AUXILIAR', 3, 'email11@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 6', 2006, 'AUXILIAR', 3, 'email12@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 7', 2007, 'AUXILIAR', 4, 'email13@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 8', 2008, 'AUXILIAR', 4, 'email14@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 9', 2009, 'AUXILIAR', 5, 'email15@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 10', 2010, 'AUXILIAR', 5, 'email16@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 11', 2011, 'AUXILIAR', 6, 'email17@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
+  ('Auxiliar 12', 2012, 'AUXILIAR', 6, 'email18@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!');
 
--- Coordinador (1)
-INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, aut_usuario_id) VALUES
-  ('Coordinador', 3001, 'COORDINADOR', 1, 19);
+-- Coordinador (1) (Corrección de orden de columnas)
+INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
+  ('Alejo Beliz', 3001, 'COORDINADOR', 1, 'email19@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!');
+
 -- ------------------------------------------------------------
 -- 6) Inserción en AUT_SORTEO (60 registros)
 --    Se generan 60 sorteos distribuidos en los próximos 45 días.

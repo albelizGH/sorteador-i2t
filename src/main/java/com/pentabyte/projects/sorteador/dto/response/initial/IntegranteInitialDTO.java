@@ -7,7 +7,6 @@ public record IntegranteInitialDTO(
         Long autGrupoId,
         String nombre,
         Integer legajo,
-        Rol rol,
-        Long autUsuarioId
+        Rol rol
 ) {
 }

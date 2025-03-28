@@ -25,6 +25,10 @@ public class Integrante {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
+    private String email;
+
+    private String password;
+
     @ManyToOne
     @JoinColumn(name = "aut_grupo_id")
     private Grupo grupo;
@@ -38,7 +42,5 @@ public class Integrante {
     @OneToMany(mappedBy = "integrante")
     private List<Notificacion> notificaciones;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "aut_usuario_id")
-    private Usuario usuario;
+
 }

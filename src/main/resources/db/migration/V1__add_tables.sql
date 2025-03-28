@@ -66,27 +66,20 @@ CREATE TABLE AUT_CATEGORIA_TOPE (
     CONSTRAINT fk_aut_categoria_tope_aut_categoria FOREIGN KEY (aut_categoria_id) REFERENCES AUT_CATEGORIA (id)
 );
 
-CREATE TABLE AUT_USUARIO (
-    id BIGINT AUTO_INCREMENT,
-    usuario VARCHAR(20) NOT NULL,
-    contrasenia VARCHAR(25),
-    CONSTRAINT pk_aut_usuario PRIMARY KEY (id)
-);
-
 CREATE TABLE AUT_INTEGRANTE (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    aut_grupo_id BIGINT NOT NULL,
+    aut_grupo_id BIGINT NULL,
     nombre VARCHAR(20) NOT NULL,
     legajo INT NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     rol ENUM(
         'AUTORIDAD',
         'AUXILIAR',
         'COORDINADOR'
     ) NOT NULL,
-    aut_usuario_id BIGINT NOT NULL,
     CONSTRAINT pk_aut_integrante PRIMARY KEY (id),
     CONSTRAINT fk_aut_integrante_aut_grupo FOREIGN KEY (aut_grupo_id) REFERENCES AUT_GRUPO (id),
-    CONSTRAINT fk_aut_usuario FOREIGN KEY (aut_usuario_id) REFERENCES AUT_USUARIO (id),
     CONSTRAINT un_aut_integrante_legajo UNIQUE (legajo)
 );
 

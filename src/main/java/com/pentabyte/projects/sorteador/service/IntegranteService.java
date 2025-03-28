@@ -1,5 +1,9 @@
 package com.pentabyte.projects.sorteador.service;
 
+import com.pentabyte.projects.sorteador.config.security.AuthenticationResponseDTO;
+import com.pentabyte.projects.sorteador.config.security.CredencialesDTO;
+import com.pentabyte.projects.sorteador.config.security.JwtService;
+import com.pentabyte.projects.sorteador.config.security.UserDetail;
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.IntegranteUpdateDTO;
@@ -9,15 +13,16 @@ import com.pentabyte.projects.sorteador.dto.response.initial.IntegranteInitialDT
 import com.pentabyte.projects.sorteador.exception.RecursoNoEncontradoException;
 import com.pentabyte.projects.sorteador.interfaces.CrudServiceInterface;
 import com.pentabyte.projects.sorteador.mapper.IntegranteMapper;
-import com.pentabyte.projects.sorteador.model.Grupo;
 import com.pentabyte.projects.sorteador.model.Integrante;
-import com.pentabyte.projects.sorteador.model.Usuario;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
-import com.pentabyte.projects.sorteador.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,44 +35,23 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     private final IntegranteRepository integranteRepository;
     private final GrupoRepository grupoRepository;
     private final IntegranteMapper integranteMapper;
-    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Autowired
-    public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper, UsuarioRepository usuarioRepository) {
+    public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.integranteRepository = integranteRepository;
         this.grupoRepository = grupoRepository;
         this.integranteMapper = integranteMapper;
-        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @Override
     public ResponseDTO<IntegranteResponseDTO> crear(IntegranteCreateDTO dto) {
-        Grupo grupo = grupoRepository.findById(dto.grupoId())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Grupo no encontrado con ID: " + dto.grupoId()));
-        Usuario usuario = this.usuarioRepository.findById(dto.usuarioId())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con ID: " + dto.usuarioId()));
-        Integrante integrante = integranteRepository.save(new Integrante(
-                null,
-                dto.nombre(),
-                dto.legajo(),
-                dto.rol(),
-                grupo,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                usuario
-        ));
-
-        return new ResponseDTO<>(
-                new IntegranteResponseDTO(
-                        integrante.getId(),
-                        integrante.getNombre(),
-                        integrante.getLegajo(),
-                        integrante.getRol(),
-                        integrante.getGrupo().getId()
-                ),
-                new ResponseDTO.EstadoDTO("Integrante creado exitosamente", "201")
-        );
+        return null;
     }
 
     @Override
@@ -99,24 +83,6 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                         integrante.getGrupo().getId()
                 ),
                 new ResponseDTO.EstadoDTO("Integrante encontrado exitosamente", "200")
-        );
-    }
-
-    @Override
-    public ResponseDTO<PaginaDTO<IntegranteResponseDTO>> obtenerTodos(Pageable paginacion) {
-        Page<IntegranteResponseDTO> integrantePage = integranteRepository.findAll(paginacion)
-                .map(integrante ->
-                        new IntegranteResponseDTO(
-                                integrante.getId(),
-                                integrante.getNombre(),
-                                integrante.getLegajo(),
-                                integrante.getRol(),
-                                integrante.getGrupo().getId()
-                        ));
-
-        return new ResponseDTO<>(
-                new PaginaDTO<>(integrantePage),
-                new ResponseDTO.EstadoDTO("Lista de integrantes obtenida exitosamente", "200")
         );
     }
 
@@ -157,10 +123,53 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
                 integrante.getGrupo().getId(),
                 integrante.getNombre(),
                 integrante.getLegajo(),
-                integrante.getRol(),
-                integrante.getUsuario().getId()
+                integrante.getRol()
         );
 
+    }
+
+
+    /**
+     * Obtiene una lista paginada de todos los usuarios.
+     *
+     * @param paginacion Objeto de paginación proporcionado por Spring.
+     * @return {@link ResponseDTO} con la lista paginada de usuarios.
+     */
+    @Override
+    public ResponseDTO<PaginaDTO<IntegranteResponseDTO>> obtenerTodos(Pageable paginacion) {
+        Page<IntegranteResponseDTO> integrante = integranteRepository.findAll(paginacion)
+                .map(item -> integranteMapper.toResponseDTO(item));
+
+        return new ResponseDTO<PaginaDTO<IntegranteResponseDTO>>(
+                new PaginaDTO<>(integrante),
+                new ResponseDTO.EstadoDTO("Lista de usuarios obtenida exitosamente", "200")
+        );
+    }
+
+    public Integrante registrarUsuario(IntegranteCreateDTO dto) {
+
+        Integrante integrante = new Integrante(
+                null,
+                dto.nombre(),
+                dto.legajo(),
+                dto.rol(),
+                dto.email(),
+                passwordEncoder.encode(dto.password()),
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
+
+        return integranteRepository.save(integrante);
+    }
+
+    public AuthenticationResponseDTO login(CredencialesDTO credenciales) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(credenciales.email(), credenciales.password());
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        UserDetail user = (UserDetail) authentication.getPrincipal();
+        String jwt = jwtService.generateToken(authentication);
+        return new AuthenticationResponseDTO(jwt, user.getUsuario().getRol());
     }
 }
 

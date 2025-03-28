@@ -281,8 +281,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
                         integrante.getGrupo().getId(),
                         integrante.getNombre(),
                         integrante.getLegajo(),
-                        integrante.getRol(),
-                        integrante.getUsuario().getId()
+                        integrante.getRol()
                 )).collect(Collectors.toList())
         );
     }

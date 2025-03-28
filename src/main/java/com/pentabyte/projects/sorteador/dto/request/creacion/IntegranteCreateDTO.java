@@ -14,11 +14,13 @@ public record IntegranteCreateDTO(
         @Max(value = 999999, message = "El legajo no puede tener más de 6 dígitos")
         Integer legajo,
 
+        @Email
+        String email,
+
+        @NotBlank
+        String password,
+
         @NotNull(message = "El rol no puede estar vacío")
-        Rol rol,
-
-
-        Long grupoId,
-        Long usuarioId
+        Rol rol
 ) {
 }
