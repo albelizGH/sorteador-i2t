@@ -1,0 +1,2214 @@
+openapi: 3.1.0
+info:
+  title: Sorteador
+  description: |
+    API Rest para el proyecto sorteador i2t.
+                                           [LinkedIn](https://linkedin.com/in/alejo-beliz) [GitHub](https://github.com/albelizGH/)
+  contact:
+    name: Alejo Beliz
+    url: https://linkedin.com/in/alejo-beliz
+servers:
+- url: http://localhost:8080/api/v1
+  description: Generated server url
+tags:
+- name: Reemplazos auxiliar
+  description: Operaciones para gestionar los reemplazos de auxiliares.
+- name: Grupos auxiliar
+  description: Operaciones para gestionar los grupos de auxiliares.
+- name: Reemplazos coordinador
+  description: Operaciones para gestionar los reemplazos de coordinadores.
+- name: Sorteos coordinador
+  description: Endpoints para la gestión de los sorteos para el coordinador
+- name: Integrante
+  description: Endpoints para la gestión de integrantes
+- name: Asignaciones auxiliar
+  description: Operaciones para gestionar las asignaciones de auxiliares.
+- name: Asignaciones coordinador
+  description: Endpoints para la gestión de las asignaciones para el coordinador
+- name: Productos
+  description: Operaciones para gestionar los productos desde coordinador.
+- name: Solicitud de Reemplazo
+  description: Endpoints para la gestión de solicitudes de reemplazo
+- name: Integrantes
+  description: Operaciones para gestionar los integrantes desde coordinador.
+- name: Categoría
+  description: Endpoints para la gestión de categorías
+- name: Grupos
+  description: Operaciones para gestionar los grupos desde coordinador.
+- name: Categorias
+  description: Operaciones para gestionar las categorias desde coordinador.
+- name: Categorías topes
+  description: Operaciones para gestionar las categorias tope del coordinador.
+- name: Autenticación
+  description: Endpoints relacionados con la autenticación de usuarios en el sistema
+- name: Sorteo
+  description: Endpoints para la gestión de sorteo
+- name: Grupo
+  description: Endpoints para la gestión de grupos
+- name: Categoría tope
+  description: Endpoints para la gestión de categorías topes
+- name: Producto
+  description: Endpoints para la gestión de productos
+- name: Asignación
+  description: Endpoints para la gestión de asignaciones
+paths:
+  /coordinador/reemplazos/rechazar/{id}:
+    put:
+      tags:
+      - Reemplazos coordinador
+      summary: Rechazar solicitud de reemplazo
+      description: Permite que un usuario reemplazante rechaze una solicitud de reemplazo.
+      operationId: rechazarSolicitud
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOSolicitudDeReemplazoResponseDTO"
+  /coordinador/reemplazos/aprobar/{id}:
+    put:
+      tags:
+      - Reemplazos coordinador
+      summary: Aprobar solicitud de reemplazo
+      description: Permite que un coordinador apruebeuna una solicitud de reemplazo.
+      operationId: aprobarSolicitud
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOSolicitudDeReemplazoResponseDTO"
+  /coordinador/reemplazos/aceptar/{id}:
+    put:
+      tags:
+      - Reemplazos coordinador
+      summary: Aceptar solicitud de reemplazo
+      description: Permite que un usuario reemplazante acepte una solicitud de reemplazo.
+      operationId: aceptarSolicitud
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: usuarioReemplazanteId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOSolicitudDeReemplazoResponseDTO"
+  /coordinador/categoria_tope/{id}:
+    put:
+      tags:
+      - Categorías topes
+      summary: Actualizar una categoría tope
+      description: Actualiza una categoría tope existente en el sistema con los datos
+        proporcionados.
+      operationId: actualizar
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoriaTopeUpdateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOCategoriaTopeResponseDTO"
+  /integrantes:
+    get:
+      tags:
+      - Integrante
+      summary: Obtener todos los integrantes
+      description: Devuelve una lista paginada de todos los integrantes existentes
+        en el sistema.
+      operationId: obtenerTodos
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOIntegranteResponseDTO"
+    post:
+      tags:
+      - Integrante
+      summary: Crear un nuevo integrante
+      description: Registra un nuevo integrante en el sistema con los datos proporcionados.
+      operationId: crear
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IntegranteCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOIntegranteResponseDTO"
+  /coordinador/grupos:
+    get:
+      tags:
+      - Grupos
+      operationId: getGrupos
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOGrupoInitialDTO"
+    post:
+      tags:
+      - Grupos
+      summary: Crear un nuevo grupo
+      description: Registra un nuevo grupo en el sistema con los datos proporcionados.
+      operationId: crear_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrupoCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOGrupoResponseDTO"
+  /coordinador/categorias:
+    get:
+      tags:
+      - Categorias
+      operationId: getCategorias
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOCategoriaInitialDTO"
+    post:
+      tags:
+      - Categorias
+      summary: Crear una nueva categoría
+      description: Registra una nueva categoría en el sistema con los datos proporcionados.
+      operationId: crear_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoriaCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoriaInitialDTO"
+  /coordinador/categoria_tope:
+    get:
+      tags:
+      - Categorías topes
+      summary: Actualizar una categoría tope
+      description: Actualiza una categoría tope existente en el sistema con los datos
+        proporcionados.
+      operationId: getCategoriasTopes
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOCategoriaTopeInitialDTO"
+    post:
+      tags:
+      - Categorías topes
+      summary: Crear una nueva categoría tope
+      description: Registra una nueva categoría tope en el sistema con los datos proporcionados.
+      operationId: crear_3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoriaTopeCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOCategoriaTopeResponseDTO"
+  /coordinador/asignaciones:
+    post:
+      tags:
+      - Asignaciones coordinador
+      summary: Crear una nueva asignación
+      description: Registra una nueva asignación en el sistema con los datos proporcionados.
+      operationId: crear_4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AsignacionCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOAsignacionResponseDTO"
+  /auxiliar/reemplazos:
+    post:
+      tags:
+      - Reemplazos auxiliar
+      summary: Crear una nueva solicitud de reemplazo
+      description: Registra una nueva solicitud de reemplazo en el sistema con los
+        datos proporcionados.
+      operationId: crear_5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolicitudDeReemplazoCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOSolicitudDeReemplazoResponseDTO"
+  /auth/register:
+    post:
+      tags:
+      - Autenticación
+      summary: Login de usuario
+      description: Permite a un usuario autenticarse proporcionando sus credenciales
+        (email y contraseña). Devuelve un token de autenticación si las credenciales
+        son válidas.
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IntegranteCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /auth/login:
+    post:
+      tags:
+      - Autenticación
+      summary: Login de usuario
+      description: Permite a un usuario autenticarse proporcionando sus credenciales
+        (email y contraseña). Devuelve un token de autenticación si las credenciales
+        son válidas.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredencialesDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthenticationResponseDTO"
+  /grupos/{grupoId}:
+    patch:
+      tags:
+      - Grupo
+      summary: Agregar integrante a un grupo
+      description: Se agrega un integrante a un grupo específico segun su ID de integrante
+        y el ID de grupo.
+      operationId: agregarIntegrante
+      parameters:
+      - name: grupoId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GrupoUpdateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOGrupoResponseDTO"
+  /sorteos:
+    get:
+      tags:
+      - Sorteo
+      summary: Obtener todas los sorteos
+      description: Devuelve una lista paginada de todos los sorteos existentes en
+        el sistema.
+      operationId: obtenerTodos_1
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOSorteoResponseDTO"
+  /sorteos/{id}:
+    get:
+      tags:
+      - Sorteo
+      summary: Obtener un sorteo por ID
+      description: Devuelve la información detallada de un sorteo específico según
+        su ID.
+      operationId: obtenerPorId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOSorteoResponseDTO"
+  /solicitudes-reemplazo:
+    get:
+      tags:
+      - Solicitud de Reemplazo
+      summary: Obtener todas las solicitudes de reemplazo
+      description: Devuelve una lista paginada de todas las solicitudes de reemplazo
+        existentes en el sistema.
+      operationId: obtenerTodos_2
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOSolicitudDeReemplazoResponseDTO"
+  /solicitudes-reemplazo/{id}:
+    get:
+      tags:
+      - Solicitud de Reemplazo
+      summary: Obtener una solicitud de reemplazo por ID
+      description: Devuelve la información detallada de una solicitud de reemplazo
+        específica según su ID.
+      operationId: obtenerPorId_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOSolicitudDeReemplazoResponseDTO"
+  /solicitudes-reemplazo/reemplazantes/{idSolicitante}:
+    get:
+      tags:
+      - Solicitud de Reemplazo
+      summary: Obtener una lista de integrantes con mismo rol y distinto grupo.
+      description: Devuelve una lista con integrantes del mismo rol pero distinto
+        grupo del integrante que solicita.
+      operationId: obtenerMismoRolDistintoGrupo
+      parameters:
+      - name: idSolicitante
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IntegranteResponseDTO"
+  /productos:
+    get:
+      tags:
+      - Producto
+      summary: Obtener todos los productos
+      description: Devuelve una lista paginada de todos los productos existentes en
+        el sistema.
+      operationId: obtenerTodos_3
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOProductoResponseDTO"
+  /productos/{id}:
+    get:
+      tags:
+      - Producto
+      summary: Obtener un producto por ID
+      description: Devuelve la información detallada de un producto específico según
+        su ID.
+      operationId: obtenerPorId_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOProductoResponseDTO"
+  /integrantes/{id}:
+    get:
+      tags:
+      - Integrante
+      summary: Obtener un integrante por ID
+      description: Devuelve la información detallada de un integrante específico según
+        su ID.
+      operationId: obtenerPorId_3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOIntegranteResponseDTO"
+  /integrantes/inicial:
+    get:
+      tags:
+      - Integrante
+      summary: Obtener el estado inicial de integrante
+      description: Obtiene el estado inicial de un integrante por su id
+      operationId: getInicialIntegranteById
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /grupos:
+    get:
+      tags:
+      - Grupo
+      summary: Obtener todos los grupos
+      description: Devuelve una lista paginada de todos los grupos existentes en el
+        sistema.
+      operationId: obtenerTodos_4
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOGrupoResponseDTO"
+  /grupos/{id}:
+    get:
+      tags:
+      - Grupo
+      summary: Obtener un grupo por ID
+      description: Devuelve la información detallada de un grupo específico según
+        su ID.
+      operationId: obtenerPorId_4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOGrupoResponseDTO"
+  /coordinador/sorteos:
+    get:
+      tags:
+      - Sorteos coordinador
+      operationId: getSorteos
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: categoriaId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: fechaInicio
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: fechaFin
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOSorteoInitialDTO"
+  /coordinador/reemplazos/pendientes:
+    get:
+      tags:
+      - Reemplazos coordinador
+      summary: Obtener reemplazos pendientes
+      description: Obtiene una lista paginada de reemplazos pendientes.
+      operationId: getReemplazosPendientes
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/reemplazos/no_pendientes:
+    get:
+      tags:
+      - Reemplazos coordinador
+      summary: Obtener reemplazos no pendientes
+      description: Obtiene una lista paginada de reemplazos no pendientes.
+      operationId: getReemplazosNoPendiente
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/reemplazos/fechasSolicitante/{idSolicitante}:
+    get:
+      tags:
+      - Reemplazos coordinador
+      summary: Obtener fechas por solicitante.
+      description: Recupera una lista paginada de fechas asociadas a un solicitante
+        específico identificado por su ID.
+      operationId: buscarFechasPorSolicitante
+      parameters:
+      - name: idSolicitante
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOSorteoResponseDTO"
+  /coordinador/reemplazos/fechasDevolucion/{idDevolucion}:
+    get:
+      tags:
+      - Reemplazos coordinador
+      summary: Obtener fechas para devolución
+      description: "Recupera una lista paginada de fechas asociadas a una devolució\
+        n específica identificada por su ID, filtrando por el id de un sorteo."
+      operationId: buscarFechasParaDevolucion
+      parameters:
+      - name: idDevolucion
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: SorteoId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOSorteoResponseDTO"
+  /coordinador/productos:
+    get:
+      tags:
+      - Productos
+      operationId: getProductos
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOProductoInitialDTO"
+  /coordinador/integrantes:
+    get:
+      tags:
+      - Integrantes
+      operationId: getIntegranteById
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOIntegranteInitialDTO"
+  /coordinador/integrantes/sin-grupo:
+    get:
+      tags:
+      - Integrantes
+      operationId: obtenerTodosIntegrantesSinGrupo
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IntegranteResponseDTO"
+  /coordinador/inicial/sorteos:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener el estado inicial de sorteos
+      description: Obtiene el estado inicial de los sorteos
+      operationId: getSorteos_1
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: categoriaId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: fechaInicio
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: fechaFin
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/inicial/reemplazos:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener el estado inicial de reemplazos
+      description: Obtiene el estado inicial de los reemplazos
+      operationId: getReemplazo
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/inicial/productos:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener todos los productos
+      description: Obtiene una lista paginada de todos los productos existentes en
+        el sistema.
+      operationId: getProductos_1
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/inicial/integrantes:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener el estado inicial de integrante
+      description: Obtiene el estado inicial de un integrante por su id
+      operationId: getInicialIntegranteById_1
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/inicial/grupos:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener todos los grupos
+      description: Obtiene una lista paginada de todos los grupos existentes en el
+        sistema.
+      operationId: getGrupos_1
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/inicial/categorias:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener todas las categorias
+      description: Obtiene una lista paginada de todas las categorias existentes en
+        el sistema.
+      operationId: getCategorias_1
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/inicial/asignaciones:
+    get:
+      tags:
+      - initial-state-coordinador
+      summary: Obtener el estado inicial de asignaciones
+      description: Obtiene el estado inicial de las asignaciones de los sorteos
+      operationId: getAsignaciones
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: grupoId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /coordinador/asignaciones/planificar:
+    get:
+      tags:
+      - Asignaciones coordinador
+      summary: Generar planificación automática
+      description: Genera una planificación automática para las semanas requeridas.
+      operationId: ejecutarPlanificacion
+      parameters:
+      - name: cantidadDeSemanas
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOAsignacionInitialDTO"
+  /coordinador/asignaciones/planificadas:
+    get:
+      tags:
+      - Asignaciones coordinador
+      summary: Obtener asignaciones planificadas
+      description: Devuelve una lista paginada de las asignaciones planificadas.
+      operationId: obtenerPlanificadas
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: grupoId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOAsignacionInitialDTO"
+  /coordinador/asignaciones/borrador:
+    get:
+      tags:
+      - Asignaciones coordinador
+      summary: Obtener asignaciones borrador
+      description: Devuelve una lista paginada de las asignaciones borrador.
+      operationId: obtenerBorrador
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: grupoId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOAsignacionResponseDTO"
+  /coordinador/asignaciones/aprobar:
+    get:
+      tags:
+      - Asignaciones coordinador
+      operationId: aprobarAsignaciones
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /categorias:
+    get:
+      tags:
+      - Categoría
+      summary: Obtener todas las categorías
+      description: Devuelve una lista paginada de todas las categorías existentes
+        en el sistema.
+      operationId: obtenerTodos_5
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOCategoriaResponseDTO"
+  /categorias/{id}:
+    get:
+      tags:
+      - Categoría
+      summary: Obtener una categoría por ID
+      description: Devuelve la información detallada de una categoría específica según
+        su ID.
+      operationId: obtenerPorId_5
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOCategoriaResponseDTO"
+  /categorias-tope:
+    get:
+      tags:
+      - Categoría tope
+      summary: Obtener todas las categorías topes
+      description: Devuelve una lista paginada de todas las categorías topes existentes
+        en el sistema.
+      operationId: obtenerTodos_6
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOCategoriaTopeResponseDTO"
+  /categorias-tope/{id}:
+    get:
+      tags:
+      - Categoría tope
+      summary: Obtener una categoría tope por ID
+      description: Devuelve la información detallada de una categoría tope específica
+        según su ID.
+      operationId: obtenerPorId_6
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOCategoriaTopeResponseDTO"
+  /auxiliar/reemplazos/pendientes:
+    get:
+      tags:
+      - Reemplazos auxiliar
+      summary: Obtener todos los reemplazos pendientes
+      description: Obtiene una lista paginada de todos los reemplazos pendientes existentes
+        en el sistema.
+      operationId: obtenerTodosPendientes
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /auxiliar/reemplazos/no-pendientes:
+    get:
+      tags:
+      - Reemplazos auxiliar
+      summary: Obtener todos los reemplazos no pendientes
+      description: Obtiene una lista paginada de todos los reemplazos no pendientes
+        existentes en el sistema.
+      operationId: obtenerTodosNoPendientes
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /auxiliar/inicial/reemplazos:
+    get:
+      tags:
+      - initial-state-auxiliar
+      summary: Obtener el estado inicial de reemplazos
+      description: Obtiene el estado inicial de los reemplazos de los sorteos por
+        integrante
+      operationId: getReemplazos
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /auxiliar/inicial/grupos:
+    get:
+      tags:
+      - initial-state-auxiliar
+      summary: Obtener el estado inicial de grupo
+      description: Obtiene el estado inicial de un de los sorteos por integrante
+      operationId: getGrupo
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /auxiliar/inicial/asignaciones:
+    get:
+      tags:
+      - initial-state-auxiliar
+      summary: Obtener el estado inicial de asignaciones
+      description: Obtiene el estado inicial de las asignaciones de los sorteos por
+        integrante
+      operationId: getAsignaciones_1
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /auxiliar/grupos:
+    get:
+      tags:
+      - Grupos auxiliar
+      summary: Obtener el grupo de un integrante
+      description: Obtiene el grupo de un integrante en el sistema
+      operationId: getGrupo_1
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GrupoInitialDTO"
+  /auxiliar/asignaciones:
+    get:
+      tags:
+      - Asignaciones auxiliar
+      operationId: getAsignaciones_2
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /auxiliar/asignaciones/futuras:
+    get:
+      tags:
+      - Asignaciones auxiliar
+      operationId: getAsignacionesFuturas
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /asignaciones:
+    get:
+      tags:
+      - Asignación
+      summary: Obtener todas las asignaciones
+      description: Devuelve una lista paginada de todas las asignaciones existentes
+        en el sistema.
+      operationId: obtenerTodos_7
+      parameters:
+      - name: paginacion
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOPaginaDTOAsignacionResponseDTO"
+  /asignaciones/{id}:
+    get:
+      tags:
+      - Asignación
+      summary: Obtener una asignación por ID
+      description: Devuelve la información detallada de una asignación específica
+        según su ID.
+      operationId: obtenerPorId_7
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseDTOAsignacionResponseDTO"
+  /auxiliar/reemplazos/{id}:
+    delete:
+      tags:
+      - Reemplazos auxiliar
+      summary: Eliminar una solicitud de reemplazo
+      description: Elimina una solicitud de reemplazo especifica
+      operationId: eliminar
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    EstadoDTO:
+      type: object
+      properties:
+        mensaje:
+          type: string
+        codigo:
+          type: string
+    ResponseDTOSolicitudDeReemplazoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/SolicitudDeReemplazoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    SolicitudDeReemplazoResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        descripcion:
+          type: string
+        fechaDeSolicitud:
+          type: string
+          format: date
+        estadoDeSolicitud:
+          type: string
+          enum:
+          - Pendiente
+          - Aprobada
+          - Cancelada
+          - Rechazada
+        empleadoSolicitanteId:
+          type: integer
+          format: int64
+        empleadoReemplazoId:
+          type: integer
+          format: int64
+        asignacionDeSolicitanteId:
+          type: integer
+          format: int64
+        asignacionDeReemplazoId:
+          type: integer
+          format: int64
+    CategoriaTopeUpdateDTO:
+      type: object
+      properties:
+        cantidadMaxima:
+          type: integer
+          format: int32
+          minimum: 1
+    CategoriaResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        ultimaSemanaDeAsignacion:
+          type: integer
+          format: int32
+        ultimaFechaDeAsignacion:
+          type: string
+          format: date
+        semanasAPlanificar:
+          type: integer
+          format: int32
+    CategoriaTopeResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        categoria:
+          $ref: "#/components/schemas/CategoriaResponseDTO"
+        cantidadMinima:
+          type: integer
+          format: int32
+        cantidadMaxima:
+          type: integer
+          format: int32
+        esAutoridad:
+          type: boolean
+    ResponseDTOCategoriaTopeResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/CategoriaTopeResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    IntegranteCreateDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        legajo:
+          type: integer
+          format: int32
+          maximum: 999999
+          minimum: 1000
+        email:
+          type: string
+        password:
+          type: string
+        rol:
+          type: string
+          enum:
+          - Autoridad
+          - Auxiliar
+          - Coordinador
+      required:
+      - legajo
+      - nombre
+      - password
+      - rol
+    IntegranteResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        legajo:
+          type: integer
+          format: int32
+        rol:
+          type: string
+          enum:
+          - Autoridad
+          - Auxiliar
+          - Coordinador
+        grupoId:
+          type: integer
+          format: int64
+    ResponseDTOIntegranteResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/IntegranteResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    GrupoCreateDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        categoriaId:
+          type: integer
+          format: int64
+        integrantesIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          maxItems: 2147483647
+          minItems: 1
+      required:
+      - categoriaId
+      - nombre
+    GrupoResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        ordenDeGrupo:
+          type: integer
+          format: int32
+        categoria:
+          $ref: "#/components/schemas/CategoriaResponseDTO"
+        integrantes:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntegranteResponseDTO"
+    ResponseDTOGrupoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/GrupoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    CategoriaCreateDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        categoriaTopeIdList:
+          type: array
+          items:
+            type: integer
+            format: int64
+      required:
+      - categoriaTopeIdList
+      - nombre
+    CategoriaInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        maximoAutoridades:
+          type: integer
+          format: int32
+        minimoAutoridades:
+          type: integer
+          format: int32
+        maximoAuxiliares:
+          type: integer
+          format: int32
+        minimoAuxiliares:
+          type: integer
+          format: int32
+    CategoriaTopeCreateDTO:
+      type: object
+      properties:
+        cantidadMinima:
+          type: integer
+          format: int32
+          minimum: 1
+        cantidadMaxima:
+          type: integer
+          format: int32
+          minimum: 1
+        esAutoridad:
+          type: boolean
+      required:
+      - cantidadMaxima
+      - cantidadMinima
+      - esAutoridad
+    AsignacionCreateDTO:
+      type: object
+      properties:
+        estado:
+          type: string
+          enum:
+          - Planificado
+          - Borrador
+        grupoId:
+          type: integer
+          format: int64
+        sorteoId:
+          type: integer
+          format: int64
+      required:
+      - estado
+      - grupoId
+      - sorteoId
+    AsignacionResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        estado:
+          type: string
+          enum:
+          - Planificado
+          - Borrador
+        grupo:
+          $ref: "#/components/schemas/GrupoResponseDTO"
+        sorteo:
+          $ref: "#/components/schemas/SorteoResponseDTO"
+    ProductoResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        orden:
+          type: integer
+          format: int32
+        categoria:
+          $ref: "#/components/schemas/CategoriaResponseDTO"
+    ResponseDTOAsignacionResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/AsignacionResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    SorteoResponseDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        fecha:
+          type: string
+          format: date-time
+        confirmado:
+          type: boolean
+        diaDescriptivo:
+          type: string
+          enum:
+          - Lunes
+          - Martes
+          - Miércoles
+          - Jueves
+          - Viernes
+          - Sábado
+          - Domingo
+        producto:
+          $ref: "#/components/schemas/ProductoResponseDTO"
+    SolicitudDeReemplazoCreateDTO:
+      type: object
+      properties:
+        descripcion:
+          type: string
+          maxLength: 255
+          minLength: 0
+        fechaDeSolicitud:
+          type: string
+          format: date
+        empleadoSolicitanteId:
+          type: integer
+          format: int64
+        empleadoReemplazoId:
+          type: integer
+          format: int64
+        asignacionDeSolicitanteId:
+          type: integer
+          format: int64
+        asignacionDeReemplazoId:
+          type: integer
+          format: int64
+      required:
+      - asignacionDeReemplazoId
+      - asignacionDeSolicitanteId
+      - descripcion
+      - empleadoReemplazoId
+      - empleadoSolicitanteId
+      - fechaDeSolicitud
+    CredencialesDTO:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+      - password
+    AuthenticationResponseDTO:
+      type: object
+      properties:
+        jwtToken:
+          type: string
+        rol:
+          type: string
+          enum:
+          - Autoridad
+          - Auxiliar
+          - Coordinador
+    GrupoUpdateDTO:
+      type: object
+      properties:
+        integrantesIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    PaginaDTOSorteoResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/SorteoResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    PaginacionDTO:
+      type: object
+      properties:
+        cantidadDeElementos:
+          type: integer
+          format: int32
+        totalDeElementos:
+          type: integer
+          format: int64
+    ResponseDTOPaginaDTOSorteoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOSorteoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    ResponseDTOSorteoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/SorteoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOSolicitudDeReemplazoResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/SolicitudDeReemplazoResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOSolicitudDeReemplazoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOSolicitudDeReemplazoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOProductoResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductoResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOProductoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOProductoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    ResponseDTOProductoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ProductoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOIntegranteResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntegranteResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOIntegranteResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOIntegranteResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOGrupoResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/GrupoResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOGrupoResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOGrupoResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOSorteoInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/SorteoInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ProductoInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        orden:
+          type: integer
+          format: int32
+        categoria:
+          type: string
+    ResponseDTOPaginaDTOSorteoInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOSorteoInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    SorteoInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        producto:
+          $ref: "#/components/schemas/ProductoInitialDTO"
+        fecha:
+          type: string
+          format: date-time
+        confirmado:
+          type: boolean
+    PaginaDTOProductoInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductoInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOProductoInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOProductoInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    IntegranteInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        autGrupoId:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        legajo:
+          type: integer
+          format: int32
+        rol:
+          type: string
+          enum:
+          - Autoridad
+          - Auxiliar
+          - Coordinador
+    PaginaDTOIntegranteInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntegranteInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOIntegranteInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOIntegranteInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    GrupoInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        categoria:
+          type: string
+        nombre:
+          type: string
+        ordenGrupo:
+          type: integer
+          format: int32
+        integrantes:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntegranteInitialDTO"
+    PaginaDTOGrupoInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/GrupoInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOGrupoInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOGrupoInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOCategoriaInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoriaInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOCategoriaInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOCategoriaInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    CategoriaTopeInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        cantidadMinima:
+          type: integer
+          format: int32
+        cantidadMaxima:
+          type: integer
+          format: int32
+        esAutoridad:
+          type: boolean
+    PaginaDTOCategoriaTopeInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoriaTopeInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOCategoriaTopeInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOCategoriaTopeInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    AsignacionInitialDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        grupoId:
+          type: integer
+          format: int64
+        sorteoId:
+          type: integer
+          format: int64
+        producto:
+          type: string
+        orden:
+          type: integer
+          format: int32
+        fecha:
+          type: string
+          format: date-time
+        estado:
+          type: string
+          enum:
+          - Planificado
+          - Borrador
+        grupo:
+          type: string
+        autoridades:
+          type: array
+          items:
+            type: string
+        auxiliares:
+          type: array
+          items:
+            type: string
+    PaginaDTOAsignacionInitialDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/AsignacionInitialDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOAsignacionInitialDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOAsignacionInitialDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOAsignacionResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/AsignacionResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOAsignacionResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOAsignacionResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOCategoriaResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoriaResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOCategoriaResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOCategoriaResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    ResponseDTOCategoriaResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/CategoriaResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+    PaginaDTOCategoriaTopeResponseDTO:
+      type: object
+      properties:
+        contenido:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoriaTopeResponseDTO"
+        paginacion:
+          $ref: "#/components/schemas/PaginacionDTO"
+    ResponseDTOPaginaDTOCategoriaTopeResponseDTO:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/PaginaDTOCategoriaTopeResponseDTO"
+        estado:
+          $ref: "#/components/schemas/EstadoDTO"
+  securitySchemes:
+    bearer-key:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
