@@ -35,7 +35,7 @@ public class SecurityConfiguration {
 
     private static void buildRequestMatcher(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
         authReqConfig.requestMatchers(
-                "/auth",
+                "/auth/**",
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html",

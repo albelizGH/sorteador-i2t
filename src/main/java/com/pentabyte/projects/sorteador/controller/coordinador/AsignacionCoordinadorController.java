@@ -73,7 +73,7 @@ public class AsignacionCoordinadorController {
             description = "Devuelve una lista paginada de las asignaciones borrador."
     )
     @GetMapping("/borrador")
-    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> obtenerBorrador(@PageableDefault(size = 5) Pageable pageable, @RequestParam(value = "", required = false) Long grupoId) {
+    public ResponseEntity<ResponseDTO<PaginaDTO<AsignacionResponseDTO>>> obtenerBorrador(@PageableDefault(size = 5) Pageable pageable, @RequestParam(value = "grupoId", required = false) Long grupoId) {
 
         PaginaDTO<AsignacionInitialDTO> paginaDTO = asignacionService.getAsignacionesBorradorPage(pageable, grupoId);
 
@@ -88,7 +88,6 @@ public class AsignacionCoordinadorController {
         this.asignacionService.aprobarAsignaciones();
         return ResponseEntity.ok().build();
     }
-
 
 
 }
