@@ -61,6 +61,13 @@ public interface SolicitudDeReemplazoRepository extends JpaRepository<SolicitudD
             ORDER BY s.id DESC LIMIT 1""")
     Optional<Long> obtenerUltimoId();
 
+    @Query("SELECT COUNT(s) FROM SolicitudDeReemplazo s WHERE s.estadoDeSolicitud = PENDIENTE")
+    Long countReemplazosPendientes();
+
+    @Query("SELECT COUNT(s) FROM SolicitudDeReemplazo s WHERE s.estadoDeSolicitud != PENDIENTE")
+    Long countReemplazosNoPendientes();
+
+
 }
 
 

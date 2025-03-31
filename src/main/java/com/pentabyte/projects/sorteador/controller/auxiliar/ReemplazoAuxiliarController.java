@@ -3,9 +3,7 @@ package com.pentabyte.projects.sorteador.controller.auxiliar;
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.creacion.SolicitudDeReemplazoCreateDTO;
-import com.pentabyte.projects.sorteador.dto.response.SolicitudDeReemplazoResponseDTO;
 import com.pentabyte.projects.sorteador.dto.response.initial.ReemplazoInitialDTO;
-
 import com.pentabyte.projects.sorteador.service.SolicitudDeReemplazoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,15 +33,15 @@ public class ReemplazoAuxiliarController {
             description = "Registra una nueva solicitud de reemplazo en el sistema con los datos proporcionados."
     )
     @PostMapping
-    public ResponseEntity<ResponseDTO<SolicitudDeReemplazoResponseDTO>> crear(
+    public ResponseEntity<ResponseDTO<ReemplazoInitialDTO>> crear(
             @RequestBody @Valid SolicitudDeReemplazoCreateDTO solicitudDeReemplazo) {
-        ResponseDTO<SolicitudDeReemplazoResponseDTO> response = solicitudDeReemplazoService.crear(solicitudDeReemplazo);
+        ResponseDTO<ReemplazoInitialDTO> response = solicitudDeReemplazoService.crearSolicitud(solicitudDeReemplazo);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(
-            summary="Obtener todos los reemplazos pendientes",
-            description="Obtiene una lista paginada de todos los reemplazos pendientes existentes en el sistema."
+            summary = "Obtener todos los reemplazos pendientes",
+            description = "Obtiene una lista paginada de todos los reemplazos pendientes existentes en el sistema."
     )
     @GetMapping("/pendientes")
     public ResponseEntity obtenerTodosPendientes(@PageableDefault(size = 5) Pageable pageable, @RequestParam Long id) {
@@ -52,8 +50,8 @@ public class ReemplazoAuxiliarController {
     }
 
     @Operation(
-            summary="Obtener todos los reemplazos no pendientes",
-            description="Obtiene una lista paginada de todos los reemplazos no pendientes existentes en el sistema."
+            summary = "Obtener todos los reemplazos no pendientes",
+            description = "Obtiene una lista paginada de todos los reemplazos no pendientes existentes en el sistema."
     )
     @GetMapping("/no-pendientes")
     public ResponseEntity obtenerTodosNoPendientes(@PageableDefault(size = 5) Pageable pageable, @RequestParam Long id) {
@@ -62,7 +60,7 @@ public class ReemplazoAuxiliarController {
     }
 
     @Operation(
-            summary="Eliminar una solicitud de reemplazo",
+            summary = "Eliminar una solicitud de reemplazo",
             description = "Elimina una solicitud de reemplazo especifica"
     )
     @DeleteMapping("/{id}")

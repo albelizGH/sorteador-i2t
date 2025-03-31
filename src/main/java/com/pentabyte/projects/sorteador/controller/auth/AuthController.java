@@ -37,12 +37,6 @@ public class AuthController {
     )
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody @Valid CredencialesDTO credenciales) {
-        // Codificando la contraseña usando BCrypt
-        String hashedPassword = passwordEncoder.encode(credenciales.password());
-
-        // Imprimiendo la contraseña codificada en consola para ver el resultado
-        System.out.println("Contraseña hasheada: " + hashedPassword);
-
         AuthenticationResponseDTO response = integranteService.login(credenciales);
         return ResponseEntity.ok(response);
     }

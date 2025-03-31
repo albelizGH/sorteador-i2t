@@ -106,12 +106,14 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
                 new ResponseDTO.EstadoDTO("Producto encontrado exitosamente", "200")
         );
     }
-    public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable){
 
-        Page<ProductoInitialDTO> productoPage=productoRepository.findAll(pageable).map(producto->this.toInitialDTO(producto));
+    public PaginaDTO<ProductoInitialDTO> getProductosCoordinador(Pageable pageable) {
+
+        Page<ProductoInitialDTO> productoPage = productoRepository.findAll(pageable).map(producto -> this.toInitialDTO(producto));
 
         return new PaginaDTO<>(productoPage);
     }
+
     /**
      * Obtiene una lista paginada de todos los productos.
      *
@@ -135,7 +137,7 @@ public class ProductoService implements CrudServiceInterface<ProductoResponseDTO
 
         PaginaDTO<ProductoInitialDTO> productoDTO = new PaginaDTO<>(productoPage);
 
-        int totales = productoDTO.paginacion().totalDeElementos().intValue();
+        long totales = productoDTO.paginacion().totalDeElementos();
 
         GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)

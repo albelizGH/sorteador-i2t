@@ -260,7 +260,7 @@ public class GrupoService implements CrudServiceInterface<GrupoResponseDTO, Long
 
         PaginaDTO<GrupoInitialDTO> grupoDTO = new PaginaDTO<>(grupoPage);
 
-        int totales = grupoDTO.paginacion().totalDeElementos().intValue();
+        long totales = grupoDTO.paginacion().totalDeElementos();
 
         GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)

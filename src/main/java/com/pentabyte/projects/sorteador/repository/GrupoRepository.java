@@ -51,4 +51,10 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
             ORDER BY g.ordenDeGrupo DESC LIMIT 1
             """)
     Integer obtenerUltimoOrden();
+
+    @Query("""
+            SELECT COUNT(g)
+            FROM Grupo g
+            """)
+    long countGrupos();
 }

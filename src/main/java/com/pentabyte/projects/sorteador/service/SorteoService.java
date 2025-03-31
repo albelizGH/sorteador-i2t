@@ -137,9 +137,9 @@ public class SorteoService implements CrudServiceInterface<SorteoResponseDTO, Lo
 
         PaginaDTO<SorteoInitialDTO> paginaDTO = getSorteosCoordinador(pageable, categoriaId, fechaInicio, fechaFin);
 
-        int confirmados = paginaDTO.contenido().stream().filter(SorteoInitialDTO::confirmado).toList().size();
-        int noConfirmados = paginaDTO.contenido().stream().filter(sorteo -> !sorteo.confirmado()).toList().size();
-        int totales = confirmados + noConfirmados;
+        Long confirmados = this.sorteoRepository.countSorteosConfirmados();
+        Long noConfirmados = this.sorteoRepository.countSorteosNoConfirmados();
+        Long totales = confirmados + noConfirmados;
 
         GlobalDTO globalDTO = GlobalDTO.builder()
                 .totales(totales)

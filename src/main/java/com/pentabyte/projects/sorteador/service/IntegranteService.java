@@ -1,9 +1,6 @@
 package com.pentabyte.projects.sorteador.service;
 
-import com.pentabyte.projects.sorteador.config.security.AuthenticationResponseDTO;
-import com.pentabyte.projects.sorteador.config.security.CredencialesDTO;
-import com.pentabyte.projects.sorteador.config.security.JwtService;
-import com.pentabyte.projects.sorteador.config.security.UserDetail;
+import com.pentabyte.projects.sorteador.config.security.*;
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.IntegranteUpdateDTO;
@@ -17,6 +14,7 @@ import com.pentabyte.projects.sorteador.model.Integrante;
 import com.pentabyte.projects.sorteador.repository.GrupoRepository;
 import com.pentabyte.projects.sorteador.repository.IntegranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,15 +36,20 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final SecurityContextService securityContextService;
+
+    @Value("${jwt.expiration.time.hours}")
+    private int tokenHourExpirationTime;
 
     @Autowired
-    public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public IntegranteService(IntegranteRepository integranteRepository, GrupoRepository grupoRepository, IntegranteMapper integranteMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, SecurityContextService securityContextService) {
         this.integranteRepository = integranteRepository;
         this.grupoRepository = grupoRepository;
         this.integranteMapper = integranteMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.securityContextService = securityContextService;
     }
 
     @Override
@@ -109,8 +112,8 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
         return toInitialDTO(integrante);
     }
 
-    public IntegranteInitialDTO getInicialIntegranteByIdCoordinador(Long id) {
-
+    public IntegranteInitialDTO getInicialIntegranteByIdCoordinador() {
+        Long id = securityContextService.getIdDeUsuarioDesdeAuthenticated();
         Integrante integrante = integranteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Integrante no encontrado con ID: " + id));
 
@@ -120,7 +123,7 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
     private IntegranteInitialDTO toInitialDTO(Integrante integrante) {
         return new IntegranteInitialDTO(
                 integrante.getId(),
-                integrante.getGrupo().getId(),
+                integrante.getGrupo() == null ? null : integrante.getGrupo().getId(),
                 integrante.getNombre(),
                 integrante.getLegajo(),
                 integrante.getRol()
@@ -169,7 +172,7 @@ public class IntegranteService implements CrudServiceInterface<IntegranteRespons
         Authentication authentication = authenticationManager.authenticate(authToken);
         UserDetail user = (UserDetail) authentication.getPrincipal();
         String jwt = jwtService.generateToken(authentication);
-        return new AuthenticationResponseDTO(jwt, user.getUsuario().getRol());
+        return new AuthenticationResponseDTO(jwt, user.getUsuario().getRol(), tokenHourExpirationTime * 60 * 60 * 1000);
     }
 }
 

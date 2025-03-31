@@ -96,14 +96,24 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
             "AND s.id <> :SorteoId")
     Page<Sorteo> obtenerFechasDisponiblesParaDevolucion(Long idDevolucion, Long SorteoId, Pageable paginacion);
 
+//    @Query(value = """
+//            SELECT a.*
+//            FROM aut_asignacion a
+//            JOIN aut_grupo g ON g.id = a.aut_grupo_id
+//            JOIN aut_integrante i ON g.id = i.aut_grupo_id
+//            WHERE i.id = :idIntegrante AND a.estado = 'PLANIFICADO'
+//            """, nativeQuery = true)
+//    Page<Asignacion> obtenerAsignacionesPorIntegrante(Long idIntegrante, Pageable paginacion);
+
     @Query(value = """
-            SELECT a.*
-            FROM aut_asignacion a
-            JOIN aut_grupo g ON g.id = a.aut_grupo_id
-            JOIN aut_integrante i ON g.id = i.aut_grupo_id
+            SELECT a
+            FROM Asignacion a
+            LEFT JOIN a.grupo g
+            LEFT JOIN g.integranteList i
             WHERE i.id = :idIntegrante AND a.estado = 'PLANIFICADO'
-            """, nativeQuery = true)
+            """)
     Page<Asignacion> obtenerAsignacionesPorIntegrante(Long idIntegrante, Pageable paginacion);
+
 
     @Query(value = """
             SELECT a
@@ -121,5 +131,29 @@ public interface AsignacionRepository extends JpaRepository<Asignacion, Long> {
     @Modifying
     @Query("UPDATE Asignacion a SET a.estado = :nuevoEstado WHERE a.estado = :estadoActual")
     void actualizarEstado(@Param("nuevoEstado") Estado nuevoEstado, @Param("estadoActual") Estado estadoActual);
+
+    @Query("""
+            SELECT COUNT(a)
+            FROM Asignacion a
+            WHERE a.estado = 'PLANIFICADO'
+            """)
+    long countOfPlanificadas();
+
+    @Query("""
+            SELECT COUNT(a)
+            FROM Asignacion a
+            WHERE a.estado = 'BORRADOR'
+            """)
+    long countOfBorrador();
+
+    @Query("""
+            SELECT COUNT(a)
+            FROM Asignacion a
+            LEFT JOIN a.grupo g
+            LEFT JOIN g.integranteList i
+            WHERE a.estado = 'PLANIFICADO'
+            AND i.id = :integranteId
+            """)
+    Long countOfPlanificadasById(Long integranteId);
 }
 

@@ -26,6 +26,7 @@ public class InitialStateCoordinador {
     private final SolicitudDeReemplazoService solicitudDeReemplazoService;
     private final CategoriaService categoriaService;
     private final IntegranteService integranteService;
+
     @Autowired
     public InitialStateCoordinador(AsignacionService asignacionService, GrupoService grupoService, ProductoService productoService, SorteoService sorteoService, SolicitudDeReemplazoService solicitudDeReemplazoService, CategoriaService categoriaService, IntegranteService integranteService) {
         this.asignacionService = asignacionService;
@@ -39,32 +40,32 @@ public class InitialStateCoordinador {
 
 
     @Operation(
-            summary="Obtener todos los grupos",
-            description="Obtiene una lista paginada de todos los grupos existentes en el sistema."
+            summary = "Obtener todos los grupos",
+            description = "Obtiene una lista paginada de todos los grupos existentes en el sistema."
     )
     @GetMapping("/grupos")
-    public ResponseEntity getGrupos(@PageableDefault(size = 5) Pageable pageable){
-        GrupoInitialResponseDTO response=this.grupoService.getInicialCoordinador(pageable);
+    public ResponseEntity getGrupos(@PageableDefault(size = 5) Pageable pageable) {
+        GrupoInitialResponseDTO response = this.grupoService.getInicialCoordinador(pageable);
         return ResponseEntity.ok(response);
     }
 
     @Operation(
-            summary="Obtener todos los productos",
+            summary = "Obtener todos los productos",
             description = "Obtiene una lista paginada de todos los productos existentes en el sistema."
     )
     @GetMapping("/productos")
-    public ResponseEntity getProductos(@PageableDefault(size = 5) Pageable pageable){
-        ProductoInitialResponseDTO response=this.productoService.getInicialCoordinador(pageable);
+    public ResponseEntity getProductos(@PageableDefault(size = 5) Pageable pageable) {
+        ProductoInitialResponseDTO response = this.productoService.getInicialCoordinador(pageable);
         return ResponseEntity.ok(response);
     }
 
     @Operation(
-            summary="Obtener todas las categorias",
+            summary = "Obtener todas las categorias",
             description = "Obtiene una lista paginada de todas las categorias existentes en el sistema."
     )
     @GetMapping("/categorias")
-    public ResponseEntity getCategorias(@PageableDefault(size = 5) Pageable pageable){
-        CategoriaInitialResponseDTO response=this.categoriaService.getInicialCoordinador(pageable);
+    public ResponseEntity getCategorias(@PageableDefault(size = 5) Pageable pageable) {
+        CategoriaInitialResponseDTO response = this.categoriaService.getInicialCoordinador(pageable);
         return ResponseEntity.ok(response);
     }
 
@@ -107,15 +108,14 @@ public class InitialStateCoordinador {
     }
 
     @Operation(
-            summary="Obtener el estado inicial de integrante",
-            description="Obtiene el estado inicial de un integrante por su id"
+            summary = "Obtener el estado inicial de integrante",
+            description = "Obtiene el estado inicial de un integrante por su id"
     )
     @GetMapping("/integrantes")
-    public ResponseEntity getInicialIntegranteById(@RequestParam Long id){
-        IntegranteInitialDTO response=this.integranteService.getInicialIntegranteByIdCoordinador(id);
+    public ResponseEntity getInicialIntegranteById() {
+        IntegranteInitialDTO response = this.integranteService.getInicialIntegranteByIdCoordinador();
         return ResponseEntity.ok(response);
     }
-
 
 
 }

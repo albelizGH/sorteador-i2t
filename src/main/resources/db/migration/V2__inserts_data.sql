@@ -62,32 +62,34 @@ INSERT INTO aut_grupo (nombre, orden_grupo, aut_categoria_id) VALUES
 --    Se asignan a distintos grupos
 -- ------------------------------------------------------------
 -- Autoridades (6)
+-- Autoridades
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
-  ('Autoridad 1', 1001, 'AUTORIDAD', 1, 'email1@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Autoridad 2', 1002, 'AUTORIDAD', 2, 'email2@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Autoridad 3', 1003, 'AUTORIDAD', 3, 'email3@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Autoridad 4', 1004, 'AUTORIDAD', 4, 'email4@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Autoridad 5', 1005, 'AUTORIDAD', 5, 'email5@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Autoridad 6', 1006, 'AUTORIDAD', 6, 'email6@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!');
+  ('Autoridad 1', 1001, 'AUTORIDAD', 1, 'email1@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Autoridad 2', 1002, 'AUTORIDAD', 2, 'email2@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Autoridad 3', 1003, 'AUTORIDAD', 3, 'email3@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Autoridad 4', 1004, 'AUTORIDAD', 4, 'email4@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Autoridad 5', 1005, 'AUTORIDAD', 5, 'email5@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Autoridad 6', 1006, 'AUTORIDAD', 6, 'email6@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES');
 
--- Auxiliares (12) (Corrección de `aut_grupo_id` y orden de columnas)
+-- Auxiliares
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
-  ('Auxiliar 1', 2001, 'AUXILIAR', 1, 'email7@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 2', 2002, 'AUXILIAR', 1, 'email8@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 3', 2003, 'AUXILIAR', 2, 'email9@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 4', 2004, 'AUXILIAR', 2, 'email10@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 5', 2005, 'AUXILIAR', 3, 'email11@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 6', 2006, 'AUXILIAR', 3, 'email12@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 7', 2007, 'AUXILIAR', 4, 'email13@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 8', 2008, 'AUXILIAR', 4, 'email14@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 9', 2009, 'AUXILIAR', 5, 'email15@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 10', 2010, 'AUXILIAR', 5, 'email16@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 11', 2011, 'AUXILIAR', 6, 'email17@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!'),
-  ('Auxiliar 12', 2012, 'AUXILIAR', 6, 'email18@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!');
+  ('Auxiliar 1', 2001, 'AUXILIAR', 1, 'email7@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 2', 2002, 'AUXILIAR', 1, 'email8@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 3', 2003, 'AUXILIAR', 2, 'email9@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 4', 2004, 'AUXILIAR', 2, 'email10@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 5', 2005, 'AUXILIAR', 3, 'email11@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 6', 2006, 'AUXILIAR', 3, 'email12@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 7', 2007, 'AUXILIAR', 4, 'email13@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 8', 2008, 'AUXILIAR', 4, 'email14@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 9', 2009, 'AUXILIAR', 5, 'email15@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 10', 2010, 'AUXILIAR', 5, 'email16@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 11', 2011, 'AUXILIAR', 6, 'email17@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES'),
+  ('Auxiliar 12', 2012, 'AUXILIAR', 6, 'email18@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES');
+
 
 -- Coordinador (1) (Corrección de orden de columnas)
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
-  ('Alejo Beliz', 3001, 'COORDINADOR', 1, 'email19@email.com', '$2a$10$iJa9cRW4dWvU2s5prwA76u.jNRIo3owcY/tdatZMwu617DNqCOACe!');
+  ('Alejo Beliz', 3001, 'COORDINADOR', 1, 'alejobeliz@hotmail.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES');
 
 -- ------------------------------------------------------------
 -- 6) Inserción en AUT_SORTEO (60 registros)

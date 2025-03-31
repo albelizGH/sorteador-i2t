@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,13 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> UsernameNotFoundException(BadCredentialsException exception, HttpServletRequest request) {
+        crearLog("Usuario o contraseña incorrectos", request, exception);
+        APIErrorDTO error = new APIErrorDTO("Usuario o contraseña incorrectos");
+        return ResponseEntity.status(404).body(error);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handlerValidation(MethodArgumentNotValidException exception, HttpServletRequest request) {
@@ -47,6 +55,7 @@ public class GlobalExceptionHandler {
         APIErrorDTO error = new APIErrorDTO(exception.getMessage());
         return ResponseEntity.status(400).body(error);
     }
+
     @ExceptionHandler(MinimoRequeridoException.class)
     public ResponseEntity<?> handlerMinimoRequeridoException(Exception exception, HttpServletRequest request) {
         crearLog("Minimo requerido", request, exception);
@@ -55,16 +64,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IntegrantePertenecienteAGrupoException.class)
-    public ResponseEntity<?> handlerIntegranteYaAsignadoException(Exception exception,HttpServletRequest request){
+    public ResponseEntity<?> handlerIntegranteYaAsignadoException(Exception exception, HttpServletRequest request) {
         crearLog("Integrante ya asignado a un grupo", request, exception);
-        APIErrorDTO error=new APIErrorDTO(exception.getMessage());
+        APIErrorDTO error = new APIErrorDTO(exception.getMessage());
         return ResponseEntity.status(400).body(error);
     }
 
     @ExceptionHandler(CupoExcedidoException.class)
-    public ResponseEntity<?> handlerCupoExcedidooException(Exception exception,HttpServletRequest request){
+    public ResponseEntity<?> handlerCupoExcedidooException(Exception exception, HttpServletRequest request) {
         crearLog("Cupo excedido", request, exception);
-        APIErrorDTO error=new APIErrorDTO(exception.getMessage());
+        APIErrorDTO error = new APIErrorDTO(exception.getMessage());
         return ResponseEntity.status(400).body(error);
     }
 

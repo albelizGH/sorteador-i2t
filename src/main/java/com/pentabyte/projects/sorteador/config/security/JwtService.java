@@ -32,6 +32,7 @@ public class JwtService {
                     .withIssuer("Sorteador.Beliz")
                     .withSubject(userDetail.getUsername())
                     .withClaim("Name", userDetail.getUsuario().getNombre())
+                    .withClaim("ID", userDetail.getUsuario().getId())
                     .withExpiresAt(generateDateOfExpiration())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {

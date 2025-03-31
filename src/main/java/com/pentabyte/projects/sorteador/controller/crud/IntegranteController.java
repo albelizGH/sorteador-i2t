@@ -65,8 +65,8 @@ public class IntegranteController {
             description = "Obtiene el estado inicial de un integrante por su id"
     )
     @GetMapping("/inicial")
-    public ResponseEntity getInicialIntegranteById(@RequestParam Long id) {
-        IntegranteInitialDTO response = this.integranteService.getInicialIntegranteByIdCoordinador(id);
+    public ResponseEntity getInicialIntegranteById() {
+        IntegranteInitialDTO response = this.integranteService.getInicialIntegranteByIdCoordinador();
         return ResponseEntity.ok(response);
     }
 

@@ -162,7 +162,7 @@ public class CategoriaService implements CrudServiceInterface<CategoriaResponseD
         PaginaDTO<CategoriaTopeInitialDTO> categoriaTopeDTO = new PaginaDTO<>(categoriaTopePage);
 
 
-        int totales = categoriaDTO.paginacion().totalDeElementos().intValue();
+        long totales = this.categoriaRepository.countCategorias();
 
         GlobalDTO global = GlobalDTO.builder()
                 .totales(totales)

@@ -1,5 +1,6 @@
 package com.pentabyte.projects.sorteador.service;
 
+import com.pentabyte.projects.sorteador.config.security.SecurityContextService;
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.consultas.planificacion.GrupoPlanificacionDTO;
@@ -42,15 +43,17 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
     private final AsignacionMapper asignacionMapper;
     private final SorteoMapper sorteoMapper;
     private final IntegranteRepository integranteRepository;
+    private final SecurityContextService securityContextService;
 
     @Autowired
-    public AsignacionService(AsignacionRepository asignacionRepository, GrupoRepository grupoRepository, SorteoRepository sorteoRepository, AsignacionMapper asignacionMapper, SorteoMapper sorteoMapper, IntegranteRepository integranteRepository) {
+    public AsignacionService(AsignacionRepository asignacionRepository, GrupoRepository grupoRepository, SorteoRepository sorteoRepository, AsignacionMapper asignacionMapper, SorteoMapper sorteoMapper, IntegranteRepository integranteRepository, SecurityContextService securityContextService) {
         this.asignacionRepository = asignacionRepository;
         this.grupoRepository = grupoRepository;
         this.sorteoRepository = sorteoRepository;
         this.asignacionMapper = asignacionMapper;
         this.sorteoMapper = sorteoMapper;
         this.integranteRepository = integranteRepository;
+        this.securityContextService = securityContextService;
     }
 
 
@@ -163,7 +166,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
 
         // Calcula la cantidad de grupos por categoría
         Map<Long, Integer> cantidadDeGruposPorCategoria = obtenerCantidadDeGruposPorCategoria(gruposPorCategoria);
-        
+
         // Obtengo los últimos grupos planificados por cada categoría
         Map<Long, Long> ultimosGruposPorCategoriaPlanificados = getUltimosGruposPorCategoriaPlanificados(idsCategorias);
 
@@ -461,9 +464,9 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         PaginaDTO<AsignacionInitialDTO> asignacionPlanificadaDTO = this.getAsignacionesPlanificadaPage(pageable, grupoId);
         PaginaDTO<AsignacionInitialDTO> asignacionBorradorDTO = this.getAsignacionesBorradorPage(pageable, grupoId);
 
-        int asignacionesTotales = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue() + asignacionBorradorDTO.paginacion().cantidadDeElementos().intValue();
-        int planificadas = asignacionPlanificadaDTO.paginacion().cantidadDeElementos().intValue();
-        int borrador = asignacionBorradorDTO.paginacion().cantidadDeElementos().intValue();
+        long planificadas = this.asignacionRepository.countOfPlanificadas();
+        long borrador = this.asignacionRepository.countOfBorrador();
+        long asignacionesTotales = planificadas + borrador;
 
         GlobalDTO global = GlobalDTO.builder()
                 .totales(asignacionesTotales)
@@ -480,18 +483,16 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
         );
     }
 
-    public AsignacionInitialResponseDTO getInicialAsignacionesAuxiliar(Pageable pageable, Long id) {
+    public AsignacionInitialResponseDTO getInicialAsignacionesAuxiliar(Pageable pageable) {
+        Long id = securityContextService.getIdDeUsuarioDesdeAuthenticated();
         Integrante integrante = this.integranteRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el integrante con ID: " + id));
 
         PaginaDTO<AsignacionInitialDTO> asignacionDTO = this.getAsignacionesAuxiliarPage(pageable, id);
 
-        int asignacionesTotales = asignacionDTO.paginacion().cantidadDeElementos().intValue() + asignacionDTO.paginacion().cantidadDeElementos().intValue();
-        int planificadas = asignacionDTO.paginacion().cantidadDeElementos().intValue();
-        int borrador = asignacionDTO.paginacion().cantidadDeElementos().intValue();
+        Long totales = this.asignacionRepository.countOfPlanificadasById(id);
 
         GlobalDTO global = GlobalDTO.builder()
-                .totales(asignacionesTotales)
-                .planificadas(planificadas)
+                .totales(totales)
                 .build();
 
         return new AsignacionInitialResponseDTO(

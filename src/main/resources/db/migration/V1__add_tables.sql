@@ -102,9 +102,7 @@ CREATE TABLE AUT_SOLICITUD_REEMPLAZO (
     CONSTRAINT fk_aut_solicitud_reemplazo_aut_empleado_solicitante FOREIGN KEY (aut_empleado_solicitante) REFERENCES AUT_INTEGRANTE (id),
     CONSTRAINT fk_aut_solicitud_reemplazo_aut_empleado_reemplazo FOREIGN KEY (aut_empleado_reemplazo) REFERENCES AUT_INTEGRANTE (id),
     CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_solicitante FOREIGN KEY (aut_asignacion_solicitante) REFERENCES AUT_ASIGNACION (id),
-    CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_reemplazo FOREIGN KEY (aut_asignacion_reemplazo) REFERENCES AUT_ASIGNACION (id),
-    CONSTRAINT un_aut_solicitud_solicitante UNIQUE (aut_empleado_solicitante, aut_asignacion_solicitante, fecha_solicitud)
-
+    CONSTRAINT fk_aut_solicitud_reemplazo_aut_asignacion_reemplazo FOREIGN KEY (aut_asignacion_reemplazo) REFERENCES AUT_ASIGNACION (id)
     );
 
 CREATE TABLE AUT_NOTIFICACION (

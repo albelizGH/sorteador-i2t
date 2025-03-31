@@ -39,4 +39,10 @@ public interface SorteoRepository extends JpaRepository<Sorteo, Long> {
                     AND (:fechaFin IS NULL OR s.fecha <= :fechaFin)
             """)
     Page<Sorteo> findByCategoriaAndFecha(Pageable pageable, Long categoriaId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+
+    @Query("SELECT COUNT(s) FROM Sorteo s WHERE s.confirmado = true")
+    Long countSorteosConfirmados();
+
+    @Query("SELECT COUNT(s) FROM Sorteo s WHERE s.confirmado = false")
+    Long countSorteosNoConfirmados();
 }

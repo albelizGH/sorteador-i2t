@@ -1,5 +1,6 @@
 package com.pentabyte.projects.sorteador.service;
 
+import com.pentabyte.projects.sorteador.config.security.SecurityContextService;
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
 import com.pentabyte.projects.sorteador.dto.request.actualizacion.SolicitudDeReemplazoUpdateDTO;
@@ -23,8 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,15 +40,17 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
     private final AsignacionRepository asignacionRepository;
     private final SorteoRepository sorteoRepository;
     private final SolicitudDeReemplazoMapper solicitudDeReemplazoMapper;
+    private final SecurityContextService securityContextService;
 
     @Autowired
-    public SolicitudDeReemplazoService(SolicitudDeReemplazoRepository solicitudDeReemplazoRepository, IntegranteRepository integranteRepository, AsignacionRepository asignacionRepository, SorteoRepository sorteoRepository, SolicitudDeReemplazoMapper solicitudDeReemplazoMapper) {
+    public SolicitudDeReemplazoService(SolicitudDeReemplazoRepository solicitudDeReemplazoRepository, IntegranteRepository integranteRepository, AsignacionRepository asignacionRepository, SorteoRepository sorteoRepository, SolicitudDeReemplazoMapper solicitudDeReemplazoMapper, SecurityContextService securityContextService) {
         this.solicitudDeReemplazoRepository = solicitudDeReemplazoRepository;
         this.integranteRepository = integranteRepository;
         this.asignacionRepository = asignacionRepository;
         this.sorteoRepository = sorteoRepository;
 
         this.solicitudDeReemplazoMapper = solicitudDeReemplazoMapper;
+        this.securityContextService = securityContextService;
     }
 
     @Override
@@ -186,7 +187,7 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
 
         String grupo = integranteSolicitante.getGrupo().getNombre();
 
-        List<IntegranteResponseDTO> reemplazantes = integranteRepository.findReemplazantes(rol, grupo,fecha).stream().map(
+        List<IntegranteResponseDTO> reemplazantes = integranteRepository.findReemplazantes(rol, grupo, fecha).stream().map(
                 integrante -> new IntegranteResponseDTO(
                         integrante.getId(),
                         integrante.getNombre(),
@@ -385,15 +386,15 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
         );
     }
 
-    public ReemplazoInitialResponseDTO getIncialReemplazosAuxiliar(Pageable pageable, Long id) {
-
+    public ReemplazoInitialResponseDTO getIncialReemplazosAuxiliar(Pageable pageable) {
+        Long id = this.securityContextService.getIdDeUsuarioDesdeAuthenticated();
 
         PaginaDTO<ReemplazoInitialDTO> solicitudesNoPendientes = this.getReemplazosNoPendientesAuxiliar(pageable, id);
         PaginaDTO<ReemplazoInitialDTO> solicitudesPendientes = this.getReemplazosPendientesAuxiliar(pageable, id);
 
         GlobalDTO globalDTO = GlobalDTO.builder()
-                .pendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
-                .noPendientes(Math.toIntExact(solicitudesNoPendientes.paginacion().totalDeElementos()))
+                .pendientes(solicitudesPendientes.paginacion().totalDeElementos())
+                .noPendientes(solicitudesNoPendientes.paginacion().totalDeElementos())
                 .build();
 
         return new ReemplazoInitialResponseDTO(
@@ -427,8 +428,8 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
 
 
         GlobalDTO globalDTO = GlobalDTO.builder()
-                .pendientes(Math.toIntExact(solicitudesPendientes.paginacion().totalDeElementos()))
-                .noPendientes(Math.toIntExact(solicitudesNoPendientes.paginacion().totalDeElementos()))
+                .pendientes(solicitudDeReemplazoRepository.countReemplazosPendientes())
+                .noPendientes(solicitudDeReemplazoRepository.countReemplazosNoPendientes())
                 .build();
 
         return new ReemplazoInitialResponseDTO(
@@ -468,4 +469,51 @@ public class SolicitudDeReemplazoService implements CrudServiceInterface<Solicit
                 solicitud.getAsignacionDeSolicitante().getId(),
                 solicitud.getAsignacionDeReemplazo().getId());
     }
+
+    public ResponseDTO<ReemplazoInitialDTO> crearSolicitud(SolicitudDeReemplazoCreateDTO dto) {
+
+        Integrante empleadoSolicitante = integranteRepository.findById(dto.empleadoSolicitanteId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Solicitante no encontrado con ID: " + dto.empleadoSolicitanteId()));
+
+        Integrante empleadoReemplazo = integranteRepository.findById(dto.empleadoReemplazoId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reemplazante no encontrado con ID: " + dto.empleadoReemplazoId()));
+
+        Asignacion asignacionDeSolicitante = asignacionRepository.findById(dto.asignacionDeSolicitanteId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Asignación de solicitante no encontrada con ID: " + dto.empleadoReemplazoId()));
+
+        Asignacion asignacionDeReemplazo = asignacionRepository.findById(dto.asignacionDeReemplazoId())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Asignación de reemplazo no encontrada con ID: " + dto.empleadoReemplazoId()));
+
+
+        SolicitudDeReemplazo solicitudDeReemplazoDb = solicitudDeReemplazoRepository.save(new SolicitudDeReemplazo(
+                null,
+                obtenerNombreSolicitudDeReemplazo(),
+                dto.descripcion(),
+                dto.fechaDeSolicitud(),
+                SolEstado.PENDIENTE,
+                empleadoSolicitante,
+                empleadoReemplazo,
+                asignacionDeSolicitante,
+                asignacionDeReemplazo
+        ));
+
+        return new ResponseDTO<>(
+                new ReemplazoInitialDTO(
+                        solicitudDeReemplazoDb.getId(),
+                        solicitudDeReemplazoDb.getEmpleadoSolicitante().getNombre(),
+                        solicitudDeReemplazoDb.getEmpleadoReemplazo().getNombre(),
+                        solicitudDeReemplazoDb.getDescripcion(),
+                        solicitudDeReemplazoDb.getFechaDeSolicitud(),
+                        solicitudDeReemplazoDb.getAsignacionDeSolicitante().getSorteo().getFecha().toLocalDate(),
+                        solicitudDeReemplazoDb.getAsignacionDeSolicitante().getSorteo().getProducto().getNombre(),
+                        solicitudDeReemplazoDb.getEmpleadoSolicitante().getId(),
+                        solicitudDeReemplazoDb.getEmpleadoReemplazo().getId(),
+                        solicitudDeReemplazoDb.getEstadoDeSolicitud(),
+                        solicitudDeReemplazoDb.getAsignacionDeSolicitante().getId(),
+                        solicitudDeReemplazoDb.getAsignacionDeReemplazo().getId()
+                ),
+                new ResponseDTO.EstadoDTO("Solicitud de reemplazo creada exitosamente", "201")
+        );
+    }
+
 }

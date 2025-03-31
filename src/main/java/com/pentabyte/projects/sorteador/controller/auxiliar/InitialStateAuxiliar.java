@@ -42,8 +42,8 @@ public class InitialStateAuxiliar {
             description = "Obtiene el estado inicial de las asignaciones de los sorteos por integrante"
     )
     @GetMapping("/asignaciones")
-    public ResponseEntity getAsignaciones(@PageableDefault(size = 5) Pageable pageable, @RequestParam Long id) {
-        AsignacionInitialResponseDTO response = this.asignacionService.getInicialAsignacionesAuxiliar(pageable, id);
+    public ResponseEntity getAsignaciones(@PageableDefault(size = 5) Pageable pageable) {
+        AsignacionInitialResponseDTO response = this.asignacionService.getInicialAsignacionesAuxiliar(pageable);
         return ResponseEntity.ok(response);
     }
 
@@ -53,8 +53,8 @@ public class InitialStateAuxiliar {
             description = "Obtiene el estado inicial de los reemplazos de los sorteos por integrante"
     )
     @GetMapping("/reemplazos")
-    public ResponseEntity getReemplazos(@PageableDefault(size = 5) Pageable pageable, @RequestParam Long id) {
-        ReemplazoInitialResponseDTO response = this.solicitudDeReemplazoService.getIncialReemplazosAuxiliar(pageable, id);
+    public ResponseEntity getReemplazos(@PageableDefault(size = 5) Pageable pageable) {
+        ReemplazoInitialResponseDTO response = this.solicitudDeReemplazoService.getIncialReemplazosAuxiliar(pageable);
         return ResponseEntity.ok(response);
     }
 
