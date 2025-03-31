@@ -163,7 +163,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
 
         // Calcula la cantidad de grupos por categoría
         Map<Long, Integer> cantidadDeGruposPorCategoria = obtenerCantidadDeGruposPorCategoria(gruposPorCategoria);
-
+        
         // Obtengo los últimos grupos planificados por cada categoría
         Map<Long, Long> ultimosGruposPorCategoriaPlanificados = getUltimosGruposPorCategoriaPlanificados(idsCategorias);
 
@@ -243,7 +243,7 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
      * @throws RecursoNoEncontradoException Si no se encuentran sorteos confirmados en el rango de fechas.
      */
     private List<IdSorteoCategoriaDTO> obtenerSorteosConfirmadosEnRango(LocalDateTime ahora, LocalDateTime fin) {
-        List<IdSorteoCategoriaDTO> sorteosYcategorias = sorteoRepository.findIdSorteosConfirmadosEntreFechas(ahora, fin);
+        List<IdSorteoCategoriaDTO> sorteosYcategorias = sorteoRepository.findSorteosSinAsignacionesPlanificadas(ahora, fin);
         if (sorteosYcategorias.isEmpty()) {
             throw new RecursoNoEncontradoException("No hay sorteos confirmados en el rango de fechas");
         }

@@ -19,10 +19,13 @@ public interface SorteoRepository extends JpaRepository<Sorteo, Long> {
             FROM Sorteo s
             LEFT JOIN s.producto p
             LEFT JOIN p.categoria c
-            WHERE s.fecha BETWEEN :inicio AND :fin and s.confirmado = true
+            LEFT JOIN Asignacion a ON a.sorteo = s
+            WHERE s.fecha BETWEEN :inicio AND :fin 
+            AND s.confirmado = true
+            AND (a IS NULL OR a.estado != 'PLANIFICADO')
             ORDER BY s.id
             """)
-    List<IdSorteoCategoriaDTO> findIdSorteosConfirmadosEntreFechas(LocalDateTime inicio, LocalDateTime fin);
+    List<IdSorteoCategoriaDTO> findSorteosSinAsignacionesPlanificadas(LocalDateTime inicio, LocalDateTime fin);
 
 
     @Query("""
