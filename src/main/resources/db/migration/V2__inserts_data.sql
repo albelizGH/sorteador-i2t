@@ -89,7 +89,7 @@ INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) 
 
 -- Coordinador (1) (Corrección de orden de columnas)
 INSERT INTO aut_integrante (nombre, legajo, rol, aut_grupo_id, email, password) VALUES
-  ('Alejo Beliz', 3001, 'COORDINADOR', 1, 'alejobeliz@hotmail.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES');
+  ('Alejo Beliz', 3001, 'COORDINADOR', 1, 'alejobeliz@email.com', '$2a$10$wwK1UV2ClPk3WeeBosc/6ubMO1TJrnZEB6oUTG4PONys6m68pwsES');
 
 -- ------------------------------------------------------------
 -- 6) Inserción en AUT_SORTEO (60 registros)

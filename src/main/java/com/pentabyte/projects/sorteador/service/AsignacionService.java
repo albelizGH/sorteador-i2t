@@ -535,11 +535,11 @@ public class AsignacionService implements CrudServiceInterface<AsignacionRespons
                 asignacion.getEstado(),
                 asignacion.getGrupo().getNombre(),
                 asignacion.getGrupo().getIntegranteList().stream()
-                        .filter(integrante -> integrante.getRol().equals(Rol.AUXILIAR))
+                        .filter(integrante -> integrante.getRol().equals(Rol.AUTORIDAD))
                         .map(integrante -> integrante.getNombre())
                         .collect(Collectors.toList()),
                 asignacion.getGrupo().getIntegranteList().stream()
-                        .filter(integrante -> integrante.getRol().equals(Rol.AUTORIDAD))
+                        .filter(integrante -> integrante.getRol().equals(Rol.AUXILIAR))
                         .map(integrante -> integrante.getNombre())
                         .collect(Collectors.toList())
         );

@@ -2,17 +2,17 @@ package com.pentabyte.projects.sorteador.controller.crud;
 
 import com.pentabyte.projects.sorteador.dto.PaginaDTO;
 import com.pentabyte.projects.sorteador.dto.ResponseDTO;
-import com.pentabyte.projects.sorteador.dto.request.actualizacion.GrupoUpdateDTO;
 import com.pentabyte.projects.sorteador.dto.response.GrupoResponseDTO;
 import com.pentabyte.projects.sorteador.service.GrupoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/grupos")
@@ -46,15 +46,15 @@ public class GrupoController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Agregar integrante a un grupo",
-            description = "Se agrega un integrante a un grupo específico segun su ID de integrante y el ID de grupo."
-    )
-    @PatchMapping("/{grupoId}")
-    public ResponseEntity<ResponseDTO<GrupoResponseDTO>> agregarIntegrante(
-            @PathVariable Long grupoId, @RequestBody @Valid GrupoUpdateDTO grupoUpdateDTO) {
-        ResponseDTO<GrupoResponseDTO> response = grupoService.agregarIntegranteAGrupo(grupoId, grupoUpdateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+//    @Operation(
+//            summary = "Agregar integrante a un grupo",
+//            description = "Se agrega un integrante a un grupo específico segun su ID de integrante y el ID de grupo."
+//    )
+//    @PatchMapping("/{grupoId}")
+//    public ResponseEntity<ResponseDTO<GrupoResponseDTO>> agregarIntegrante(
+//            @PathVariable Long grupoId, @RequestBody @Valid GrupoUpdateDTO grupoUpdateDTO) {
+//        ResponseDTO<GrupoResponseDTO> response = grupoService(grupoId, grupoUpdateDTO);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//    }
 
 }
